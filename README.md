@@ -780,8 +780,8 @@ public ResponseEntity<?> downloadCustomers(HttpServletResponse response) {
 
 ```xml
 <dependency>
-    <groupId>com.junho</groupId>
-    <artifactId>excel-exporter</artifactId>
+    <groupId>io.github.takoeats</groupId>
+    <artifactId>excel-annotator</artifactId>
     <version>1.0.0</version>
 </dependency>
 ```
@@ -789,7 +789,7 @@ public ResponseEntity<?> downloadCustomers(HttpServletResponse response) {
 ### Gradle
 
 ```gradle
-implementation 'com.junho:excel-exporter:1.0.0'
+implementation 'io.github.takoeats:excel-annotator:1.0.0'
 ```
 
 ### 필요 의존성
