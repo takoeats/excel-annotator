@@ -954,6 +954,6 @@ ExcelExporter.excelFromList(response, "../../../etc/passwd.xlsx", data);
 
 **⭐ 이 프로젝트가 유용하셨다면 Star를 눌러주세요! ⭐**
 
-Made with ❤️ by [Junho](https://github.com/yourusername)
+Made with ❤️ by [Junho](https://github.com/takoeats)
 
 </div>
