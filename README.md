@@ -4,7 +4,7 @@
 
 [![Java](https://img.shields.io/badge/Java-1.8+-007396?style=flat&logo=java)](https://www.oracle.com/java/)
 [![Apache POI](https://img.shields.io/badge/Apache%20POI-5.4.0-D22128?style=flat)](https://poi.apache.org/)
-[![Version](https://img.shields.io/badge/version-1.2.1-blue.svg)](https://github.com/yourusername/excel-exporter)
+[![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)](https://github.com/yourusername/excel-exporter)
 [![License](https://img.shields.io/badge/license-Apache--2.0-green.svg)](LICENSE)
 
 **POI 코드 작성 없이 어노테이션만으로 Excel 파일을 생성하세요!**
@@ -19,7 +19,7 @@
 <dependency>
     <groupId>com.junho</groupId>
     <artifactId>excel-exporter</artifactId>
-    <version>1.2.1</version>
+    <version>1.0.0</version>
 </dependency>
 ```
 
@@ -782,14 +782,14 @@ public ResponseEntity<?> downloadCustomers(HttpServletResponse response) {
 <dependency>
     <groupId>com.junho</groupId>
     <artifactId>excel-exporter</artifactId>
-    <version>1.2.1</version>
+    <version>1.0.0</version>
 </dependency>
 ```
 
 ### Gradle
 
 ```gradle
-implementation 'com.junho:excel-exporter:1.2.1'
+implementation 'com.junho:excel-exporter:1.0.0'
 ```
 
 ### 필요 의존성
