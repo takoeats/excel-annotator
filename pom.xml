@@ -24,7 +24,7 @@
   <developers>
     <developer>
       <id>takoeats</id>
-      <name>Sangji Baek</name>
+      <name>Junho Lee</name>
       <email>cleverfish1548@gmail.com</email>
       <url>https://github.com/takoeats</url>
     </developer>
@@ -108,6 +108,18 @@
         </configuration>
       </plugin>
 
+      <!-- JAR 생성 플러그인 (LICENSE, NOTICE 포함) -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <version>3.3.0</version>
+        <configuration>
+          <archive>
+            <addMavenDescriptor>true</addMavenDescriptor>
+          </archive>
+        </configuration>
+      </plugin>
+
       <!-- 소스코드 JAR 생성 플러그인 -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -160,6 +172,28 @@
                 <arg>--pinentry-mode</arg>
                 <arg>loopback</arg>
               </gpgArguments>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+      <!-- LICENSE와 NOTICE를 JAR에 포함 -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <version>3.1.0</version>
+        <executions>
+          <execution>
+            <id>copy-license</id>
+            <phase>process-resources</phase>
+            <goals>
+              <goal>run</goal>
+            </goals>
+            <configuration>
+              <target>
+                <copy file="${project.basedir}/LICENSE" todir="${project.build.outputDirectory}/META-INF"/>
+                <copy file="${project.basedir}/NOTICE" todir="${project.build.outputDirectory}/META-INF"/>
+              </target>
             </configuration>
           </execution>
         </executions>
