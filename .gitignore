@@ -25,3 +25,7 @@
 hs_err_pid*
 replay_pid*
 
+# Maven Central deployment settings (contains credentials)
+settings.xml
+settings-local.xml
+
