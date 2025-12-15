@@ -34,7 +34,7 @@
     <connection>scm:git:git://github.com/takoeats/excel-annotator.git</connection>
     <developerConnection>scm:git:ssh://git@github.com/takoeats/excel-annotator.git</developerConnection>
     <url>https://github.com/takoeats/excel-annotator</url>
-    <tag>HEAD</tag>
+    <tag>1.0.0</tag>
   </scm>
 
   <properties>
@@ -197,34 +197,6 @@
             </configuration>
           </execution>
         </executions>
-      </plugin>
-
-      <!-- JReleaser Maven 플러그인 -->
-      <plugin>
-        <groupId>org.jreleaser</groupId>
-        <artifactId>jreleaser-maven-plugin</artifactId>
-        <version>1.15.0</version>
-        <configuration>
-          <jreleaser>
-            <signing>
-              <active>ALWAYS</active>
-              <armored>true</armored>
-            </signing>
-            <deploy>
-              <maven>
-                <nexus2>
-                  <maven-central>
-                    <active>ALWAYS</active>
-                    <url>https://central.sonatype.com/api/v1/publisher</url>
-                    <closeRepository>true</closeRepository>
-                    <releaseRepository>true</releaseRepository>
-                    <stagingRepositories>target/staging-deploy</stagingRepositories>
-                  </maven-central>
-                </nexus2>
-              </maven>
-            </deploy>
-          </jreleaser>
-        </configuration>
       </plugin>
 
       <!-- JUnit 5 provider -->
