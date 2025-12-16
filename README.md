@@ -4,7 +4,7 @@
 
 [![Java](https://img.shields.io/badge/Java-1.8+-007396?style=flat&logo=java)](https://www.oracle.com/java/)
 [![Apache POI](https://img.shields.io/badge/Apache%20POI-5.4.0-D22128?style=flat)](https://poi.apache.org/)
-[![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)](https://github.com/yourusername/excel-exporter)
+[![Version](https://img.shields.io/badge/version-1.0.1-blue.svg)](https://github.com/yourusername/excel-exporter)
 [![License](https://img.shields.io/badge/license-Apache--2.0-green.svg)](LICENSE)
 
 **POI 코드 작성 없이 어노테이션만으로 Excel 파일을 생성하세요!**
@@ -918,23 +918,89 @@ public class ExcelBatchService {
 
 ## 🔒 보안 기능
 
-### 자동 파일명 보안
+### 자동 파일명 보안 (Filename Sanitization)
 
-**위험한 입력:**
-```java
+사용자가 전달한 파일명은 **화이트리스트 기반 검증 → 정제 → 의미 검증**을 거쳐 처리됩니다.  
+위험하거나 의미 없는 파일명은 **자동으로 안전한 기본 파일명으로 대체**됩니다.
+
+---
+
+### ❌ 위험한 입력 예시
+
+(Java 코드 예시)
+
 ExcelExporter.excelFromList(response, "../../../etc/passwd.xlsx", data);
-```
 
-**자동 보안 결과:**
-```
-.._.._..etc_passwd_20250108_143025.xlsx
-```
+처리 결과
 
-**차단되는 패턴:**
-- 경로 탐색: `..`, `/`, `\`
-- HTTP 헤더 인젝션: `;`, `=`, `"`, `\r`, `\n`
-- 제어 문자: `\x00-\x1F`, `\x7F`
-- 파일명 길이: 200자 제한
+download_20251216_143025.xlsx
+
+경로 탐색(Path Traversal) 패턴이 감지되면  
+부분 정제 없이 즉시 차단 후 기본 파일명으로 대체됩니다.
+
+---
+
+### ❌ 의미 없는 파일명 예시
+
+(Java 코드 예시)
+
+ExcelExporter.excelFromList(response, "!!!@@@###", data);
+
+처리 결과
+
+download_20251216_143025.xlsx
+
+- 모든 문자가 제거·치환되어 의미가 사라진 경우
+- 언더스코어(_)만 남는 경우  
+  → 기본 파일명 적용
+
+---
+
+### ✅ 다국어 파일명 지원
+
+다음 언어의 파일명은 허용됩니다.
+
+- 한국어 (가–힣)
+- 일본어 (히라가나, 가타카나)
+- 중국어 (CJK 통합 한자)
+- 서유럽 문자 (악센트 문자)
+
+(Java 코드 예시)
+
+ExcelExporter.excelFromList(response, "매출보고서.xlsx", data);
+
+처리 결과
+
+매출보고서_20251216_143025.xlsx
+
+---
+
+### 🚫 차단되는 패턴
+
+다음 패턴이 하나라도 감지되면 **즉시 기본 파일명으로 대체**됩니다.
+
+- 경로 탐색(Path Traversal)  
+  .., /, \, :
+- 숨김 파일  
+  .으로 시작하는 파일명
+- 제어 문자  
+  \x00–\x1F, \x7F
+- URL 인코딩 공격  
+  %2e, %2f, %5c, %00
+- OS 예약 파일명
+    - Windows: CON, PRN, AUX, NUL, COM1–9, LPT1–9
+    - Unix/Linux: null, stdin, stdout, stderr, random 등
+- 파일명 길이 제한  
+  최대 200자 초과 시 자동 절단
+
+---
+
+### 📌 처리 원칙 요약
+
+- 화이트리스트 기반 허용
+- 위험 패턴은 정제하지 않고 즉시 차단
+- 의미 없는 결과는 기본 파일명 사용
+- 확장자 및 timestamp는 검증 이후 시스템에서 부여
 
 ---
 

@@ -3,14 +3,19 @@ package com.junho.excel;
 
 import com.junho.excel.exception.ErrorCode;
 import com.junho.excel.exception.ExcelExporterException;
+import com.junho.excel.internal.util.FilenameSecurityValidator;
 import com.junho.excel.internal.writer.ExcelWriter;
 import java.io.OutputStream;
 import java.net.URLEncoder;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.function.Function;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import javax.servlet.http.HttpServletResponse;
@@ -87,11 +92,11 @@ public final class ExcelExporter {
    */
   public static <T> String excelFromList(OutputStream outputStream, String fileName, List<T> data) {
     validateData(data);
-    String transFileName = getTransFileName(fileName);
-    String sanitizedFileName = encodeFileNameCommons(transFileName);
+    String sanitizedFileName = encodeFileNameCommons(fileName);
+    String transFileName = getTransFileName(sanitizedFileName);
     ExcelWriter writer = new ExcelWriter();
     writeWorkbookAndHandleErrors(outputStream, () -> writer.write(data));
-    return sanitizedFileName;
+    return transFileName;
   }
 
   /**
@@ -141,10 +146,10 @@ public final class ExcelExporter {
    */
   public static <T> String excelFromStream(OutputStream outputStream, String fileName,
       Stream<T> dataStream) {
-    String transFileName = getTransFileName(fileName);
-    String sanitizedFileName = encodeFileNameCommons(transFileName);
+    String sanitizedFileName = encodeFileNameCommons(fileName);
+    String transFileName = getTransFileName(sanitizedFileName);
     writeWorkbookToStream(outputStream, dataStream);
-    return sanitizedFileName;
+    return transFileName;
   }
 
   /**
@@ -223,10 +228,10 @@ public final class ExcelExporter {
    */
   public static String excelFromStream(OutputStream outputStream, String fileName,
       Map<String, Stream<?>> sheetStreamMap) {
-    String transFileName = getTransFileName(fileName);
-    String sanitizedFileName = encodeFileNameCommons(transFileName);
+    String sanitizedFileName = encodeFileNameCommons(fileName);
+    String transFileName = getTransFileName(sanitizedFileName);
     writeMultiSheetWorkbookFromStreams(outputStream, sheetStreamMap);
-    return sanitizedFileName;
+    return transFileName;
   }
 
   /**
@@ -418,53 +423,14 @@ public final class ExcelExporter {
   }
 
   /**
-   * 파일명 보안 검증 및 정제 (Path Traversal 방지) - HTTP 헤더 인젝션 방지 (제어문자, 세미콜론, 등호 제거) - Path Traversal 공격 방지
-   * (.. / \ 제거) - 화이트리스트 기반 문자 필터링
+   * 파일명 보안 검증 및 정제
+   * <p>상세 로직은 {@link FilenameSecurityValidator#sanitizeFilename(String)} 참조</p>
+   *
+   * @param fileName 검증할 파일명
+   * @return 안전하게 정제된 파일명 또는 기본 파일명
    */
   private static String encodeFileNameCommons(String fileName) {
-    String defaultFileName = "download.xlsx";
-    if (fileName == null || fileName
-        .trim()
-        .isEmpty()) {
-      return defaultFileName;
-    }
-
-    // 1. 모든 제어문자 제거 (0x00-0x1F, 0x7F)
-    String sanitized = fileName.replaceAll("[\\x00-\\x1F\\x7F]", "");
-
-    // 2. HTTP 헤더 특수문자 제거 (세미콜론, 등호, 큰따옴표)
-    sanitized = sanitized
-        .replace(";", "")
-        .replace("=", "")
-        .replace("\"", "")
-        .replace("\r", "")
-        .replace("\n", "");
-
-    // 3. Path Traversal 방지 (.. / \ 제거)
-    if (sanitized.contains("..") || sanitized.contains("/") || sanitized.contains("\\")) {
-      log.warn("Potentially malicious filename detected: {}", fileName);
-      return defaultFileName;
-    }
-
-    // 4. ASCII 범위 외 문자를 언더스코어로 치환
-    String fallback = sanitized.replaceAll("[^\\x20-\\x7E]", "_");
-
-    // 5. 연속된 공백/언더스코어를 단일 언더스코어로 변경
-    fallback = fallback.replaceAll("[\\s_]+", "_");
-
-    // 6. 파일명 길이 제한 (200자)
-    if (fallback.length() > 200) {
-      fallback = fallback.substring(0, 200);
-    }
-
-    // 7. 빈 문자열 체크
-    if (fallback
-        .trim()
-        .isEmpty()) {
-      return defaultFileName;
-    }
-
-    return fallback;
+    return FilenameSecurityValidator.sanitizeFilename(fileName);
   }
 
   /**
@@ -539,10 +505,10 @@ public final class ExcelExporter {
    */
   public static String excelFromList(OutputStream outputStream, String fileName,
       Map<String, List<?>> sheetDataMap) {
-    String transFileName = getTransFileName(fileName);
-    String sanitizedFileName = encodeFileNameCommons(transFileName);
+    String sanitizedFileName = encodeFileNameCommons(fileName);
+    String transFileName = getTransFileName(sanitizedFileName);
     writeMultiSheetWorkbookToStream(outputStream, sheetDataMap);
-    return sanitizedFileName;
+    return transFileName;
   }
 
 
@@ -561,14 +527,15 @@ public final class ExcelExporter {
   private static void setupResponseAndWriteExcel(HttpServletResponse response, String fileName,
       OutputStreamWriter writer) {
     try {
-      String transFileName = getTransFileName(fileName);
-      final String ascii = encodeFileNameCommons(transFileName);
+
+      final String ascii = encodeFileNameCommons(fileName);
+      String transFileName = getTransFileName(ascii);
       final String utf8 = urlEncodeRFC5987(transFileName);
 
       response.reset();
       response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
       response.setHeader("Content-Disposition",
-          "attachment; filename=\"" + ascii + "\"; filename*=UTF-8''" + utf8);
+          "attachment; filename=\"" + transFileName + "\"; filename*=UTF-8''" + utf8);
       response.setHeader("Cache-Control", "no-store, no-cache, must-revalidate, max-age=0");
 
       writer.write(response.getOutputStream());
