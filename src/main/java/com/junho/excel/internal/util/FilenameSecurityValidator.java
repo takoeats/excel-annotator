@@ -215,7 +215,7 @@ public final class FilenameSecurityValidator {
         ? filename.substring(0, dotIndex)
         : filename;
 
-    if (baseName.length() < 2) {
+    if (baseName.isEmpty()) {
       return false;
     }
 

@@ -98,8 +98,8 @@ class FilenameSecurityValidatorTest {
   @Test
   @DisplayName("힌디어 등 비ASCII 문자는 언더스코어로 치환")
   void sanitizeFilename_nonAscii_replacedWithUnderscore() {
-    String result = FilenameSecurityValidator.sanitizeFilename("हिंदी_फ़ाइल.xlsx");
-    assertTrue(result.contains("_"));
+    String result = FilenameSecurityValidator.sanitizeFilename("हिंदीफ़ाइलabc.xlsx");
+    assertTrue(result.contains("_abc"));
     assertFalse(result.contains("हिंदी"));
   }
 
@@ -131,7 +131,7 @@ class FilenameSecurityValidatorTest {
   @DisplayName("정제 후 빈 문자열이 되면 기본 파일명 반환")
   void sanitizeFilename_becomesEmpty_returnsDefault() {
     assertEquals("download.xlsx", FilenameSecurityValidator.sanitizeFilename(";;;==="));
-    assertEquals("download.xlsx", FilenameSecurityValidator.sanitizeFilename("한글만"));
+    assertEquals("download.xlsx", FilenameSecurityValidator.sanitizeFilename("Русское имя файла"));
   }
 
   @Test
@@ -216,7 +216,7 @@ class FilenameSecurityValidatorTest {
     assertTrue(FilenameSecurityValidator.isMeaningfulFilename("1a"));
 
     assertFalse(FilenameSecurityValidator.isMeaningfulFilename("_"));
-    assertFalse(FilenameSecurityValidator.isMeaningfulFilename("a"));
+    assertFalse(FilenameSecurityValidator.isMeaningfulFilename(""));
     assertFalse(FilenameSecurityValidator.isMeaningfulFilename("---"));
   }
 
