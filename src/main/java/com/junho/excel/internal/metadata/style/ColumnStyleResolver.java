@@ -5,7 +5,6 @@ import com.junho.excel.internal.metadata.extractor.FieldTypeClassifier;
 import com.junho.excel.style.CustomExcelCellStyle;
 import com.junho.excel.style.StyleCache;
 import com.junho.excel.style.defaultstyle.DefaultColumnStyle;
-import com.junho.excel.style.defaultstyle.DefaultHeaderStyle;
 import com.junho.excel.style.defaultstyle.DefaultNumberStyle;
 
 import java.lang.reflect.Field;
@@ -17,10 +16,7 @@ public final class ColumnStyleResolver {
     }
 
     public static CustomExcelCellStyle resolveHeaderStyle(ExcelColumn excelColumn) {
-        if (!excelColumn.headerStyle().equals(DefaultHeaderStyle.class)) {
-            return StyleCache.getStyleInstance(excelColumn.headerStyle());
-        }
-        return null;
+        return StyleCache.getStyleInstance(excelColumn.headerStyle());
     }
 
     public static CustomExcelCellStyle resolveColumnStyle(ExcelColumn excelColumn, Field field) {

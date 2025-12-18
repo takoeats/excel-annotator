@@ -15,12 +15,13 @@ import static org.junit.jupiter.api.Assertions.*;
 class ColumnStyleResolverTest {
 
     @Test
-    void resolveHeaderStyle_withDefaultHeaderStyle_returnsNull() throws NoSuchFieldException {
+    void resolveHeaderStyle_withDefaultHeaderStyle_returnsDefaultHeaderStyle() throws NoSuchFieldException {
         ExcelColumn excelColumn = createExcelColumn("Header", 0, 100, DefaultHeaderStyle.class, DefaultColumnStyle.class);
 
         CustomExcelCellStyle headerStyle = ColumnStyleResolver.resolveHeaderStyle(excelColumn);
 
-        assertNull(headerStyle);
+        assertNotNull(headerStyle);
+        assertInstanceOf(DefaultHeaderStyle.class, headerStyle);
     }
 
     @Test
