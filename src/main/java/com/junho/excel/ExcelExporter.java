@@ -4,7 +4,10 @@ package com.junho.excel;
 import com.junho.excel.exception.ErrorCode;
 import com.junho.excel.exception.ExcelExporterException;
 import com.junho.excel.internal.util.FilenameSecurityValidator;
+import com.junho.excel.internal.writer.CsvWriter;
 import com.junho.excel.internal.writer.ExcelWriter;
+
+import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URLEncoder;
 import java.time.LocalDateTime;
@@ -565,13 +568,164 @@ public final class ExcelExporter {
   @FunctionalInterface
   private interface OutputStreamWriter {
 
-    void write(OutputStream outputStream) throws java.io.IOException;
+    void write(OutputStream outputStream) throws IOException;
   }
 
   @FunctionalInterface
   private interface WorkbookSupplier {
 
     SXSSFWorkbook get() throws ExcelExporterException;
+  }
+
+  /**
+   * 어노테이션 기반 CSV 파일 다운로드 (List 기반, HttpServletResponse)
+   * <p>데이터 리스트를 CSV 파일로 변환하여 HTTP 응답으로 전송합니다.</p>
+   * <p>@ExcelColumn.order 순서대로 컬럼이 정렬됩니다.</p>
+   *
+   * <h3>사용 예시</h3>
+   * <pre>{@code
+   * @PostMapping("/csvDown")
+   * public void downloadCsv(HttpServletResponse response) {
+   *     List<CustomerDTO> customers = service.getCustomers();
+   *     ExcelExporter.csvFromList(response, "customers.csv", customers);
+   * }
+   * }</pre>
+   *
+   * @param <T>      CSV DTO 타입 (반드시 @ExcelSheet와 @ExcelColumn 어노테이션 필요)
+   * @param response HTTP 응답 객체 (CSV 파일이 이 응답으로 전송됨)
+   * @param fileName 다운로드될 파일명 (타임스탬프가 자동으로 추가됨)
+   * @param data     CSV로 변환할 데이터 리스트
+   * @throws ExcelExporterException 데이터가 null이거나 비어있을 경우, 또는 CSV 생성 중 오류 발생 시
+   */
+  public static <T> void csvFromList(HttpServletResponse response, String fileName, List<T> data) {
+    setupCsvResponseAndWrite(response, fileName, outputStream -> writeCsvFromList(outputStream, data));
+  }
+
+  /**
+   * 어노테이션 기반 CSV 파일을 OutputStream에 작성 (List 기반)
+   * <p>데이터 리스트를 CSV 파일로 변환하여 제공된 OutputStream에 출력합니다.</p>
+   * <p>@ExcelColumn.order 순서대로 컬럼이 정렬됩니다.</p>
+   *
+   * <h3>사용 예시</h3>
+   * <pre>{@code
+   * try (FileOutputStream fos = new FileOutputStream("customers.csv")) {
+   *     String fileName = ExcelExporter.csvFromList(fos, "customers.csv", customers);
+   * }
+   * }</pre>
+   *
+   * @param <T>          CSV DTO 타입 (반드시 @ExcelSheet와 @ExcelColumn 어노테이션 필요)
+   * @param outputStream CSV 데이터가 출력될 스트림 (호출자가 스트림 닫기 책임)
+   * @param fileName     파일명 (타임스탬프 자동 추가, 보안 검증 및 인코딩 적용)
+   * @param data         CSV로 변환할 데이터 리스트
+   * @return 보안 검증 및 인코딩이 적용된 최종 파일명
+   * @throws ExcelExporterException 데이터가 null이거나 비어있을 경우, 또는 CSV 생성 중 오류 발생 시
+   */
+  public static <T> String csvFromList(OutputStream outputStream, String fileName, List<T> data) {
+    String sanitizedFileName = encodeFileNameCommons(fileName);
+    String transFileName = getTransFileNameWithExtension(sanitizedFileName, ".csv");
+    writeCsvFromList(outputStream, data);
+    return transFileName;
+  }
+
+  /**
+   * 어노테이션 기반 CSV 파일 다운로드 (Stream 기반, HttpServletResponse)
+   * <p>Stream API를 사용하여 데이터를 한 번에 하나씩 처리합니다.</p>
+   * <p>대용량 데이터 처리 시 List 전체 로딩 없이 메모리 효율적으로 처리 가능합니다.</p>
+   * <p>@ExcelColumn.order 순서대로 컬럼이 정렬됩니다.</p>
+   *
+   * <h3>사용 예시</h3>
+   * <pre>{@code
+   * @PostMapping("/csvStreamDown")
+   * public void downloadCsv(HttpServletResponse response) {
+   *     Stream<CustomerDTO> dataStream = customerRepository.streamAllCustomers();
+   *     ExcelExporter.csvFromStream(response, "customers.csv", dataStream);
+   * }
+   * }</pre>
+   *
+   * @param <T>        CSV DTO 타입 (반드시 @ExcelSheet와 @ExcelColumn 어노테이션 필요)
+   * @param response   HTTP 응답 객체 (CSV 파일이 이 응답으로 전송됨)
+   * @param fileName   다운로드될 파일명 (타임스탬프가 자동으로 추가됨)
+   * @param dataStream CSV로 변환할 데이터 스트림
+   * @throws ExcelExporterException CSV 생성 중 오류 발생 시
+   */
+  public static <T> void csvFromStream(HttpServletResponse response, String fileName,
+      Stream<T> dataStream) {
+    setupCsvResponseAndWrite(response, fileName, outputStream -> writeCsvFromStream(outputStream, dataStream));
+  }
+
+  /**
+   * 어노테이션 기반 CSV 파일을 OutputStream에 작성 (Stream 기반)
+   * <p>Stream API를 사용하여 데이터를 한 번에 하나씩 처리합니다.</p>
+   * <p>대용량 데이터 처리 시 List 전체 로딩 없이 메모리 효율적으로 처리 가능합니다.</p>
+   * <p>@ExcelColumn.order 순서대로 컬럼이 정렬됩니다.</p>
+   *
+   * <h3>사용 예시</h3>
+   * <pre>{@code
+   * try (FileOutputStream fos = new FileOutputStream("customers.csv")) {
+   *     Stream<CustomerDTO> dataStream = customerRepository.streamAllCustomers();
+   *     String fileName = ExcelExporter.csvFromStream(fos, "customers.csv", dataStream);
+   * }
+   * }</pre>
+   *
+   * @param <T>          CSV DTO 타입 (반드시 @ExcelSheet와 @ExcelColumn 어노테이션 필요)
+   * @param outputStream CSV 데이터가 출력될 스트림 (호출자가 스트림 닫기 책임)
+   * @param fileName     파일명 (타임스탬프 자동 추가, 보안 검증 및 인코딩 적용)
+   * @param dataStream   CSV로 변환할 데이터 스트림
+   * @return 보안 검증 및 인코딩이 적용된 최종 파일명
+   * @throws ExcelExporterException CSV 생성 중 오류 발생 시
+   */
+  public static <T> String csvFromStream(OutputStream outputStream, String fileName,
+      Stream<T> dataStream) {
+    String sanitizedFileName = encodeFileNameCommons(fileName);
+    String transFileName = getTransFileNameWithExtension(sanitizedFileName, ".csv");
+    writeCsvFromStream(outputStream, dataStream);
+    return transFileName;
+  }
+
+  private static <T> void writeCsvFromList(OutputStream outputStream, List<T> data) {
+    CsvWriter writer = new CsvWriter();
+    writer.write(outputStream, data);
+  }
+
+  private static <T> void writeCsvFromStream(OutputStream outputStream, Stream<T> dataStream) {
+    CsvWriter writer = new CsvWriter();
+    writer.write(outputStream, dataStream);
+  }
+
+  private static void setupCsvResponseAndWrite(HttpServletResponse response, String fileName,
+      OutputStreamWriter writer) {
+    try {
+      final String ascii = encodeFileNameCommons(fileName);
+      String transFileName = getTransFileNameWithExtension(ascii, ".csv");
+      final String utf8 = urlEncodeRFC5987(transFileName);
+
+      response.reset();
+      response.setContentType("text/csv; charset=UTF-8");
+      response.setHeader("Content-Disposition",
+          "attachment; filename=\"" + "download.csv" + "\"; filename*=UTF-8''" + utf8);
+      response.setHeader("Cache-Control", "no-store, no-cache, must-revalidate, max-age=0");
+
+      writer.write(response.getOutputStream());
+      response.flushBuffer();
+    } catch (IOException ioEx) {
+      throw new ExcelExporterException(ErrorCode.IO_ERROR, ioEx);
+    }
+  }
+
+  private static String getTransFileNameWithExtension(String fileName, String defaultExtension) {
+    String ts = LocalDateTime
+        .now()
+        .format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss"));
+    String transFileName;
+    if (fileName.endsWith(XLSX) || fileName.endsWith(".xls") || fileName.endsWith(".csv")) {
+      transFileName = fileName.substring(0, fileName.lastIndexOf('.')) + "_" + ts + defaultExtension;
+    } else if (fileName.contains(".")) {
+      int dotIndex = fileName.lastIndexOf('.');
+      transFileName = fileName.substring(0, dotIndex) + "_" + ts + fileName.substring(dotIndex);
+    } else {
+      transFileName = fileName + "_" + ts + defaultExtension;
+    }
+    return transFileName;
   }
 
   /**
