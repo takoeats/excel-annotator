@@ -15,6 +15,6 @@ public class DefaultColumnStyle extends CustomExcelCellStyle {
         configurer.font("맑은 고딕", 10)
                   .alignment(HorizontalAlignment.LEFT)
                   .border(BorderStyle.THIN)
-                  .width(80);
+                  .width(100);
     }
 }
