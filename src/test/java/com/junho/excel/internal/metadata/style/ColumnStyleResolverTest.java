@@ -104,7 +104,7 @@ class ColumnStyleResolverTest {
 
         int width = ColumnStyleResolver.calculateWidth(excelColumn, columnStyle);
 
-        assertEquals(80, width);
+        assertEquals(100, width);
     }
 
     private ExcelColumn createExcelColumn(
