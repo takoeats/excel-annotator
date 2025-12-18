@@ -535,7 +535,7 @@ public final class ExcelExporter {
       response.reset();
       response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
       response.setHeader("Content-Disposition",
-          "attachment; filename=\"" + transFileName + "\"; filename*=UTF-8''" + utf8);
+          "attachment; filename=\"" + "download.xlsx" + "\"; filename*=UTF-8''" + utf8);
       response.setHeader("Cache-Control", "no-store, no-cache, must-revalidate, max-age=0");
 
       writer.write(response.getOutputStream());
