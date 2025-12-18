@@ -1,4 +1,4 @@
-# Excel Exporter
+# Excel Annotator
 
 > 어노테이션 기반 Excel 생성 라이브러리 | Annotation-driven Excel Generation Library
 

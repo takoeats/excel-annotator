@@ -10,7 +10,12 @@
   <packaging>jar</packaging>
 
   <name>Excel Annotator Library</name>
-  <description>Annotation-based Excel export library with Apache POI and SXSSF support</description>
+  <description>
+      Excel Annotator - Annotation-based Excel and CSV
+      export library. Declarative approach
+      using annotations. No POI boilerplate. Simple, clean,
+      and Spring-friendly.
+  </description>
   <url>https://github.com/takoeats/excel-annotator</url>
 
   <licenses>

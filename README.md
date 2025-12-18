@@ -1,6 +1,18 @@
-# Excel Exporter
+# Excel Annotator
 
-> Annotation-driven Excel Generation Library
+✨ Export Excel files the declarative way
+
+## Why Annotations?
+
+❌ Before (POI):
+// 50 lines of boilerplate...
+
+✅ After (Excel Annotator):
+@ExcelColumn(header = "Name")
+private String name;
+
+If you love `@RestController` and `@Service`,
+you'll love Excel Annotator.
 
 **[한국어](README_KR.md)** | **English**
 
