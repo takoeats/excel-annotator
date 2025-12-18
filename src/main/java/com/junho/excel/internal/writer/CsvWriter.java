@@ -95,22 +95,11 @@ public final class CsvWriter {
 
     private String escapeCsvValue(String value) {
         if (value == null) {
-            return "";
+            return "\"\"";
         }
 
-        if (needsEscaping(value)) {
-            String escaped = value.replace("\"", "\"\"");
-            return "\"" + escaped + "\"";
-        }
-
-        return value;
-    }
-
-    private boolean needsEscaping(String value) {
-        return value.contains(CSV_DELIMITER)
-                || value.contains("\"")
-                || value.contains("\n")
-                || value.contains("\r");
+        String escaped = value.replace("\"", "\"\"");
+        return "\"" + escaped + "\"";
     }
 
     private <T> void validateData(List<T> data) {
