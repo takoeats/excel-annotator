@@ -555,14 +555,15 @@ public final class ExcelExporter {
       String transFileName = getTransFileName(ascii);
       final String utf8 = urlEncodeRFC5987(transFileName);
 
-      response.reset();
       response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
       response.setHeader("Content-Disposition",
           "attachment; filename=\"" + "download.xlsx" + "\"; filename*=UTF-8''" + utf8);
-      response.setHeader("Cache-Control", "no-store, no-cache, must-revalidate, max-age=0");
+
+      if (response.getHeader("Cache-Control") == null) {
+        response.setHeader("Cache-Control", "no-store, no-cache, must-revalidate, max-age=0");
+      }
 
       writer.write(response.getOutputStream());
-      response.flushBuffer();
     } catch (java.io.IOException ioEx) {
       throw new ExcelExporterException(ErrorCode.IO_ERROR, ioEx);
     }
@@ -719,14 +720,15 @@ public final class ExcelExporter {
       String transFileName = getTransFileNameWithExtension(ascii, ".csv");
       final String utf8 = urlEncodeRFC5987(transFileName);
 
-      response.reset();
       response.setContentType("text/csv; charset=UTF-8");
       response.setHeader("Content-Disposition",
           "attachment; filename=\"" + "download.csv" + "\"; filename*=UTF-8''" + utf8);
-      response.setHeader("Cache-Control", "no-store, no-cache, must-revalidate, max-age=0");
+
+      if (response.getHeader("Cache-Control") == null) {
+        response.setHeader("Cache-Control", "no-store, no-cache, must-revalidate, max-age=0");
+      }
 
       writer.write(response.getOutputStream());
-      response.flushBuffer();
     } catch (IOException ioEx) {
       throw new ExcelExporterException(ErrorCode.IO_ERROR, ioEx);
     }

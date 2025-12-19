@@ -143,11 +143,19 @@ public class ExcelController {
 
     @GetMapping("/download/customers")
     public void downloadCustomers(HttpServletResponse response) {
+        // 💡 Library preserves user-set headers (security tokens, etc.)
+        // response.setHeader("X-Custom-Token", securityToken); // This header will be kept
+
         List<CustomerDTO> customers = customerService.getAllCustomers();
 
         // Download immediately in browser
         ExcelExporter.excelFromList(response, "customers.xlsx", customers);
         // Actual download: customers.xlsx (explicit filename - no timestamp)
+
+        // 📌 Headers automatically set by library:
+        // - Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
+        // - Content-Disposition: attachment; filename="..."
+        // - Cache-Control: no-store, no-cache (only if user hasn't set it)
     }
 }
 ```
@@ -1027,6 +1035,67 @@ public class ExcelBatchService {
     }
 }
 ```
+
+---
+
+## 📡 HttpServletResponse Header Behavior
+
+### Library's Responsibility Scope
+
+The `ExcelExporter.excelFromList(response, fileName, data)` method sets **only the minimum required headers**, respecting user control.
+
+### ✅ Automatically Set Headers
+
+Headers that the library **always sets** (overwrite):
+```java
+Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
+Content-Disposition: attachment; filename="download.xlsx"; filename*=UTF-8''...
+```
+
+### 🔄 Conditionally Set Headers
+
+Applied **only if user hasn't set them**:
+```java
+Cache-Control: no-store, no-cache, must-revalidate, max-age=0
+```
+
+**Example: Custom Cache-Control**
+```java
+@GetMapping("/download/public-report")
+public void downloadPublicReport(HttpServletResponse response) {
+    // Allow caching if desired
+    response.setHeader("Cache-Control", "public, max-age=3600");
+
+    List<ReportDTO> data = reportService.getPublicData();
+    ExcelExporter.excelFromList(response, "report.xlsx", data);
+    // Cache-Control remains "public, max-age=3600"
+}
+```
+
+### 🛡️ Custom Header Preservation
+
+The library **does not call `response.reset()`**, so **all user-set headers are preserved**.
+
+**Example: Maintaining Security Token Headers**
+```java
+@GetMapping("/download/secure-data")
+public void downloadSecureData(HttpServletResponse response) {
+    // Authentication/security custom headers
+    response.setHeader("X-Custom-Auth-Token", securityService.generateToken());
+    response.setHeader("X-Request-ID", requestId);
+    response.setHeader("X-User-Role", currentUser.getRole());
+
+    List<SecureDataDTO> data = secureDataService.getData();
+    ExcelExporter.excelFromList(response, "secure-data.xlsx", data);
+    // ✅ All custom headers are preserved
+}
+```
+
+### 📌 Design Principles
+
+1. **Minimal Intervention**: Set only headers essential for Excel generation
+2. **User First**: Never remove user-set values
+3. **Container Delegation**: Does not call `response.flushBuffer()` (Servlet container handles automatically)
 
 ---
 

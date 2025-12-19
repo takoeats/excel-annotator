@@ -130,11 +130,19 @@ public class ExcelController {
 
     @GetMapping("/download/customers")
     public void downloadCustomers(HttpServletResponse response) {
+        // 💡 라이브러리는 사용자가 설정한 헤더(보안 토큰 등)를 보존합니다
+        // response.setHeader("X-Custom-Token", securityToken); // 이런 헤더도 유지됨
+
         List<CustomerDTO> customers = customerService.getAllCustomers();
 
         // 브라우저에서 즉시 다운로드
         ExcelExporter.excelFromList(response, "고객목록.xlsx", customers);
         // 실제 다운로드: 고객목록.xlsx (명시적 파일명 - 타임스탬프 없음)
+
+        // 📌 라이브러리가 자동 설정하는 헤더:
+        // - Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
+        // - Content-Disposition: attachment; filename="..."
+        // - Cache-Control: no-store, no-cache (사용자가 미리 설정하지 않은 경우에만)
     }
 }
 ```
@@ -1009,6 +1017,67 @@ public class ExcelBatchService {
     }
 }
 ```
+
+---
+
+## 📡 HttpServletResponse 헤더 동작
+
+### 라이브러리의 책임 범위
+
+`ExcelExporter.excelFromList(response, fileName, data)` 메서드는 **최소한의 헤더만 설정**하여 사용자의 제어권을 존중합니다.
+
+### ✅ 자동 설정되는 헤더
+
+라이브러리가 **무조건 설정**하는 헤더 (덮어쓰기):
+```java
+Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
+Content-Disposition: attachment; filename="download.xlsx"; filename*=UTF-8''...
+```
+
+### 🔄 조건부 설정 헤더
+
+사용자가 **미리 설정하지 않은 경우에만** 기본값 적용:
+```java
+Cache-Control: no-store, no-cache, must-revalidate, max-age=0
+```
+
+**예시: 커스텀 Cache-Control 적용**
+```java
+@GetMapping("/download/public-report")
+public void downloadPublicReport(HttpServletResponse response) {
+    // 캐싱 허용하고 싶은 경우
+    response.setHeader("Cache-Control", "public, max-age=3600");
+
+    List<ReportDTO> data = reportService.getPublicData();
+    ExcelExporter.excelFromList(response, "report.xlsx", data);
+    // Cache-Control은 "public, max-age=3600" 유지됨
+}
+```
+
+### 🛡️ 커스텀 헤더 보존
+
+라이브러리는 `response.reset()`을 호출하지 않으므로, **사용자가 설정한 모든 헤더가 보존**됩니다.
+
+**예시: 보안 토큰 헤더 유지**
+```java
+@GetMapping("/download/secure-data")
+public void downloadSecureData(HttpServletResponse response) {
+    // 인증/보안 관련 커스텀 헤더
+    response.setHeader("X-Custom-Auth-Token", securityService.generateToken());
+    response.setHeader("X-Request-ID", requestId);
+    response.setHeader("X-User-Role", currentUser.getRole());
+
+    List<SecureDataDTO> data = secureDataService.getData();
+    ExcelExporter.excelFromList(response, "secure-data.xlsx", data);
+    // ✅ 모든 커스텀 헤더가 그대로 유지됨
+}
+```
+
+### 📌 설계 원칙
+
+1. **최소 개입**: Excel 생성에 필수적인 헤더만 설정
+2. **사용자 우선**: 사용자가 설정한 값은 절대 삭제하지 않음
+3. **컨테이너 위임**: `response.flushBuffer()` 호출하지 않음 (Servlet 컨테이너가 자동 처리)
 
 ---
 

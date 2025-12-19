@@ -105,15 +105,17 @@ class HttpServletResponseIntegrationTest {
     }
 
     @Test
-    void downloadExcel_flushesBuffer() throws IOException {
+    void downloadExcel_respectsUserSetCacheControl() throws IOException {
         MockHttpServletResponse response = new MockHttpServletResponse();
+        response.setHeader("Cache-Control", "public, max-age=3600");
         List<PersonDTO> data = Arrays.asList(
             new PersonDTO("Test", 30, new BigDecimal("1000.00"))
         );
 
         ExcelExporter.excelFromList(response, "test.xlsx", data);
 
-        assertTrue(response.isCommitted());
+        String cacheControl = response.getHeader("Cache-Control");
+        assertEquals("public, max-age=3600", cacheControl);
     }
 
     private static class MockHttpServletResponse implements HttpServletResponse {
