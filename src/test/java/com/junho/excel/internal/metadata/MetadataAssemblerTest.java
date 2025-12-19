@@ -2,7 +2,6 @@ package com.junho.excel.internal.metadata;
 
 import com.junho.excel.annotation.ExcelColumn;
 import com.junho.excel.annotation.ExcelSheet;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.LinkedHashMap;
@@ -12,16 +11,9 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class MetadataAssemblerTest {
 
-    private MetadataAssembler assembler;
-
-    @BeforeEach
-    void setUp() {
-        assembler = new MetadataAssembler();
-    }
-
     @Test
     void assemble_withValidDTO_returnsExcelMetadata() {
-        ExcelMetadata<TestDTO> metadata = assembler.assemble(TestDTO.class);
+        ExcelMetadata<TestDTO> metadata = MetadataAssembler.assemble(TestDTO.class);
 
         assertNotNull(metadata);
         assertEquals("TestSheet", metadata.getSheetName());
@@ -34,7 +26,7 @@ class MetadataAssemblerTest {
 
     @Test
     void assemble_withNullClass_returnsEmptyMetadata() {
-        ExcelMetadata<Object> metadata = assembler.assemble(null);
+        ExcelMetadata<Object> metadata = MetadataAssembler.assemble(null);
 
         assertNotNull(metadata);
         assertTrue(metadata.getHeaders().isEmpty());
@@ -45,7 +37,7 @@ class MetadataAssemblerTest {
 
     @Test
     void assemble_preservesColumnOrder() {
-        ExcelMetadata<TestDTO> metadata = assembler.assemble(TestDTO.class);
+        ExcelMetadata<TestDTO> metadata = MetadataAssembler.assemble(TestDTO.class);
 
         assertEquals("Age", metadata.getHeaders().get(0));
         assertEquals("Name", metadata.getHeaders().get(1));
@@ -53,7 +45,7 @@ class MetadataAssemblerTest {
 
     @Test
     void assemble_generatesExtractors() {
-        ExcelMetadata<TestDTO> metadata = assembler.assemble(TestDTO.class);
+        ExcelMetadata<TestDTO> metadata = MetadataAssembler.assemble(TestDTO.class);
 
         TestDTO dto = new TestDTO();
         dto.setName("John");
@@ -68,6 +60,23 @@ class MetadataAssemblerTest {
 
     @Test
     void assembleFromMergedColumns_createsMetadataForMergedData() throws NoSuchFieldException {
+        Map<Integer, ColumnInfo> mergedColumns = getIntegerColumnInfoMap();
+
+        ExcelMetadata<Map<String, Object>> metadata = MetadataAssembler.assembleFromMergedColumns(
+                "MergedSheet",
+                mergedColumns,
+                true
+        );
+
+        assertNotNull(metadata);
+        assertEquals("MergedSheet", metadata.getSheetName());
+        assertTrue(metadata.hasHeader());
+        assertEquals(2, metadata.getHeaders().size());
+        assertEquals("Name", metadata.getHeaders().get(0));
+        assertEquals("Age", metadata.getHeaders().get(1));
+    }
+
+    private static Map<Integer, ColumnInfo> getIntegerColumnInfoMap() throws NoSuchFieldException {
         Map<Integer, ColumnInfo> mergedColumns = new LinkedHashMap<>();
 
         ColumnInfo col1 = new ColumnInfo(
@@ -96,19 +105,7 @@ class MetadataAssemblerTest {
 
         mergedColumns.put(1, col1);
         mergedColumns.put(2, col2);
-
-        ExcelMetadata<Map<String, Object>> metadata = assembler.assembleFromMergedColumns(
-                "MergedSheet",
-                mergedColumns,
-                true
-        );
-
-        assertNotNull(metadata);
-        assertEquals("MergedSheet", metadata.getSheetName());
-        assertTrue(metadata.hasHeader());
-        assertEquals(2, metadata.getHeaders().size());
-        assertEquals("Name", metadata.getHeaders().get(0));
-        assertEquals("Age", metadata.getHeaders().get(1));
+        return mergedColumns;
     }
 
     @Test
@@ -129,7 +126,7 @@ class MetadataAssemblerTest {
 
         mergedColumns.put(1, col1);
 
-        ExcelMetadata<Map<String, Object>> metadata = assembler.assembleFromMergedColumns(
+        ExcelMetadata<Map<String, Object>> metadata = MetadataAssembler.assembleFromMergedColumns(
                 "Sheet",
                 mergedColumns,
                 false

@@ -15,10 +15,11 @@ import java.util.stream.Collectors;
 @Slf4j
 public final class MetadataAssembler {
 
-    public MetadataAssembler() {
+    private MetadataAssembler() {
+        throw new AssertionError("Utility class cannot be instantiated");
     }
 
-    public <T> ExcelMetadata<T> assemble(Class<T> clazz) {
+    public static <T> ExcelMetadata<T> assemble(Class<T> clazz) {
         if (clazz == null) {
             log.warn("Class parameter is null, returning empty metadata");
             return createEmptyMetadata();
@@ -39,7 +40,7 @@ public final class MetadataAssembler {
                 .build();
     }
 
-    public ExcelMetadata<Map<String, Object>> assembleFromMergedColumns(
+    public static ExcelMetadata<Map<String, Object>> assembleFromMergedColumns(
             String sheetName,
             Map<Integer, ColumnInfo> mergedColumns,
             boolean hasHeader) {

@@ -6,8 +6,6 @@ import com.junho.excel.internal.metadata.extractor.SheetInfoExtractor;
 import java.util.Map;
 
 public final class ExcelMetadataFactory {
-
-    private static final MetadataAssembler ASSEMBLER = new MetadataAssembler();
     private static final MultiSheetMetadataBuilder MULTI_SHEET_BUILDER = new MultiSheetMetadataBuilder();
 
     private ExcelMetadataFactory() {
@@ -15,7 +13,7 @@ public final class ExcelMetadataFactory {
     }
 
     public static <T> ExcelMetadata<T> extractExcelMetadata(Class<T> clazz) {
-        return ASSEMBLER.assemble(clazz);
+        return MetadataAssembler.assemble(clazz);
     }
 
     public static <T> Map<String, ExcelMetadata<T>> extractMultiSheetMetadata(Class<T> clazz) {
@@ -26,7 +24,7 @@ public final class ExcelMetadataFactory {
             String sheetName,
             Map<Integer, ColumnInfo> mergedColumns,
             boolean hasHeader) {
-        return ASSEMBLER.assembleFromMergedColumns(sheetName, mergedColumns, hasHeader);
+        return MetadataAssembler.assembleFromMergedColumns(sheetName, mergedColumns, hasHeader);
     }
 
     public static SheetInfo extractSheetInfo(Class<?> clazz) {
