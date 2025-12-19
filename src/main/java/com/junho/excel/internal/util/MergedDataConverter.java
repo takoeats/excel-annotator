@@ -67,7 +67,9 @@ public final class MergedDataConverter {
 
     private static final class IteratorEntry {
         private final Iterator<?> iterator;
+        @Getter
         private final Class<?> clazz;
+        @Getter
         private Object current;
         private boolean hasNext;
 
@@ -87,10 +89,6 @@ public final class MergedDataConverter {
             }
         }
 
-        public Object getCurrent() {
-            return current;
-        }
-
         public boolean hasNext() {
             return hasNext;
         }
@@ -99,9 +97,6 @@ public final class MergedDataConverter {
             advance();
         }
 
-        public Class<?> getClazz() {
-            return clazz;
-        }
     }
 
     private static Iterator<Map<String, Object>> prepareMergedDataByOrder(

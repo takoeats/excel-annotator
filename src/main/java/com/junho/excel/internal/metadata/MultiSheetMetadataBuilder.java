@@ -13,6 +13,7 @@ import java.util.stream.Collectors;
 public final class MultiSheetMetadataBuilder {
 
     public MultiSheetMetadataBuilder() {
+        // for factory
     }
 
     public <T> Map<String, ExcelMetadata<T>> build(Class<T> clazz) {

@@ -22,11 +22,9 @@ public class UnaryOpNode extends ExpressionNode {
     public boolean evaluate(CellContext context) {
         boolean operandResult = operand.evaluate(context);
 
-        switch (operator) {
-            case NOT:
-                return !operandResult;
-            default:
-                throw new IllegalStateException("Unsupported unary operator: " + operator);
+        if (operator == LogicalOperator.NOT) {
+            return !operandResult;
         }
+        throw new IllegalStateException("Unsupported unary operator: " + operator);
     }
 }

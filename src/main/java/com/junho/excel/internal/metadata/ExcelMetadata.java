@@ -61,7 +61,7 @@ public final class ExcelMetadata<T> {
             return Integer.MAX_VALUE;
         }
         return columnInfos.stream()
-                .mapToInt(info -> info.getOrder())
+                .mapToInt(ColumnInfo::getOrder)
                 .min()
                 .orElse(Integer.MAX_VALUE);
     }
@@ -71,7 +71,7 @@ public final class ExcelMetadata<T> {
             return Collections.emptySet();
         }
         return columnInfos.stream()
-                .map(info -> info.getOrder())
+                .map(ColumnInfo::getOrder)
                 .collect(Collectors.toSet());
     }
 
