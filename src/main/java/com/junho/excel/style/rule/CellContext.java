@@ -51,7 +51,7 @@ public final class CellContext implements AutoCloseable {
         this.fieldName = null;
     }
 
-  /**
+    /**
      * 셀 값을 특정 타입으로 안전하게 변환
      *
      * @param clazz 변환할 타입

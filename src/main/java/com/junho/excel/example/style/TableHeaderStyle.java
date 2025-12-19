@@ -19,10 +19,10 @@ public class TableHeaderStyle extends CustomExcelCellStyle {
     @Override
     protected void configure(ExcelCellStyleConfigurer configurer) {
         configurer.backgroundColor(51, 51, 51)  // GREY_80_PERCENT -> RGB
-                  .font("맑은 고딕", 11, FontStyle.BOLD)
-                  .fontColor(255, 255, 255)  // WHITE -> RGB
-                  .alignment(HorizontalAlignment.CENTER, VerticalAlignment.CENTER)
-                  .border(BorderStyle.THICK)
-                  .width(120);
+                .font("맑은 고딕", 11, FontStyle.BOLD)
+                .fontColor(255, 255, 255)  // WHITE -> RGB
+                .alignment(HorizontalAlignment.CENTER, VerticalAlignment.CENTER)
+                .border(BorderStyle.THICK)
+                .width(120);
     }
 }

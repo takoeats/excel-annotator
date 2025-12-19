@@ -19,11 +19,11 @@ public class DecimalNumberStyle extends CustomExcelCellStyle {
     @Override
     protected void configure(ExcelCellStyleConfigurer configurer) {
         configurer.backgroundColor(192, 192, 192)  // GREY_25_PERCENT
-                  .font("맑은 고딕", 10, FontStyle.NORMAL)
-                  .fontColor(0, 0, 0)  // BLACK
-                  .alignment(HorizontalAlignment.RIGHT, VerticalAlignment.CENTER)
-                  .border(BorderStyle.THIN)
-                  .numberFormat("0.000")
-                  .width(100);
+                .font("맑은 고딕", 10, FontStyle.NORMAL)
+                .fontColor(0, 0, 0)  // BLACK
+                .alignment(HorizontalAlignment.RIGHT, VerticalAlignment.CENTER)
+                .border(BorderStyle.THIN)
+                .numberFormat("0.000")
+                .width(100);
     }
 }

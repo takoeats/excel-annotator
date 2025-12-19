@@ -9,6 +9,7 @@ public interface StyleCondition {
 
     /**
      * 조건 평가
+     *
      * @param context 셀 컨텍스트
      * @return 조건 만족 시 true
      */
@@ -16,6 +17,7 @@ public interface StyleCondition {
 
     /**
      * AND 조건 결합
+     *
      * @param other 다른 조건
      * @return 결합된 조건
      */
@@ -25,6 +27,7 @@ public interface StyleCondition {
 
     /**
      * OR 조건 결합
+     *
      * @param other 다른 조건
      * @return 결합된 조건
      */
@@ -34,6 +37,7 @@ public interface StyleCondition {
 
     /**
      * NOT 조건
+     *
      * @return 반전된 조건
      */
     default StyleCondition negate() {

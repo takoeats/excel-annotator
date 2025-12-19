@@ -22,11 +22,11 @@ public class ExecutiveSummaryStyle extends CustomExcelCellStyle {
     @Override
     protected void configure(ExcelCellStyleConfigurer configurer) {
         configurer.backgroundColor(255, 215, 0)  // GOLD
-                  .font("맑은 고딕", 13, FontStyle.BOLD)
-                  .fontColor(0, 0, 0)  // BLACK
-                  .alignment(HorizontalAlignment.CENTER, VerticalAlignment.CENTER)
-                  .border(BorderStyle.THICK)
-                  .numberFormat("0.00%")
-                  .width(160);
+                .font("맑은 고딕", 13, FontStyle.BOLD)
+                .fontColor(0, 0, 0)  // BLACK
+                .alignment(HorizontalAlignment.CENTER, VerticalAlignment.CENTER)
+                .border(BorderStyle.THICK)
+                .numberFormat("0.00%")
+                .width(160);
     }
 }

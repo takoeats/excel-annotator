@@ -20,10 +20,10 @@ public class AutoWidthDataStyle extends CustomExcelCellStyle {
     @Override
     protected void configure(ExcelCellStyleConfigurer configurer) {
         configurer.backgroundColor(255, 255, 255)  // WHITE -> RGB
-                  .font("맑은 고딕", 10, FontStyle.NORMAL)
-                  .fontColor(0, 0, 0)  // BLACK -> RGB
-                  .alignment(HorizontalAlignment.RIGHT, VerticalAlignment.CENTER)
-                  .border(BorderStyle.THIN)
-                  .autoWidth();  // 자동 너비 조정
+                .font("맑은 고딕", 10, FontStyle.NORMAL)
+                .fontColor(0, 0, 0)  // BLACK -> RGB
+                .alignment(HorizontalAlignment.RIGHT, VerticalAlignment.CENTER)
+                .border(BorderStyle.THIN)
+                .autoWidth();  // 자동 너비 조정
     }
 }

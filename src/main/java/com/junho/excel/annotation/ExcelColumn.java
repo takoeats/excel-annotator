@@ -18,30 +18,35 @@ public @interface ExcelColumn {
 
     /**
      * 엑셀 컬럼 헤더명
+     *
      * @return 헤더명
      */
     String header() default "";
 
     /**
      * 컬럼 순서 (1부터 시작)
+     *
      * @return 순서
      */
     int order() default Integer.MAX_VALUE;
 
     /**
      * 컬럼 너비 (기본값: 100)
+     *
      * @return 너비
      */
     int width() default 100;
 
     /**
      * 데이터 포맷 (날짜, 숫자 등)
+     *
      * @return 포맷 문자열
      */
     String format() default "";
 
     /**
      * 컬럼을 엑셀 내보내기에서 제외할지 여부
+     *
      * @return true이면 제외
      */
     boolean exclude() default false;
@@ -49,6 +54,7 @@ public @interface ExcelColumn {
     /**
      * 이 컬럼이 속할 시트명 (Case 1: 단일 DTO에서 컬럼별 시트 분리)
      * <p>미지정 시 클래스 레벨 @ExcelSheet.value() 사용</p>
+     *
      * @return 시트명
      */
     String sheetName() default "";
@@ -57,12 +63,14 @@ public @interface ExcelColumn {
 
     /**
      * 헤더 스타일 클래스
+     *
      * @return 헤더 스타일 클래스
      */
     Class<? extends CustomExcelCellStyle> headerStyle() default DefaultHeaderStyle.class;
 
     /**
      * 컬럼 스타일 클래스
+     *
      * @return 컬럼 스타일 클래스
      */
     Class<? extends CustomExcelCellStyle> columnStyle() default DefaultColumnStyle.class;

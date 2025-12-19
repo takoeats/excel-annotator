@@ -19,11 +19,11 @@ public class CurrencyStyle extends CustomExcelCellStyle {
     @Override
     protected void configure(ExcelCellStyleConfigurer configurer) {
         configurer.backgroundColor(144, 238, 144)  // LIGHT_GREEN
-                  .font("맑은 고딕", 11, FontStyle.BOLD)
-                  .fontColor(0, 0, 0)  // BLACK
-                  .alignment(HorizontalAlignment.RIGHT, VerticalAlignment.CENTER)
-                  .border(BorderStyle.THIN)
-                  .numberFormat("₩#,##0")
-                  .width(120);
+                .font("맑은 고딕", 11, FontStyle.BOLD)
+                .fontColor(0, 0, 0)  // BLACK
+                .alignment(HorizontalAlignment.RIGHT, VerticalAlignment.CENTER)
+                .border(BorderStyle.THIN)
+                .numberFormat("₩#,##0")
+                .width(120);
     }
 }

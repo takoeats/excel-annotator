@@ -6,5 +6,5 @@ import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 @FunctionalInterface
 public interface WorkbookWriter {
 
-  void write(SXSSFWorkbook wb) throws ExcelExporterException;
+    void write(SXSSFWorkbook wb) throws ExcelExporterException;
 }

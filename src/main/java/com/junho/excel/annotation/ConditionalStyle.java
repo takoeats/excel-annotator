@@ -98,6 +98,7 @@ public @interface ConditionalStyle {
 
     /**
      * 조건 만족 시 적용할 스타일 클래스
+     *
      * @return 스타일 클래스
      */
     Class<? extends CustomExcelCellStyle> style() default DefaultColumnStyle.class;

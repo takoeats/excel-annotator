@@ -18,6 +18,7 @@ public class StyleRule implements Comparable<StyleRule> {
 
     /**
      * 규칙 평가
+     *
      * @param context 셀 컨텍스트
      * @return 조건 만족 시 true
      */

@@ -2,9 +2,9 @@ package com.junho.excel.example.style;
 
 import com.junho.excel.style.CustomExcelCellStyle;
 import com.junho.excel.style.ExcelCellStyleConfigurer;
+import com.junho.excel.style.FontStyle;
 import org.apache.poi.ss.usermodel.BorderStyle;
 import org.apache.poi.ss.usermodel.HorizontalAlignment;
-import com.junho.excel.style.FontStyle;
 import org.apache.poi.ss.usermodel.VerticalAlignment;
 
 /**
@@ -19,10 +19,10 @@ public class TableRowEvenStyle extends CustomExcelCellStyle {
     @Override
     protected void configure(ExcelCellStyleConfigurer configurer) {
         configurer.backgroundColor(192, 192, 192)
-                  .font("맑은 고딕", 10, FontStyle.NORMAL)
-                  .fontColor(0, 0, 0)
-                  .alignment(HorizontalAlignment.LEFT, VerticalAlignment.CENTER)
-                  .border(BorderStyle.THIN)
-                  .width(120);
+                .font("맑은 고딕", 10, FontStyle.NORMAL)
+                .fontColor(0, 0, 0)
+                .alignment(HorizontalAlignment.LEFT, VerticalAlignment.CENTER)
+                .border(BorderStyle.THIN)
+                .width(120);
     }
 }

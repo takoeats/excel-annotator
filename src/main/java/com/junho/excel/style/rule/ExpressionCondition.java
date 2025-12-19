@@ -15,6 +15,7 @@ public class ExpressionCondition implements StyleCondition {
 
     /**
      * 표현식 문자열로부터 조건 생성
+     *
      * @param expressionString 조건 표현식 (예: "value > 0 && value < 100")
      */
     public ExpressionCondition(String expressionString) {
@@ -23,6 +24,7 @@ public class ExpressionCondition implements StyleCondition {
 
     /**
      * 표현식 트리로부터 조건 생성
+     *
      * @param expressionTree 파싱된 표현식 트리
      */
     public ExpressionCondition(ExpressionNode expressionTree) {

@@ -19,10 +19,10 @@ public class ReadOnlyStyle extends CustomExcelCellStyle {
     @Override
     protected void configure(ExcelCellStyleConfigurer configurer) {
         configurer.backgroundColor(192, 192, 192)  // GREY_25_PERCENT
-                  .font("맑은 고딕", 10, FontStyle.NORMAL)
-                  .fontColor(51, 51, 51)  // GREY_80_PERCENT
-                  .alignment(HorizontalAlignment.LEFT, VerticalAlignment.CENTER)
-                  .border(BorderStyle.DOTTED)
-                  .width(120);
+                .font("맑은 고딕", 10, FontStyle.NORMAL)
+                .fontColor(51, 51, 51)  // GREY_80_PERCENT
+                .alignment(HorizontalAlignment.LEFT, VerticalAlignment.CENTER)
+                .border(BorderStyle.DOTTED)
+                .width(120);
     }
 }

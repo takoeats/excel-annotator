@@ -13,9 +13,9 @@ public class DefaultNumberStyle extends CustomExcelCellStyle {
     @Override
     protected void configure(ExcelCellStyleConfigurer configurer) {
         configurer.font("맑은 고딕", 10)
-                  .alignment(HorizontalAlignment.RIGHT)
-                  .numberFormat("#,##0_ ")
-                  .border(BorderStyle.THIN)
-                  .width(100);
+                .alignment(HorizontalAlignment.RIGHT)
+                .numberFormat("#,##0_ ")
+                .border(BorderStyle.THIN)
+                .width(100);
     }
 }

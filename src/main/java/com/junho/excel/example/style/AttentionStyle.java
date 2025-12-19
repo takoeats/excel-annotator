@@ -18,10 +18,10 @@ public class AttentionStyle extends CustomExcelCellStyle {
     @Override
     protected void configure(ExcelCellStyleConfigurer configurer) {
         configurer.backgroundColor(255, 160, 122)  // LIGHT_ORANGE -> RGB
-                  .font("맑은 고딕", 11, FontStyle.BOLD)
-                  .fontColor(0, 0, 139)  // DARK_BLUE -> RGB
-                  .alignment(HorizontalAlignment.CENTER, VerticalAlignment.CENTER)
-                  .border(BorderStyle.MEDIUM)
-                  .width(110);
+                .font("맑은 고딕", 11, FontStyle.BOLD)
+                .fontColor(0, 0, 139)  // DARK_BLUE -> RGB
+                .alignment(HorizontalAlignment.CENTER, VerticalAlignment.CENTER)
+                .border(BorderStyle.MEDIUM)
+                .width(110);
     }
 }

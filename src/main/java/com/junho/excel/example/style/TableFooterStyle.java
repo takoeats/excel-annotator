@@ -19,10 +19,10 @@ public class TableFooterStyle extends CustomExcelCellStyle {
     @Override
     protected void configure(ExcelCellStyleConfigurer configurer) {
         configurer.backgroundColor(173, 216, 230)  // LIGHT_BLUE
-                  .font("맑은 고딕", 11, FontStyle.BOLD)
-                  .fontColor(0, 0, 0)  // BLACK
-                  .alignment(HorizontalAlignment.CENTER, VerticalAlignment.CENTER)
-                  .border(BorderStyle.THICK)
-                  .width(120);
+                .font("맑은 고딕", 11, FontStyle.BOLD)
+                .fontColor(0, 0, 0)  // BLACK
+                .alignment(HorizontalAlignment.CENTER, VerticalAlignment.CENTER)
+                .border(BorderStyle.THICK)
+                .width(120);
     }
 }

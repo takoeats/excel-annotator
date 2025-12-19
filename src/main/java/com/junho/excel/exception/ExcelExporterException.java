@@ -57,7 +57,7 @@ public class ExcelExporterException extends RuntimeException {
      * 오류 코드와 상세 정보를 포함하는 생성자
      *
      * @param errorCode 오류 코드
-     * @param detail 추가 상세 정보
+     * @param detail    추가 상세 정보
      */
     public ExcelExporterException(ErrorCode errorCode, String detail) {
         super(errorCode.getFormattedMessage(detail));
@@ -69,7 +69,7 @@ public class ExcelExporterException extends RuntimeException {
      * 오류 코드와 원인 예외를 포함하는 생성자
      *
      * @param errorCode 오류 코드
-     * @param cause 원인 예외
+     * @param cause     원인 예외
      */
     public ExcelExporterException(ErrorCode errorCode, Throwable cause) {
         super(errorCode.getFormattedMessage(), cause);
@@ -81,8 +81,8 @@ public class ExcelExporterException extends RuntimeException {
      * 오류 코드, 상세 정보, 원인 예외를 모두 포함하는 생성자
      *
      * @param errorCode 오류 코드
-     * @param detail 추가 상세 정보
-     * @param cause 원인 예외
+     * @param detail    추가 상세 정보
+     * @param cause     원인 예외
      */
     public ExcelExporterException(ErrorCode errorCode, String detail, Throwable cause) {
         super(errorCode.getFormattedMessage(detail), cause);

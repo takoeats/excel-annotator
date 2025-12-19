@@ -2,9 +2,9 @@ package com.junho.excel.example.style;
 
 import com.junho.excel.style.CustomExcelCellStyle;
 import com.junho.excel.style.ExcelCellStyleConfigurer;
+import com.junho.excel.style.FontStyle;
 import org.apache.poi.ss.usermodel.BorderStyle;
 import org.apache.poi.ss.usermodel.HorizontalAlignment;
-import com.junho.excel.style.FontStyle;
 import org.apache.poi.ss.usermodel.VerticalAlignment;
 
 /**
@@ -33,10 +33,10 @@ public class LightPurpleColumnStyle extends CustomExcelCellStyle {
     @Override
     protected void configure(ExcelCellStyleConfigurer configurer) {
         configurer.backgroundColor(230, 230, 250)
-                  .font("맑은 고딕", 10, FontStyle.NORMAL)
-                  .fontColor(0, 0, 0)
-                  .alignment(HorizontalAlignment.LEFT, VerticalAlignment.CENTER)
-                  .border(BorderStyle.THIN)
-                  .width(90);
+                .font("맑은 고딕", 10, FontStyle.NORMAL)
+                .fontColor(0, 0, 0)
+                .alignment(HorizontalAlignment.LEFT, VerticalAlignment.CENTER)
+                .border(BorderStyle.THIN)
+                .width(90);
     }
 }

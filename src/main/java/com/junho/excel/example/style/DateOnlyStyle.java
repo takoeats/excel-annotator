@@ -18,11 +18,11 @@ public class DateOnlyStyle extends CustomExcelCellStyle {
     @Override
     protected void configure(ExcelCellStyleConfigurer configurer) {
         configurer.backgroundColor(255, 218, 185)  // LIGHT_ORANGE
-                  .font("맑은 고딕", 10, FontStyle.NORMAL)
-                  .fontColor(0, 0, 0)  // BLACK
-                  .alignment(HorizontalAlignment.CENTER, VerticalAlignment.CENTER)
-                  .border(BorderStyle.THIN)
-                  .numberFormat("yyyy-MM-dd")
-                  .width(110);
+                .font("맑은 고딕", 10, FontStyle.NORMAL)
+                .fontColor(0, 0, 0)  // BLACK
+                .alignment(HorizontalAlignment.CENTER, VerticalAlignment.CENTER)
+                .border(BorderStyle.THIN)
+                .numberFormat("yyyy-MM-dd")
+                .width(110);
     }
 }

@@ -21,10 +21,10 @@ public class SignatureStyle extends CustomExcelCellStyle {
     @Override
     protected void configure(ExcelCellStyleConfigurer configurer) {
         configurer.backgroundColor(175, 238, 238)  // PALE_BLUE
-                  .font("맑은 고딕", 11, FontStyle.BOLD)
-                  .fontColor(ExcelColors.blue())  // BLUE
-                  .alignment(HorizontalAlignment.CENTER, VerticalAlignment.CENTER)
-                  .border(BorderStyle.DOUBLE)
-                  .width(130);
+                .font("맑은 고딕", 11, FontStyle.BOLD)
+                .fontColor(ExcelColors.blue())  // BLUE
+                .alignment(HorizontalAlignment.CENTER, VerticalAlignment.CENTER)
+                .border(BorderStyle.DOUBLE)
+                .width(130);
     }
 }

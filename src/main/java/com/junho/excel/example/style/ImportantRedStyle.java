@@ -19,10 +19,10 @@ public class ImportantRedStyle extends CustomExcelCellStyle {
     @Override
     protected void configure(ExcelCellStyleConfigurer configurer) {
         configurer.backgroundColor(255, 0, 0)  // RED -> RGB
-                  .font("맑은 고딕", 14, FontStyle.BOLD)
-                  .fontColor(255, 255, 255)  // WHITE -> RGB
-                  .alignment(HorizontalAlignment.CENTER, VerticalAlignment.CENTER)
-                  .border(BorderStyle.THICK)
-                  .width(130);
+                .font("맑은 고딕", 14, FontStyle.BOLD)
+                .fontColor(255, 255, 255)  // WHITE -> RGB
+                .alignment(HorizontalAlignment.CENTER, VerticalAlignment.CENTER)
+                .border(BorderStyle.THICK)
+                .width(130);
     }
 }

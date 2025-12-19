@@ -13,8 +13,8 @@ public class DefaultColumnStyle extends CustomExcelCellStyle {
     @Override
     protected void configure(ExcelCellStyleConfigurer configurer) {
         configurer.font("맑은 고딕", 10)
-                  .alignment(HorizontalAlignment.LEFT)
-                  .border(BorderStyle.THIN)
-                  .width(100);
+                .alignment(HorizontalAlignment.LEFT)
+                .border(BorderStyle.THIN)
+                .width(100);
     }
 }

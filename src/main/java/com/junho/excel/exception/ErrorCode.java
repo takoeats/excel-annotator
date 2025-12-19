@@ -67,6 +67,7 @@ public enum ErrorCode {
 
     /**
      * 오류 코드와 메시지를 포함한 전체 메시지 반환
+     *
      * @return "[코드] 메시지" 형식의 문자열
      */
     public String getFormattedMessage() {
@@ -75,6 +76,7 @@ public enum ErrorCode {
 
     /**
      * 추가 상세 정보를 포함한 메시지 반환
+     *
      * @param detail 추가 상세 정보
      * @return "[코드] 메시지 - 상세정보" 형식의 문자열
      */

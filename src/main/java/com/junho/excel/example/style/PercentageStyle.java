@@ -18,11 +18,11 @@ public class PercentageStyle extends CustomExcelCellStyle {
     @Override
     protected void configure(ExcelCellStyleConfigurer configurer) {
         configurer.backgroundColor(173, 216, 230)  // LIGHT_BLUE
-                  .font("맑은 고딕", 10, FontStyle.NORMAL)
-                  .fontColor(0, 0, 0)  // BLACK
-                  .alignment(HorizontalAlignment.CENTER, VerticalAlignment.CENTER)
-                  .border(BorderStyle.THIN)
-                  .numberFormat("0.00%")
-                  .width(90);
+                .font("맑은 고딕", 10, FontStyle.NORMAL)
+                .fontColor(0, 0, 0)  // BLACK
+                .alignment(HorizontalAlignment.CENTER, VerticalAlignment.CENTER)
+                .border(BorderStyle.THIN)
+                .numberFormat("0.00%")
+                .width(90);
     }
 }

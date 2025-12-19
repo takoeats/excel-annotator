@@ -4,11 +4,11 @@ import com.junho.excel.style.rule.node.BinaryOpNode;
 import com.junho.excel.style.rule.node.ExpressionNode;
 import com.junho.excel.style.rule.node.LeafNode;
 import com.junho.excel.style.rule.node.UnaryOpNode;
-import java.util.Objects;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -50,6 +50,7 @@ public class ExpressionParser {
 
     /**
      * 표현식 문자열을 파싱하여 트리 구조로 변환합니다.
+     *
      * @param expression 표현식 문자열
      * @return 파싱된 표현식 트리
      * @throws com.junho.excel.exception.ExcelExporterException 파싱 실패 시
@@ -57,8 +58,8 @@ public class ExpressionParser {
     public static ExpressionNode parseToTree(String expression) {
         if (expression == null || expression.trim().isEmpty()) {
             throw new com.junho.excel.exception.ExcelExporterException(
-                com.junho.excel.exception.ErrorCode.EXPRESSION_PARSE_FAILED,
-                "표현식은 null이거나 빈 문자열일 수 없습니다"
+                    com.junho.excel.exception.ErrorCode.EXPRESSION_PARSE_FAILED,
+                    "표현식은 null이거나 빈 문자열일 수 없습니다"
             );
         }
 
@@ -70,9 +71,9 @@ public class ExpressionParser {
             throw e;
         } catch (Exception e) {
             throw new com.junho.excel.exception.ExcelExporterException(
-                com.junho.excel.exception.ErrorCode.EXPRESSION_PARSE_FAILED,
-                "표현식 파싱 실패: " + expression,
-                e
+                    com.junho.excel.exception.ErrorCode.EXPRESSION_PARSE_FAILED,
+                    "표현식 파싱 실패: " + expression,
+                    e
             );
         }
     }
@@ -85,8 +86,8 @@ public class ExpressionParser {
         ExpressionNode left = parseXorExpression(tokenizer);
 
         while (tokenizer.peek() != null && Objects
-            .requireNonNull(tokenizer.peek())
-            .equals("||")) {
+                .requireNonNull(tokenizer.peek())
+                .equals("||")) {
             tokenizer.consume("||");
             ExpressionNode right = parseXorExpression(tokenizer);
             left = new BinaryOpNode(ExpressionNode.LogicalOperator.OR, left, right);
@@ -103,8 +104,8 @@ public class ExpressionParser {
         ExpressionNode left = parseAndExpression(tokenizer);
 
         while (tokenizer.peek() != null && Objects
-            .requireNonNull(tokenizer.peek())
-            .equals("^")) {
+                .requireNonNull(tokenizer.peek())
+                .equals("^")) {
             tokenizer.consume("^");
             ExpressionNode right = parseAndExpression(tokenizer);
             left = new BinaryOpNode(ExpressionNode.LogicalOperator.XOR, left, right);
@@ -121,8 +122,8 @@ public class ExpressionParser {
         ExpressionNode left = parseUnaryExpression(tokenizer);
 
         while (tokenizer.peek() != null && Objects
-            .requireNonNull(tokenizer.peek())
-            .equals("&&")) {
+                .requireNonNull(tokenizer.peek())
+                .equals("&&")) {
             tokenizer.consume("&&");
             ExpressionNode right = parseUnaryExpression(tokenizer);
             left = new BinaryOpNode(ExpressionNode.LogicalOperator.AND, left, right);
@@ -137,8 +138,8 @@ public class ExpressionParser {
      */
     private static ExpressionNode parseUnaryExpression(Tokenizer tokenizer) {
         if (tokenizer.peek() != null && Objects
-            .requireNonNull(tokenizer.peek())
-            .equals("!")) {
+                .requireNonNull(tokenizer.peek())
+                .equals("!")) {
             tokenizer.consume("!");
             ExpressionNode operand = parseUnaryExpression(tokenizer);
             return new UnaryOpNode(ExpressionNode.LogicalOperator.NOT, operand);
@@ -153,8 +154,8 @@ public class ExpressionParser {
      */
     private static ExpressionNode parsePrimaryExpression(Tokenizer tokenizer) {
         if (tokenizer.peek() != null && Objects
-            .requireNonNull(tokenizer.peek())
-            .equals("(")) {
+                .requireNonNull(tokenizer.peek())
+                .equals("(")) {
             tokenizer.consume("(");
             ExpressionNode expr = parseOrExpression(tokenizer);
             tokenizer.consume(")");
@@ -204,8 +205,8 @@ public class ExpressionParser {
         }
 
         throw new com.junho.excel.exception.ExcelExporterException(
-            com.junho.excel.exception.ErrorCode.EXPRESSION_PARSE_FAILED,
-            "잘못된 조건 형식: " + condition
+                com.junho.excel.exception.ErrorCode.EXPRESSION_PARSE_FAILED,
+                "잘못된 조건 형식: " + condition
         );
     }
 
@@ -254,8 +255,8 @@ public class ExpressionParser {
                 break;
             default:
                 throw new com.junho.excel.exception.ExcelExporterException(
-                    com.junho.excel.exception.ErrorCode.EXPRESSION_PARSE_FAILED,
-                    "알 수 없는 문자열 연산: " + operation
+                        com.junho.excel.exception.ErrorCode.EXPRESSION_PARSE_FAILED,
+                        "알 수 없는 문자열 연산: " + operation
                 );
         }
 
@@ -293,8 +294,8 @@ public class ExpressionParser {
                 break;
             default:
                 throw new com.junho.excel.exception.ExcelExporterException(
-                    com.junho.excel.exception.ErrorCode.EXPRESSION_PARSE_FAILED,
-                    "알 수 없는 특수 조건: " + condition
+                        com.junho.excel.exception.ErrorCode.EXPRESSION_PARSE_FAILED,
+                        "알 수 없는 특수 조건: " + condition
                 );
         }
 
@@ -319,8 +320,8 @@ public class ExpressionParser {
                 return ExpressionType.NOT_EQUALS;
             default:
                 throw new com.junho.excel.exception.ExcelExporterException(
-                    com.junho.excel.exception.ErrorCode.EXPRESSION_PARSE_FAILED,
-                    "알 수 없는 연산자: " + operator
+                        com.junho.excel.exception.ErrorCode.EXPRESSION_PARSE_FAILED,
+                        "알 수 없는 연산자: " + operator
                 );
         }
     }
@@ -362,8 +363,8 @@ public class ExpressionParser {
             String actual = peek();
             if (actual == null || !actual.equals(expected)) {
                 throw new com.junho.excel.exception.ExcelExporterException(
-                    com.junho.excel.exception.ErrorCode.EXPRESSION_PARSE_FAILED,
-                    "'" + expected + "'을(를) 기대했지만 '" + actual + "'을(를) 받았습니다"
+                        com.junho.excel.exception.ErrorCode.EXPRESSION_PARSE_FAILED,
+                        "'" + expected + "'을(를) 기대했지만 '" + actual + "'을(를) 받았습니다"
                 );
             }
 

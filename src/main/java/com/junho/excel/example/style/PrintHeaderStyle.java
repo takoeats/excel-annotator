@@ -21,10 +21,10 @@ public class PrintHeaderStyle extends CustomExcelCellStyle {
     @Override
     protected void configure(ExcelCellStyleConfigurer configurer) {
         configurer.backgroundColor(0, 0, 0)  // BLACK
-                  .font("맑은 고딕", 14, FontStyle.BOLD)
-                  .fontColor(255, 255, 255)  // WHITE
-                  .alignment(HorizontalAlignment.CENTER, VerticalAlignment.CENTER)
-                  .border(BorderStyle.THICK)
-                  .width(150);
+                .font("맑은 고딕", 14, FontStyle.BOLD)
+                .fontColor(255, 255, 255)  // WHITE
+                .alignment(HorizontalAlignment.CENTER, VerticalAlignment.CENTER)
+                .border(BorderStyle.THICK)
+                .width(150);
     }
 }

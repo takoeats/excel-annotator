@@ -13,16 +13,22 @@ public abstract class CustomExcelCellStyle {
 
     private final AtomicReference<ExcelCellStyleConfigurer> configurerRef = new AtomicReference<>();
 
-    /** 하위 클래스에서 스타일 설정 */
+    /**
+     * 하위 클래스에서 스타일 설정
+     */
     protected abstract void configure(ExcelCellStyleConfigurer configurer);
 
-    /** Workbook을 전달받는 apply 메서드 */
+    /**
+     * Workbook을 전달받는 apply 메서드
+     */
     public void apply(CellStyle cellStyle, Workbook workbook) {
         ExcelCellStyleConfigurer configurer = getOrCreateConfigurer();
         configurer.configure(cellStyle, workbook);
     }
 
-    /** Thread-safe configurer 인스턴스 반환 (CAS 기반) */
+    /**
+     * Thread-safe configurer 인스턴스 반환 (CAS 기반)
+     */
     private ExcelCellStyleConfigurer getOrCreateConfigurer() {
         ExcelCellStyleConfigurer configurer = configurerRef.get();
         if (configurer == null) {
@@ -58,6 +64,7 @@ public abstract class CustomExcelCellStyle {
     /**
      * 데이터 포맷 반환
      * <p>스타일에서 정의된 포맷 문자열 반환 (예: "#,##0.00", "yyyy-MM-dd")</p>
+     *
      * @return 포맷 문자열 (미정의 시 "General")
      */
     public String getDataFormat() {

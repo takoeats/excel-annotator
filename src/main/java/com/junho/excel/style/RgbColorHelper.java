@@ -43,20 +43,20 @@ public final class RgbColorHelper {
     public static void validateRgb(int red, int green, int blue) {
         if (red < 0 || red > 255) {
             throw new ExcelExporterException(
-                ErrorCode.INVALID_RGB_VALUE,
-                String.format("Red 값이 유효 범위를 벗어났습니다: %d (0-255 범위 필요)", red)
+                    ErrorCode.INVALID_RGB_VALUE,
+                    String.format("Red 값이 유효 범위를 벗어났습니다: %d (0-255 범위 필요)", red)
             );
         }
         if (green < 0 || green > 255) {
             throw new ExcelExporterException(
-                ErrorCode.INVALID_RGB_VALUE,
-                String.format("Green 값이 유효 범위를 벗어났습니다: %d (0-255 범위 필요)", green)
+                    ErrorCode.INVALID_RGB_VALUE,
+                    String.format("Green 값이 유효 범위를 벗어났습니다: %d (0-255 범위 필요)", green)
             );
         }
         if (blue < 0 || blue > 255) {
             throw new ExcelExporterException(
-                ErrorCode.INVALID_RGB_VALUE,
-                String.format("Blue 값이 유효 범위를 벗어났습니다: %d (0-255 범위 필요)", blue)
+                    ErrorCode.INVALID_RGB_VALUE,
+                    String.format("Blue 값이 유효 범위를 벗어났습니다: %d (0-255 범위 필요)", blue)
             );
         }
     }
@@ -75,9 +75,9 @@ public final class RgbColorHelper {
     public static XSSFColor createRgbColor(int red, int green, int blue) {
         validateRgb(red, green, blue);
         return new XSSFColor(new byte[]{
-            (byte) red,
-            (byte) green,
-            (byte) blue
+                (byte) red,
+                (byte) green,
+                (byte) blue
         }, null);
     }
 }

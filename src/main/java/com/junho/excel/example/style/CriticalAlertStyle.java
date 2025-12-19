@@ -2,9 +2,9 @@ package com.junho.excel.example.style;
 
 import com.junho.excel.style.CustomExcelCellStyle;
 import com.junho.excel.style.ExcelCellStyleConfigurer;
+import com.junho.excel.style.FontStyle;
 import org.apache.poi.ss.usermodel.BorderStyle;
 import org.apache.poi.ss.usermodel.HorizontalAlignment;
-import com.junho.excel.style.FontStyle;
 import org.apache.poi.ss.usermodel.VerticalAlignment;
 
 /**
@@ -33,10 +33,10 @@ public class CriticalAlertStyle extends CustomExcelCellStyle {
     @Override
     protected void configure(ExcelCellStyleConfigurer configurer) {
         configurer.backgroundColor(255, 192, 203)
-                  .font("맑은 고딕", 12, FontStyle.BOLD)
-                  .fontColor(0, 0, 0)
-                  .alignment(HorizontalAlignment.CENTER, VerticalAlignment.CENTER)
-                  .border(BorderStyle.DASHED)
-                  .width(120);
+                .font("맑은 고딕", 12, FontStyle.BOLD)
+                .fontColor(0, 0, 0)
+                .alignment(HorizontalAlignment.CENTER, VerticalAlignment.CENTER)
+                .border(BorderStyle.DASHED)
+                .width(120);
     }
 }

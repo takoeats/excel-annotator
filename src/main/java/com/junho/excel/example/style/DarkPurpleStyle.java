@@ -19,10 +19,10 @@ public class DarkPurpleStyle extends CustomExcelCellStyle {
     @Override
     protected void configure(ExcelCellStyleConfigurer configurer) {
         configurer.backgroundColor(221, 160, 221)  // PLUM
-                  .font("맑은 고딕", 12, FontStyle.BOLD)
-                  .fontColor(255, 255, 255)  // WHITE
-                  .alignment(HorizontalAlignment.CENTER, VerticalAlignment.CENTER)
-                  .border(BorderStyle.DOUBLE)
-                  .width(110);
+                .font("맑은 고딕", 12, FontStyle.BOLD)
+                .fontColor(255, 255, 255)  // WHITE
+                .alignment(HorizontalAlignment.CENTER, VerticalAlignment.CENTER)
+                .border(BorderStyle.DOUBLE)
+                .width(110);
     }
 }

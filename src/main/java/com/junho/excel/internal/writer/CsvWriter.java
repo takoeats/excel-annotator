@@ -73,7 +73,7 @@ public final class CsvWriter {
     }
 
     private <T> void writeDataRows(BufferedWriter writer, Iterator<T> iterator,
-                                    List<Function<T, Object>> extractors) throws IOException {
+                                   List<Function<T, Object>> extractors) throws IOException {
         while (iterator.hasNext()) {
             T data = iterator.next();
             String rowLine = extractors.stream()

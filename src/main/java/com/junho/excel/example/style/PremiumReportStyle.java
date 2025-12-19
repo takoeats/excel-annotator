@@ -22,11 +22,11 @@ public class PremiumReportStyle extends CustomExcelCellStyle {
     @Override
     protected void configure(ExcelCellStyleConfigurer configurer) {
         configurer.backgroundColor(0, 0, 139)  // DARK_BLUE
-                  .font("맑은 고딕", 11, FontStyle.BOLD)
-                  .fontColor(255, 255, 255)  // WHITE
-                  .alignment(HorizontalAlignment.RIGHT, VerticalAlignment.CENTER)
-                  .border(BorderStyle.THICK)
-                  .numberFormat("#,##0.000")
-                  .width(140);
+                .font("맑은 고딕", 11, FontStyle.BOLD)
+                .fontColor(255, 255, 255)  // WHITE
+                .alignment(HorizontalAlignment.RIGHT, VerticalAlignment.CENTER)
+                .border(BorderStyle.THICK)
+                .numberFormat("#,##0.000")
+                .width(140);
     }
 }
