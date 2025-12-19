@@ -68,7 +68,7 @@ public void downloadExcel(HttpServletResponse response) {
 }
 ```
 
-**Done!** 🎉 The browser downloads `customers_20250108_143025.xlsx`.
+**Done!** 🎉 The browser downloads `customers.xlsx`.
 
 ---
 
@@ -147,7 +147,7 @@ public class ExcelController {
 
         // Download immediately in browser
         ExcelExporter.excelFromList(response, "customers.xlsx", customers);
-        // Actual download: customers_20250108_143025.xlsx
+        // Actual download: customers.xlsx (explicit filename - no timestamp)
     }
 }
 ```
@@ -160,19 +160,19 @@ try (FileOutputStream fos = new FileOutputStream("output.xlsx")) {
     List<CustomerDTO> customers = customerService.getCustomers();
     String fileName = ExcelExporter.excelFromList(fos, "customers.xlsx", customers);
     System.out.println("Created: " + fileName);
-    // Output: Created: customers_20250108_143025.xlsx
+    // Output: Created: customers.xlsx (explicit filename - no timestamp)
 }
 ```
 
 #### 1-3. Auto-generated Filename
 
 ```java
-// Auto-generates "excel_yyyyMMdd_HHmmss.xlsx" if filename omitted
+// Auto-generates "download_yyyyMMdd_HHmmss.xlsx" if filename omitted
 try (FileOutputStream fos = new FileOutputStream("output.xlsx")) {
     List<CustomerDTO> customers = customerService.getCustomers();
     String fileName = ExcelExporter.excelFromList(fos, customers);
     System.out.println("Created: " + fileName);
-    // Output: Created: excel_20250108_143025.xlsx
+    // Output: Created: download_20250108_143025.xlsx
 }
 ```
 
@@ -475,7 +475,7 @@ try (FileOutputStream fos = new FileOutputStream("customers.xlsx");
 
     String fileName = ExcelExporter.excelFromStream(fos, stream);
     System.out.println("Large file created: " + fileName);
-    // Output: Large file created: excel_20250108_143025.xlsx
+    // Output: Large file created: download_20250108_143025.xlsx
 }
 ```
 
@@ -542,7 +542,7 @@ public void downloadCustomersAsCsv(HttpServletResponse response) {
 
     // CSV download (uses same DTO as Excel)
     ExcelExporter.csvFromList(response, "customers.csv", customers);
-    // Actual download: customers_20250108_143025.csv
+    // Actual download: customers.csv (explicit filename - no timestamp)
 }
 ```
 
@@ -752,13 +752,22 @@ public class ReferenceDTO { ... }
 - **> 10K rows**: `excelFromStream()` (memory efficient)
 - **> 1M rows**: `excelFromStream()` required (List has 1M limit)
 
-### Q2: Why is a timestamp automatically added to filenames?
+### Q2: When is a timestamp added to filenames?
 
-**A:** Prevents filename collisions and enables history tracking.
+**A:** Timestamps are **only added to default filenames** to prevent collisions.
 
 ```java
+// Explicit filename → no timestamp
 ExcelExporter.excelFromList(response, "report.xlsx", data);
-// Actual download: report_20250108_143025.xlsx
+// Actual download: report.xlsx
+
+// Default filename → timestamp added
+ExcelExporter.excelFromList(outputStream, data);  // or "download"
+// Result: download_20250119_143025.xlsx
+
+// Already has timestamp pattern → no duplicate
+ExcelExporter.excelFromList(response, "report_20251219_132153.xlsx", data);
+// Actual download: report_20251219_132153.xlsx
 ```
 
 ### Q3: How does conditional style priority work?

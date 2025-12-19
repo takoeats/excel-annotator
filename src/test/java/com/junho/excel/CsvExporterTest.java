@@ -34,8 +34,7 @@ class CsvExporterTest {
         String returnedName = ExcelExporter.csvFromList(baos, "report.csv", list);
 
         assertNotNull(returnedName);
-        assertTrue(returnedName.startsWith("report_"));
-        assertTrue(returnedName.endsWith(".csv"));
+        assertEquals("report.csv", returnedName);
 
         String csv = readCsvWithoutBom(baos.toByteArray());
         String[] lines = csv.split("\r\n");
@@ -56,8 +55,7 @@ class CsvExporterTest {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         String returnedName = ExcelExporter.csvFromStream(baos, "stream.csv", stream);
 
-        assertTrue(returnedName.startsWith("stream_"));
-        assertTrue(returnedName.endsWith(".csv"));
+        assertEquals("stream.csv", returnedName);
 
         String csv = readCsvWithoutBom(baos.toByteArray());
         String[] lines = csv.split("\r\n");
@@ -177,8 +175,7 @@ class CsvExporterTest {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         String returnedName = ExcelExporter.csvFromList(baos, "noExtension", list);
 
-        assertTrue(returnedName.endsWith(".csv"));
-        assertTrue(returnedName.contains("noExtension_"));
+        assertEquals("noExtension.csv", returnedName);
     }
 
     @Test
@@ -190,8 +187,7 @@ class CsvExporterTest {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         String returnedName = ExcelExporter.csvFromList(baos, "report.xlsx", list);
 
-        assertTrue(returnedName.endsWith(".csv"));
-        assertTrue(returnedName.startsWith("report_"));
+        assertEquals("report.csv", returnedName);
     }
 
     @Test

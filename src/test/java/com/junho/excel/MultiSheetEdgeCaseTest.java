@@ -71,7 +71,7 @@ class MultiSheetEdgeCaseTest {
     String fileName = ExcelExporter.excelFromList(baos, "test.xlsx", sheetData);
 
     assertNotNull(fileName);
-    assertTrue(fileName.contains("test_"));
+    assertEquals("test.xlsx", fileName);
 
     Workbook wb = WorkbookFactory.create(new ByteArrayInputStream(baos.toByteArray()));
     assertEquals(1, wb.getNumberOfSheets());

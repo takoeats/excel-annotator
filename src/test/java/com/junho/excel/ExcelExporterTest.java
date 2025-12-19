@@ -30,7 +30,7 @@ import org.junit.jupiter.api.Test;
 class ExcelExporterTest {
 
   @Test
-  void excelFromList_withExplicitFileName_writesWorkbookAndReturnsSanitizedName() throws Exception {
+  void excelFromList_withExplicitFileName_writesWorkbookWithoutTimestamp() throws Exception {
     List<PersonDTO> list = Arrays.asList(
         new PersonDTO("Alice", 30, new BigDecimal("123.45")),
         new PersonDTO("Bob", 40, new BigDecimal("67.89"))
@@ -39,8 +39,7 @@ class ExcelExporterTest {
     ByteArrayOutputStream baos = new ByteArrayOutputStream();
     String returnedName = ExcelExporter.excelFromList(baos, "report.xlsx", list);
     assertNotNull(returnedName);
-    assertTrue(returnedName.startsWith("report_"));
-    assertTrue(returnedName.endsWith(".xlsx"));
+    assertEquals("report.xlsx", returnedName);
 
     byte[] bytes = baos.toByteArray();
     assertTrue(bytes.length > 0);
@@ -59,13 +58,13 @@ class ExcelExporterTest {
   }
 
   @Test
-  void excelFromList_withDefaultFileName_returnsExcelPrefix() {
+  void excelFromList_withDefaultFileName_returnsDownloadPrefix() {
     List<PersonDTO> list = Collections.singletonList(
         new PersonDTO("A", 1, new BigDecimal("1.00"))
     );
     ByteArrayOutputStream baos = new ByteArrayOutputStream();
     String returnedName = ExcelExporter.excelFromList(baos, list);
-    assertTrue(returnedName.startsWith("Excel_"));
+    assertTrue(returnedName.startsWith("download_"));
     assertTrue(returnedName.endsWith(".xlsx"));
     assertTrue(baos.toByteArray().length > 0);
   }
@@ -78,8 +77,7 @@ class ExcelExporterTest {
 
     ByteArrayOutputStream baos = new ByteArrayOutputStream();
     String returnedName = ExcelExporter.excelFromStream(baos, "s.xlsx", stream);
-    assertTrue(returnedName.startsWith("s_"));
-    assertTrue(returnedName.endsWith(".xlsx"));
+    assertEquals("s.xlsx", returnedName);
 
     Workbook wb = WorkbookFactory.create(new ByteArrayInputStream(baos.toByteArray()));
     assertEquals(1, wb.getNumberOfSheets());
@@ -99,8 +97,7 @@ class ExcelExporterTest {
 
     ByteArrayOutputStream baos = new ByteArrayOutputStream();
     String name = ExcelExporter.excelFromList(baos, "consolidated.xlsx", map);
-    assertTrue(name.startsWith("consolidated_"));
-    assertTrue(name.endsWith(".xlsx"));
+    assertEquals("consolidated.xlsx", name);
 
     Workbook wb = WorkbookFactory.create(new ByteArrayInputStream(baos.toByteArray()));
     assertEquals(1, wb.getNumberOfSheets());
@@ -151,7 +148,7 @@ class ExcelExporterTest {
 
     ByteArrayOutputStream baos = new ByteArrayOutputStream();
     String name = ExcelExporter.excelFromList(baos, "conflict.xlsx", map);
-    assertTrue(name.startsWith("conflict_"));
+    assertEquals("conflict.xlsx", name);
 
     Workbook wb = WorkbookFactory.create(new ByteArrayInputStream(baos.toByteArray()));
     assertEquals(1, wb.getNumberOfSheets());
@@ -235,6 +232,39 @@ class ExcelExporterTest {
     assertTrue(exception
         .getMessage()
         .contains("Stream API"));
+  }
+
+  @Test
+  void excelFromList_withTimestampPattern_doesNotAddDuplicateTimestamp() {
+    List<PersonDTO> list = Collections.singletonList(
+        new PersonDTO("Test", 1, new BigDecimal("1.00"))
+    );
+    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+    String returnedName = ExcelExporter.excelFromList(baos, "report_20251219_132153.xlsx", list);
+    assertEquals("report_20251219_132153.xlsx", returnedName);
+    assertTrue(baos.toByteArray().length > 0);
+  }
+
+  @Test
+  void excelFromList_withTimestampPatternNoExtension_doesNotAddDuplicateTimestamp() {
+    List<PersonDTO> list = Collections.singletonList(
+        new PersonDTO("Test", 1, new BigDecimal("1.00"))
+    );
+    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+    String returnedName = ExcelExporter.excelFromList(baos, "report_20251219_132153", list);
+    assertEquals("report_20251219_132153.xlsx", returnedName);
+    assertTrue(baos.toByteArray().length > 0);
+  }
+
+  @Test
+  void excelFromStream_withTimestampPattern_doesNotAddDuplicateTimestamp() {
+    Stream<PersonDTO> stream = Stream.of(
+        new PersonDTO("Test", 1, new BigDecimal("1.00"))
+    );
+    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+    String returnedName = ExcelExporter.excelFromStream(baos, "data_20251219_132153.xlsx", stream);
+    assertEquals("data_20251219_132153.xlsx", returnedName);
+    assertTrue(baos.toByteArray().length > 0);
   }
 
 }

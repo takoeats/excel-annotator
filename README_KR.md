@@ -56,7 +56,7 @@ public void downloadExcel(HttpServletResponse response) {
 }
 ```
 
-**끝!** 🎉 브라우저에서 `고객목록_20250108_143025.xlsx` 파일이 다운로드됩니다.
+**끝!** 🎉 브라우저에서 `고객목록.xlsx` 파일이 다운로드됩니다.
 
 ---
 
@@ -134,7 +134,7 @@ public class ExcelController {
 
         // 브라우저에서 즉시 다운로드
         ExcelExporter.excelFromList(response, "고객목록.xlsx", customers);
-        // 실제 다운로드: 고객목록_20250108_143025.xlsx
+        // 실제 다운로드: 고객목록.xlsx (명시적 파일명 - 타임스탬프 없음)
     }
 }
 ```
@@ -146,18 +146,18 @@ try (FileOutputStream fos = new FileOutputStream("output.xlsx")) {
     List<CustomerDTO> customers = customerService.getCustomers();
     String fileName = ExcelExporter.excelFromList(fos, "고객목록.xlsx", customers);
     System.out.println("생성 완료: " + fileName);
-    // 출력: 생성 완료: 고객목록_20250108_143025.xlsx
+    // 출력: 생성 완료: 고객목록.xlsx (명시적 파일명 - 타임스탬프 없음)
 }
 ```
 
 #### 1-3. 파일명 자동 생성
 ```java
-// 파일명 생략 시 "excel_yyyyMMdd_HHmmss.xlsx" 자동 생성
+// 파일명 생략 시 "download_yyyyMMdd_HHmmss.xlsx" 자동 생성
 try (FileOutputStream fos = new FileOutputStream("output.xlsx")) {
     List<CustomerDTO> customers = customerService.getCustomers();
     String fileName = ExcelExporter.excelFromList(fos, customers);
     System.out.println("생성 완료: " + fileName);
-    // 출력: 생성 완료: excel_20250108_143025.xlsx
+    // 출력: 생성 완료: download_20250108_143025.xlsx
 }
 ```
 
@@ -460,7 +460,7 @@ try (FileOutputStream fos = new FileOutputStream("customers.xlsx");
 
     String fileName = ExcelExporter.excelFromStream(fos, stream);
     System.out.println("대용량 파일 생성: " + fileName);
-    // 출력: 대용량 파일 생성: excel_20250108_143025.xlsx
+    // 출력: 대용량 파일 생성: download_20250108_143025.xlsx
 }
 ```
 
@@ -527,7 +527,7 @@ public void downloadCustomersAsCsv(HttpServletResponse response) {
 
     // CSV 다운로드 (Excel과 동일한 DTO 사용)
     ExcelExporter.csvFromList(response, "고객목록.csv", customers);
-    // 실제 다운로드: 고객목록_20250108_143025.csv
+    // 실제 다운로드: 고객목록.csv (명시적 파일명 - 타임스탬프 없음)
 }
 ```
 
@@ -734,13 +734,22 @@ public class ReferenceDTO { ... }
 - **1만 건 초과**: `excelFromStream()` (메모리 효율)
 - **100만 건 초과**: `excelFromStream()` 필수 (List는 1M 제한)
 
-### Q2: 파일명에 타임스탬프가 자동으로 추가되는 이유는?
+### Q2: 파일명에 타임스탬프는 언제 추가되나요?
 
-**A:** 파일명 충돌 방지 및 이력 추적을 위해 자동 추가됩니다.
+**A:** **기본 파일명에만** 충돌 방지를 위해 타임스탬프가 추가됩니다.
 
 ```java
+// 명시적 파일명 → 타임스탬프 없음
 ExcelExporter.excelFromList(response, "report.xlsx", data);
-// 실제 다운로드: report_20250108_143025.xlsx
+// 실제 다운로드: report.xlsx
+
+// 기본 파일명 → 타임스탬프 추가
+ExcelExporter.excelFromList(outputStream, data);  // 또는 "download"
+// 결과: download_20250119_143025.xlsx
+
+// 이미 타임스탬프 패턴 존재 → 중복 추가 안 함
+ExcelExporter.excelFromList(response, "report_20251219_132153.xlsx", data);
+// 실제 다운로드: report_20251219_132153.xlsx
 ```
 
 ### Q3: 조건부 스타일 우선순위는 어떻게 동작하나요?

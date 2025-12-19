@@ -33,8 +33,9 @@ import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 public final class ExcelExporter {
 
   private static final String XLSX = ".xlsx";
-  private static final String DEFAULT_FILE_NAME = "Excel";
+  private static final String DEFAULT_FILE_NAME = "download";
   private static final int MAX_ROWS_FOR_LIST_API = 1000000;
+  private static final Pattern TIMESTAMP_PATTERN = Pattern.compile(".*_\\d{8}_\\d{6}.*");
 
   private ExcelExporter() {
     throw new AssertionError("Utility class cannot be instantiated");
@@ -105,18 +106,18 @@ public final class ExcelExporter {
   /**
    * 어노테이션 기반 Excel 파일을 OutputStream에 작성 (기본 파일명)
    * <p>데이터 리스트를 Excel 파일로 변환하여 제공된 OutputStream에 출력합니다.</p>
-   * <p>파일명이 지정되지 않으면 "Excel_타임스탬프.xlsx" 형식으로 생성됩니다.</p>
+   * <p>파일명이 지정되지 않으면 "download_타임스탬프.xlsx" 형식으로 생성됩니다.</p>
    *
    * <h3>사용 예시</h3>
    * <pre>{@code
    * String fileName = ExcelExporter.excelFromList(fos, customers);
-   * // fileName: "Excel_20250119_135348.xlsx"
+   * // fileName: "download_20250119_135348.xlsx"
    * }</pre>
    *
    * @param <T>          Excel DTO 타입 (반드시 @ExcelSheet와 @ExcelColumn 어노테이션 필요)
    * @param outputStream Excel 데이터가 출력될 스트림 (호출자가 스트림 닫기 책임)
    * @param data         Excel로 변환할 데이터 리스트
-   * @return 생성된 파일명 (Excel_타임스탬프.xlsx)
+   * @return 생성된 파일명 (download_타임스탬프.xlsx)
    * @throws ExcelExporterException 데이터가 null이거나 비어있을 경우, 또는 Excel 생성 중 오류 발생 시
    */
   public static <T> String excelFromList(OutputStream outputStream, List<T> data) {
@@ -158,19 +159,19 @@ public final class ExcelExporter {
   /**
    * 어노테이션 기반 Excel 파일을 OutputStream에 작성 (Stream 기반, 기본 파일명)
    * <p>Stream API를 사용하여 데이터를 한 번에 하나씩 처리합니다.</p>
-   * <p>파일명이 지정되지 않으면 "Excel_타임스탬프.xlsx" 형식으로 생성됩니다.</p>
+   * <p>파일명이 지정되지 않으면 "download_타임스탬프.xlsx" 형식으로 생성됩니다.</p>
    *
    * <h3>사용 예시</h3>
    * <pre>{@code
    * Stream<CustomerDTO> dataStream = customerRepository.streamAllCustomers();
    * String fileName = ExcelExporter.excelFromStream(fos, dataStream, CustomerDTO.class);
-   * // fileName: "Excel_20250119_135348.xlsx"
+   * // fileName: "download_20250119_135348.xlsx"
    * }</pre>
    *
    * @param <T>          Excel DTO 타입 (반드시 @ExcelSheet와 @ExcelColumn 어노테이션 필요)
    * @param outputStream Excel 데이터가 출력될 스트림 (호출자가 스트림 닫기 책임)
    * @param dataStream   Excel로 변환할 데이터 스트림
-   * @return 생성된 파일명 (Excel_타임스탬프.xlsx)
+   * @return 생성된 파일명 (download_타임스탬프.xlsx)
    * @throws ExcelExporterException Excel 생성 중 오류 발생 시
    */
   public static <T> String excelFromStream(OutputStream outputStream, Stream<T> dataStream) {
@@ -263,24 +264,43 @@ public final class ExcelExporter {
         outputStream -> writeWorkbookToStream(outputStream, dataStream));
   }
 
-  // 확장자 처리: 엑셀 확장자나 확장자 없으면 .xlsx, 그 외는 사용자 지정 확장자 유지
   private static String getTransFileName(String fileName) {
+    if (hasTimestampPattern(fileName)) {
+      return ensureXlsxExtension(fileName);
+    }
+
+    if (!isDefaultFileName(fileName)) {
+      return ensureXlsxExtension(fileName);
+    }
+
     String ts = LocalDateTime
         .now()
         .format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss"));
-    String transFileName;
-    if (fileName.endsWith(XLSX) || fileName.endsWith(".xls")) {
-      // 엑셀 확장자 → filename_ts.xlsx
-      transFileName = fileName.substring(0, fileName.lastIndexOf('.')) + "_" + ts + XLSX;
-    } else if (fileName.contains(".")) {
-      // 다른 확장자 → filename_ts.확장자
-      int dotIndex = fileName.lastIndexOf('.');
-      transFileName = fileName.substring(0, dotIndex) + "_" + ts + fileName.substring(dotIndex);
-    } else {
-      // 확장자 없음 → filename_ts.xlsx
-      transFileName = fileName + "_" + ts + XLSX;
+    String nameWithoutExt = fileName.contains(".")
+        ? fileName.substring(0, fileName.lastIndexOf('.'))
+        : fileName;
+    return nameWithoutExt + "_" + ts + XLSX;
+  }
+
+  private static boolean hasTimestampPattern(String fileName) {
+    return TIMESTAMP_PATTERN.matcher(fileName).matches();
+  }
+
+  private static boolean isDefaultFileName(String fileName) {
+    String nameWithoutExt = fileName;
+    if (fileName.contains(".")) {
+      nameWithoutExt = fileName.substring(0, fileName.lastIndexOf('.'));
     }
-    return transFileName;
+    return DEFAULT_FILE_NAME.equals(nameWithoutExt);
+  }
+
+  private static String ensureXlsxExtension(String fileName) {
+    if (fileName.endsWith(XLSX) || fileName.endsWith(".xls")) {
+      return fileName.substring(0, fileName.lastIndexOf('.')) + XLSX;
+    } else if (!fileName.contains(".")) {
+      return fileName + XLSX;
+    }
+    return fileName;
   }
 
   /**
@@ -365,7 +385,7 @@ public final class ExcelExporter {
   /**
    * 어노테이션 기반 Excel 생성 (데이터 조회 + 변환 통합, OutputStream 버전, 기본 파일명)
    * <p>데이터 조회부터 Excel 변환까지 한 번에 처리하여 OutputStream에 출력합니다.</p>
-   * <p>파일명이 지정되지 않으면 "Excel_타임스탬프.xlsx" 형식으로 생성됩니다.</p>
+   * <p>파일명이 지정되지 않으면 "download_타임스탬프.xlsx" 형식으로 생성됩니다.</p>
    *
    * <h3>사용 예시</h3>
    * <pre>{@code
@@ -376,7 +396,7 @@ public final class ExcelExporter {
    *         customerService::getCustomerList,
    *         customerConverter::toExcelDTO
    *     );
-   *     // fileName: "Excel_20250119_135348.xlsx"
+   *     // fileName: "download_20250119_135348.xlsx"
    * } catch (ExcelExporterException ex) {
    *     // 에러 처리
    * }
@@ -389,7 +409,7 @@ public final class ExcelExporter {
    * @param queryParams  데이터 조회에 사용될 조건 객체
    * @param dataProvider 데이터 조회 함수 (queryParams → List&lt;R&gt;)
    * @param converter    데이터 변환 함수 (R → E)
-   * @return 생성된 파일명 (Excel_타임스탬프.xlsx)
+   * @return 생성된 파일명 (download_타임스탬프.xlsx)
    * @throws ExcelExporterException Excel 생성 중 오류 발생 시
    */
   public static <Q, R, E> String excelFromList(OutputStream outputStream, Q queryParams,
@@ -713,19 +733,30 @@ public final class ExcelExporter {
   }
 
   private static String getTransFileNameWithExtension(String fileName, String defaultExtension) {
+    if (hasTimestampPattern(fileName)) {
+      return ensureExtension(fileName, defaultExtension);
+    }
+
+    if (!isDefaultFileName(fileName)) {
+      return ensureExtension(fileName, defaultExtension);
+    }
+
     String ts = LocalDateTime
         .now()
         .format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss"));
-    String transFileName;
+    String nameWithoutExt = fileName.contains(".")
+        ? fileName.substring(0, fileName.lastIndexOf('.'))
+        : fileName;
+    return nameWithoutExt + "_" + ts + defaultExtension;
+  }
+
+  private static String ensureExtension(String fileName, String targetExtension) {
     if (fileName.endsWith(XLSX) || fileName.endsWith(".xls") || fileName.endsWith(".csv")) {
-      transFileName = fileName.substring(0, fileName.lastIndexOf('.')) + "_" + ts + defaultExtension;
-    } else if (fileName.contains(".")) {
-      int dotIndex = fileName.lastIndexOf('.');
-      transFileName = fileName.substring(0, dotIndex) + "_" + ts + fileName.substring(dotIndex);
-    } else {
-      transFileName = fileName + "_" + ts + defaultExtension;
+      return fileName.substring(0, fileName.lastIndexOf('.')) + targetExtension;
+    } else if (!fileName.contains(".")) {
+      return fileName + targetExtension;
     }
-    return transFileName;
+    return fileName;
   }
 
   /**
