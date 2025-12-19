@@ -126,14 +126,10 @@ public final class FilenameSecurityValidator {
         }
 
         String lowerFilename = filename.toLowerCase();
-        if (lowerFilename.contains("%2e") ||
+        return lowerFilename.contains("%2e") ||
                 lowerFilename.contains("%2f") ||
                 lowerFilename.contains("%5c") ||
-                lowerFilename.contains("%00")) {
-            return true;
-        }
-
-        return false;
+                lowerFilename.contains("%00");
     }
 
     /**

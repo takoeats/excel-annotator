@@ -4,6 +4,7 @@ import com.junho.excel.exception.ErrorCode;
 import com.junho.excel.exception.ExcelExporterException;
 import com.junho.excel.internal.ExcelMetadataFactory;
 import com.junho.excel.internal.metadata.ExcelMetadata;
+import com.junho.excel.internal.writer.adapter.DataStreamAdapter;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -21,6 +22,11 @@ public final class CsvWriter {
     private static final String CSV_DELIMITER = ",";
     private static final String CSV_LINE_BREAK = "\r\n";
     private static final byte[] UTF8_BOM = {(byte) 0xEF, (byte) 0xBB, (byte) 0xBF};
+    private final DataStreamAdapter streamAdapter;
+
+    public CsvWriter() {
+        this.streamAdapter = new DataStreamAdapter();
+    }
 
     public <T> void write(OutputStream outputStream, List<T> data) {
         validateData(data);
@@ -41,7 +47,7 @@ public final class CsvWriter {
         @SuppressWarnings("unchecked")
         ExcelMetadata<T> metadata = (ExcelMetadata<T>) ExcelMetadataFactory.extractExcelMetadata(clazz);
 
-        Iterator<T> combinedIterator = prependToIterator(firstElement, iterator);
+        Iterator<T> combinedIterator = streamAdapter.prependToIterator(firstElement, iterator);
         writeFromIterator(outputStream, combinedIterator, metadata);
     }
 
@@ -106,25 +112,5 @@ public final class CsvWriter {
         if (data == null || data.isEmpty()) {
             throw new ExcelExporterException(ErrorCode.EMPTY_DATA);
         }
-    }
-
-    private <T> Iterator<T> prependToIterator(T firstElement, Iterator<T> rest) {
-        return new Iterator<T>() {
-            private boolean firstReturned = false;
-
-            @Override
-            public boolean hasNext() {
-                return !firstReturned || rest.hasNext();
-            }
-
-            @Override
-            public T next() {
-                if (!firstReturned) {
-                    firstReturned = true;
-                    return firstElement;
-                }
-                return rest.next();
-            }
-        };
     }
 }
