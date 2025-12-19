@@ -32,7 +32,7 @@ public final class ColumnStyleResolver {
     }
 
     public static int calculateWidth(ExcelColumn excelColumn, CustomExcelCellStyle columnStyle) {
-        if (excelColumn.width() != 100) {
+        if (excelColumn.width() != 0) {
             return excelColumn.width();
         }
 

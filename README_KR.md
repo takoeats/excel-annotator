@@ -6,7 +6,7 @@
 
 [![Java](https://img.shields.io/badge/Java-1.8+-007396?style=flat&logo=java)](https://www.oracle.com/java/)
 [![Apache POI](https://img.shields.io/badge/Apache%20POI-5.4.0-D22128?style=flat)](https://poi.apache.org/)
-[![Version](https://img.shields.io/badge/version-1.0.4-blue.svg)](https://github.com/yourusername/excel-exporter)
+[![Version](https://img.shields.io/badge/version-1.0.5-blue.svg)](https://github.com/yourusername/excel-exporter)
 [![License](https://img.shields.io/badge/license-Apache--2.0-green.svg)](LICENSE)
 
 **POI 코드 작성 없이 어노테이션만으로 Excel 파일을 생성하세요!**
@@ -21,7 +21,7 @@
 <dependency>
     <groupId>io.github.takoeats</groupId>
     <artifactId>excel-annotator</artifactId>
-    <version>1.0.4</version>
+    <version>1.0.5</version>
 </dependency>
 ```
 
@@ -667,6 +667,15 @@ public void downloadSearchResults(
 
 ### 8️⃣ 컬럼 너비 설정
 
+#### 너비 우선순위
+
+라이브러리는 다음 우선순위로 컬럼 너비를 결정합니다:
+
+1. **`@ExcelColumn(width=...)` 명시적 지정** (최우선)
+2. **스타일의 `autoWidth()` 설정**
+3. **스타일의 `width(...)` 설정**
+4. **기본값 (100 픽셀)**
+
 ```java
 @ExcelSheet("고객")
 public class CustomerDTO {
@@ -674,17 +683,54 @@ public class CustomerDTO {
     @ExcelColumn(
         header = "고객명",
         order = 1,
-        width = 150  // 픽셀 단위로 명시적 지정
+        width = 150,  // 명시적으로 150px 지정 (항상 적용됨)
+        columnStyle = MyCustomStyle.class  // 스타일의 width는 무시됨
     )
     private String customerName;
 
     @ExcelColumn(
         header = "이메일",
-        order = 2
-        // width 생략 시 자동 계산
+        order = 2,
+        columnStyle = AutoWidthStyle.class  // 스타일의 autoWidth() 사용
     )
     private String email;
+
+    @ExcelColumn(
+        header = "전화번호",
+        order = 3
+        // width 없음, 스타일 없음 → 기본값 100px
+    )
+    private String phone;
 }
+```
+
+#### 기본 스타일
+
+라이브러리는 커스텀 스타일이 지정되지 않은 경우 자동으로 기본 스타일을 적용합니다:
+
+| 필드 타입 | 기본 스타일 | 동작 |
+|----------|-------------|------|
+| 숫자형 (Integer, Long, BigDecimal 등) | `DefaultNumberStyle` | 우측 정렬, `#,##0` 포맷 |
+| 기타 타입 (String, Date 등) | `DefaultColumnStyle` | 좌측 정렬, 특별한 포맷 없음 |
+| 헤더 (모든 컬럼) | `DefaultHeaderStyle` | 굵게, 중앙 정렬 |
+
+**예시:**
+```java
+@ExcelColumn(header = "금액", order = 1)
+private BigDecimal amount;  // 자동으로 DefaultNumberStyle 적용
+
+@ExcelColumn(header = "이름", order = 2)
+private String name;  // 자동으로 DefaultColumnStyle 적용
+```
+
+**기본 스타일 재정의:**
+```java
+@ExcelColumn(
+    header = "금액",
+    order = 1,
+    columnStyle = CurrencyStyle.class  // DefaultNumberStyle 대신 적용
+)
+private BigDecimal amount;
 ```
 
 ### 9️⃣ 헤더 제어
@@ -886,14 +932,14 @@ public ResponseEntity<?> downloadCustomers(HttpServletResponse response) {
 <dependency>
     <groupId>io.github.takoeats</groupId>
     <artifactId>excel-annotator</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.5</version>
 </dependency>
 ```
 
 ### Gradle
 
 ```gradle
-implementation 'io.github.takoeats:excel-annotator:1.0.0'
+implementation 'io.github.takoeats:excel-annotator:1.0.5'
 ```
 
 ### 필요 의존성

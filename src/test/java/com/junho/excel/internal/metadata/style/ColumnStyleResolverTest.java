@@ -16,7 +16,7 @@ class ColumnStyleResolverTest {
 
     @Test
     void resolveHeaderStyle_withDefaultHeaderStyle_returnsDefaultHeaderStyle() throws NoSuchFieldException {
-        ExcelColumn excelColumn = createExcelColumn("Header", 0, 100, DefaultHeaderStyle.class, DefaultColumnStyle.class);
+        ExcelColumn excelColumn = createExcelColumn("Header", 0, 0, DefaultHeaderStyle.class, DefaultColumnStyle.class);
 
         CustomExcelCellStyle headerStyle = ColumnStyleResolver.resolveHeaderStyle(excelColumn);
 
@@ -26,7 +26,7 @@ class ColumnStyleResolverTest {
 
     @Test
     void resolveHeaderStyle_withCustomStyle_returnsStyleInstance() throws NoSuchFieldException {
-        ExcelColumn excelColumn = createExcelColumn("Header", 0, 100, TestHeaderStyle.class, DefaultColumnStyle.class);
+        ExcelColumn excelColumn = createExcelColumn("Header", 0, 0, TestHeaderStyle.class, DefaultColumnStyle.class);
 
         CustomExcelCellStyle headerStyle = ColumnStyleResolver.resolveHeaderStyle(excelColumn);
 
@@ -37,7 +37,7 @@ class ColumnStyleResolverTest {
     @Test
     void resolveColumnStyle_withDefaultColumnStyleAndNumericType_returnsDefaultNumberStyle() throws NoSuchFieldException {
         Field numericField = TestDTO.class.getDeclaredField("age");
-        ExcelColumn excelColumn = createExcelColumn("Age", 0, 100, DefaultHeaderStyle.class, DefaultColumnStyle.class);
+        ExcelColumn excelColumn = createExcelColumn("Age", 0, 0, DefaultHeaderStyle.class, DefaultColumnStyle.class);
 
         CustomExcelCellStyle columnStyle = ColumnStyleResolver.resolveColumnStyle(excelColumn, numericField);
 
@@ -48,7 +48,7 @@ class ColumnStyleResolverTest {
     @Test
     void resolveColumnStyle_withDefaultColumnStyleAndStringType_returnsDefaultColumnStyle() throws NoSuchFieldException {
         Field stringField = TestDTO.class.getDeclaredField("name");
-        ExcelColumn excelColumn = createExcelColumn("Name", 0, 100, DefaultHeaderStyle.class, DefaultColumnStyle.class);
+        ExcelColumn excelColumn = createExcelColumn("Name", 0, 0, DefaultHeaderStyle.class, DefaultColumnStyle.class);
 
         CustomExcelCellStyle columnStyle = ColumnStyleResolver.resolveColumnStyle(excelColumn, stringField);
 
@@ -59,7 +59,7 @@ class ColumnStyleResolverTest {
     @Test
     void resolveColumnStyle_withCustomStyle_returnsStyleInstance() throws NoSuchFieldException {
         Field stringField = TestDTO.class.getDeclaredField("name");
-        ExcelColumn excelColumn = createExcelColumn("Name", 0, 100, DefaultHeaderStyle.class, TestColumnStyle.class);
+        ExcelColumn excelColumn = createExcelColumn("Name", 0, 0, DefaultHeaderStyle.class, TestColumnStyle.class);
 
         CustomExcelCellStyle columnStyle = ColumnStyleResolver.resolveColumnStyle(excelColumn, stringField);
 
@@ -79,7 +79,7 @@ class ColumnStyleResolverTest {
 
     @Test
     void calculateWidth_withAutoWidth_returnsMinusOne() {
-        ExcelColumn excelColumn = createExcelColumn("Header", 0, 100, DefaultHeaderStyle.class, DefaultColumnStyle.class);
+        ExcelColumn excelColumn = createExcelColumn("Header", 0, 0, DefaultHeaderStyle.class, DefaultColumnStyle.class);
         CustomExcelCellStyle columnStyle = new TestAutoWidthStyle();
 
         int width = ColumnStyleResolver.calculateWidth(excelColumn, columnStyle);
@@ -89,7 +89,7 @@ class ColumnStyleResolverTest {
 
     @Test
     void calculateWidth_withStyleWidth_returnsStyleWidth() {
-        ExcelColumn excelColumn = createExcelColumn("Header", 0, 100, DefaultHeaderStyle.class, DefaultColumnStyle.class);
+        ExcelColumn excelColumn = createExcelColumn("Header", 0, 0, DefaultHeaderStyle.class, DefaultColumnStyle.class);
         CustomExcelCellStyle columnStyle = new TestFixedWidthStyle();
 
         int width = ColumnStyleResolver.calculateWidth(excelColumn, columnStyle);
@@ -99,8 +99,18 @@ class ColumnStyleResolverTest {
 
     @Test
     void calculateWidth_withDefaultValues_returnsDefaultWidth() {
-        ExcelColumn excelColumn = createExcelColumn("Header", 0, 100, DefaultHeaderStyle.class, DefaultColumnStyle.class);
+        ExcelColumn excelColumn = createExcelColumn("Header", 0, 0, DefaultHeaderStyle.class, DefaultColumnStyle.class);
         CustomExcelCellStyle columnStyle = new DefaultColumnStyle();
+
+        int width = ColumnStyleResolver.calculateWidth(excelColumn, columnStyle);
+
+        assertEquals(100, width);
+    }
+
+    @Test
+    void calculateWidth_withExplicitWidth100_returnsExactly100() {
+        ExcelColumn excelColumn = createExcelColumn("Header", 0, 100, DefaultHeaderStyle.class, DefaultColumnStyle.class);
+        CustomExcelCellStyle columnStyle = new TestFixedWidthStyle();
 
         int width = ColumnStyleResolver.calculateWidth(excelColumn, columnStyle);
 

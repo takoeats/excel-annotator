@@ -18,7 +18,7 @@ you'll love Excel Annotator.
 
 [![Java](https://img.shields.io/badge/Java-1.8+-007396?style=flat&logo=java)](https://www.oracle.com/java/)
 [![Apache POI](https://img.shields.io/badge/Apache%20POI-5.4.0-D22128?style=flat)](https://poi.apache.org/)
-[![Version](https://img.shields.io/badge/version-1.0.4-blue.svg)](https://github.com/yourusername/excel-exporter)
+[![Version](https://img.shields.io/badge/version-1.0.5-blue.svg)](https://github.com/yourusername/excel-exporter)
 [![License](https://img.shields.io/badge/license-Apache--2.0-green.svg)](LICENSE)
 
 **Generate Excel files with annotations only - no POI code required!**
@@ -33,7 +33,7 @@ you'll love Excel Annotator.
 <dependency>
     <groupId>io.github.takoeats</groupId>
     <artifactId>excel-annotator</artifactId>
-    <version>1.0.4</version>
+    <version>1.0.5</version>
 </dependency>
 ```
 
@@ -683,6 +683,15 @@ public void downloadSearchResults(
 
 ### 8️⃣ Column Width Settings
 
+#### Width Priority
+
+The library determines column width in the following priority order:
+
+1. **Explicit `@ExcelColumn(width=...)` specification** (highest priority)
+2. **Style's `autoWidth()` configuration**
+3. **Style's `width(...)` configuration**
+4. **Default value (100 pixels)**
+
 ```java
 @ExcelSheet("Customers")
 public class CustomerDTO {
@@ -690,17 +699,54 @@ public class CustomerDTO {
     @ExcelColumn(
         header = "Customer Name",
         order = 1,
-        width = 150  // Explicitly specify in pixels
+        width = 150,  // Explicitly specify 150px (always applied)
+        columnStyle = MyCustomStyle.class  // Style width is ignored
     )
     private String customerName;
 
     @ExcelColumn(
         header = "Email",
-        order = 2
-        // Auto-calculated if width omitted
+        order = 2,
+        columnStyle = AutoWidthStyle.class  // Uses style's autoWidth()
     )
     private String email;
+
+    @ExcelColumn(
+        header = "Phone",
+        order = 3
+        // No width, no style → default 100px
+    )
+    private String phone;
 }
+```
+
+#### Default Styles
+
+The library automatically applies default styles when no custom style is specified:
+
+| Field Type | Default Style | Behavior |
+|------------|---------------|----------|
+| Numeric types (Integer, Long, BigDecimal, etc.) | `DefaultNumberStyle` | Right-aligned, `#,##0` format |
+| Other types (String, Date, etc.) | `DefaultColumnStyle` | Left-aligned, no special format |
+| Headers (all columns) | `DefaultHeaderStyle` | Bold, center-aligned |
+
+**Example:**
+```java
+@ExcelColumn(header = "Amount", order = 1)
+private BigDecimal amount;  // Automatically uses DefaultNumberStyle
+
+@ExcelColumn(header = "Name", order = 2)
+private String name;  // Automatically uses DefaultColumnStyle
+```
+
+**Overriding Defaults:**
+```java
+@ExcelColumn(
+    header = "Amount",
+    order = 1,
+    columnStyle = CurrencyStyle.class  // Override DefaultNumberStyle
+)
+private BigDecimal amount;
 ```
 
 ### 9️⃣ Header Control
@@ -904,14 +950,14 @@ public ResponseEntity<?> downloadCustomers(HttpServletResponse response) {
 <dependency>
     <groupId>io.github.takoeats</groupId>
     <artifactId>excel-annotator</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.5</version>
 </dependency>
 ```
 
 ### Gradle
 
 ```gradle
-implementation 'io.github.takoeats:excel-annotator:1.0.0'
+implementation 'io.github.takoeats:excel-annotator:1.0.5'
 ```
 
 ### Dependencies

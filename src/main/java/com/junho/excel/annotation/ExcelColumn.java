@@ -25,17 +25,21 @@ public @interface ExcelColumn {
 
     /**
      * 컬럼 순서 (1부터 시작)
+     * int 범위 내 사용 (1 ~ Integer.MAX_VALUE)
      *
      * @return 순서
      */
     int order() default Integer.MAX_VALUE;
 
     /**
-     * 컬럼 너비 (기본값: 100)
+     * 컬럼 너비 (기본값: 0 = 스타일 또는 자동 결정)
+     * <p>0: 스타일 또는 자동 결정</p>
+     * <p>양수: 명시적 너비 지정</p>
+     * <p>-1: 자동 너비 (autoWidth)</p>
      *
      * @return 너비
      */
-    int width() default 100;
+    int width() default 0;
 
     /**
      * 데이터 포맷 (날짜, 숫자 등)
