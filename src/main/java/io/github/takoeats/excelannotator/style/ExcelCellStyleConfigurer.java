@@ -243,8 +243,8 @@ public class ExcelCellStyleConfigurer {
      */
     private void applyNumberFormat(CellStyle cellStyle, Workbook workbook) {
         if (hasDataFormat) {
-            DataFormat dataFormat = workbook.createDataFormat();
-            cellStyle.setDataFormat(dataFormat.getFormat(this.dataFormat));
+            DataFormat format = workbook.createDataFormat();
+            cellStyle.setDataFormat(format.getFormat(this.dataFormat));
         }
     }
 
