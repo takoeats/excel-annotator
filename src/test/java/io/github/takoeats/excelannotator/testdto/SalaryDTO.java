@@ -2,7 +2,7 @@ package io.github.takoeats.excelannotator.testdto;
 
 import io.github.takoeats.excelannotator.annotation.ExcelColumn;
 import io.github.takoeats.excelannotator.annotation.ExcelSheet;
-import io.github.takoeats.excelannotator.example.style.CurrencyStyle;
+import io.github.takoeats.excelannotator.teststyle.CurrencyStyle;
 
 import java.math.BigDecimal;
 

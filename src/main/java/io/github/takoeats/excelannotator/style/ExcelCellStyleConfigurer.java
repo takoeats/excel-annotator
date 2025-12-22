@@ -40,8 +40,8 @@ public class ExcelCellStyleConfigurer {
     private BorderStyle borderStyle;
     private boolean hasBorder = false;
 
-    private String numberFormat;
-    private boolean hasNumberFormat = false;
+    private String dataFormat;
+    private boolean hasDataFormat = false;
 
     /**
      * RGB 배경색 설정 (0-255)
@@ -139,9 +139,9 @@ public class ExcelCellStyleConfigurer {
         return this;
     }
 
-    public ExcelCellStyleConfigurer numberFormat(String format) {
-        this.numberFormat = format;
-        this.hasNumberFormat = true;
+    public ExcelCellStyleConfigurer dataFormat(String format) {
+        this.dataFormat = format;
+        this.hasDataFormat = true;
         return this;
     }
 
@@ -242,9 +242,9 @@ public class ExcelCellStyleConfigurer {
      * 데이터 포맷 설정 적용
      */
     private void applyNumberFormat(CellStyle cellStyle, Workbook workbook) {
-        if (hasNumberFormat) {
+        if (hasDataFormat) {
             DataFormat dataFormat = workbook.createDataFormat();
-            cellStyle.setDataFormat(dataFormat.getFormat(numberFormat));
+            cellStyle.setDataFormat(dataFormat.getFormat(this.dataFormat));
         }
     }
 
@@ -269,7 +269,7 @@ public class ExcelCellStyleConfigurer {
      * 데이터 포맷 반환 (기본="General")
      */
     public String getDataFormat() {
-        return hasNumberFormat ? numberFormat : "General";
+        return hasDataFormat ? dataFormat : "General";
     }
 
     /**

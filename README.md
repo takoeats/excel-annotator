@@ -204,80 +204,98 @@ return ResponseEntity.ok()
 
 ### 2️⃣ Styling
 
-#### Using Predefined Styles
+#### Creating Custom Styles
 
+Create reusable styles by extending `CustomExcelCellStyle`:
+
+**Example: Currency Style**
 ```java
-import io.github.takoeats.excelannotator.example.style.CurrencyStyle;
-import io.github.takoeats.excelannotator.example.style.DateOnlyStyle;
-import io.github.takoeats.excelannotator.example.style.PercentageStyle;
+import io.github.takoeats.excelannotator.style.CustomExcelCellStyle;
+import io.github.takoeats.excelannotator.style.ExcelCellStyleConfigurer;
+import org.apache.poi.ss.usermodel.HorizontalAlignment;
+import org.apache.poi.ss.usermodel.VerticalAlignment;
 
+public class CurrencyStyle extends CustomExcelCellStyle {
+    @Override
+    protected void configure(ExcelCellStyleConfigurer configurer) {
+        configurer
+                .dataFormat("₩#,##0")  // or "$#,##0" for USD
+                .alignment(HorizontalAlignment.RIGHT, VerticalAlignment.CENTER);
+    }
+}
+```
+
+**Example: Date Style**
+```java
+public class DateOnlyStyle extends CustomExcelCellStyle {
+    @Override
+    protected void configure(ExcelCellStyleConfigurer configurer) {
+        configurer
+                .dataFormat("yyyy-MM-dd")
+                .alignment(HorizontalAlignment.CENTER, VerticalAlignment.CENTER);
+    }
+}
+```
+
+**Example: Percentage Style**
+```java
+public class PercentageStyle extends CustomExcelCellStyle {
+    @Override
+    protected void configure(ExcelCellStyleConfigurer configurer) {
+        configurer
+                .dataFormat("0.00%")
+                .alignment(HorizontalAlignment.RIGHT, VerticalAlignment.CENTER);
+    }
+}
+```
+
+**Example: Alert Style**
+```java
+import io.github.takoeats.excelannotator.style.FontStyle;
+
+public class CriticalAlertStyle extends CustomExcelCellStyle {
+    @Override
+    protected void configure(ExcelCellStyleConfigurer configurer) {
+        configurer
+                .backgroundColor(220, 20, 60)  // Crimson
+                .fontColor(255, 255, 255)      // White
+                .font("Arial", 11, FontStyle.BOLD)
+                .alignment(HorizontalAlignment.CENTER, VerticalAlignment.CENTER);
+    }
+}
+```
+
+> **Important**: Use appropriate field types for formatted columns:
+> - Currency/Numeric styles → `BigDecimal`, `Integer`, `Long`, `Double`
+> - Date styles → `LocalDate`, `LocalDateTime`, `Date`
+> - Percentage styles → `Double` or `BigDecimal`
+
+**Usage in DTO:**
+```java
 @ExcelSheet("Sales Records")
 public class SalesDTO {
 
     @ExcelColumn(
             header = "Amount",
             order = 1,
-            columnStyle = CurrencyStyle.class  // Currency format: ₩#,##0
+            columnStyle = CurrencyStyle.class
     )
     private BigDecimal amount;
 
     @ExcelColumn(
             header = "Sale Date",
             order = 2,
-            columnStyle = DateOnlyStyle.class  // Date format: yyyy-MM-dd
+            columnStyle = DateOnlyStyle.class
     )
     private LocalDate saleDate;
 
     @ExcelColumn(
             header = "Achievement Rate",
             order = 3,
-            columnStyle = PercentageStyle.class  // Percentage format: 0.00%
+            columnStyle = PercentageStyle.class
     )
     private Double achievementRate;
 }
-```
-
-**Main Predefined Styles:**
-
-| Style | Description | Format |
-|-------|-------------|--------|
-| `CurrencyStyle` | Currency | ₩#,##0 |
-| `DecimalNumberStyle` | Decimal | #,##0.00 |
-| `PercentageStyle` | Percentage | 0.00% |
-| `DateOnlyStyle` | Date | yyyy-MM-dd |
-| `DateTimeStyle` | Date+Time | yyyy-MM-dd HH:mm:ss |
-| `KoreanDateStyle` | Korean Date | yyyy년 MM월 dd일 |
-| `TableHeaderStyle` | Table Header | Blue background + White text |
-| `CriticalAlertStyle` | Critical Alert | Red background + White text |
-| `HighlightStyle` | Highlight | Yellow background |
-
-#### Creating Custom Styles
-
-```java
-import io.github.takoeats.excelannotator.style.CustomExcelCellStyle;
-import io.github.takoeats.excelannotator.style.ExcelCellStyleConfigurer;
-
-public class MyCustomStyle extends CustomExcelCellStyle {
-    @Override
-    protected void configure(ExcelCellStyleConfigurer configurer) {
-        configurer
-                .backgroundColor(144, 238, 144)  // RGB: Light Green
-                .fontColor(0, 100, 0)            // RGB: Dark Green
-                .bold(true)
-                .alignment(HorizontalAlignment.CENTER, VerticalAlignment.CENTER)
-                .numberFormat("#,##0");
-    }
-}
-```
-
-**Usage:**
-```java
-@ExcelColumn(
-    header = "Revenue",
-    order = 1,
-    columnStyle = MyCustomStyle.class
-)
-private BigDecimal revenue;
 ```
 
 ---

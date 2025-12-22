@@ -5,7 +5,7 @@ import io.github.takoeats.excelannotator.style.StyleCache;
 import io.github.takoeats.excelannotator.testdto.LargeDataDTO;
 import io.github.takoeats.excelannotator.util.ExcelAssertions;
 import io.github.takoeats.excelannotator.util.ExcelTestHelper;
-import io.github.takoeats.excelannotator.example.style.CurrencyStyle;
+import io.github.takoeats.excelannotator.teststyle.CurrencyStyle;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.junit.jupiter.api.Test;

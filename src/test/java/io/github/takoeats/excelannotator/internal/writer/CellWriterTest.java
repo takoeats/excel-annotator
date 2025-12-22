@@ -328,7 +328,7 @@ class CellWriterTest {
     @Override
     protected void configure(ExcelCellStyleConfigurer configurer) {
       configurer
-          .numberFormat("0.000");
+          .dataFormat("0.000");
     }
   }
 

@@ -2,6 +2,7 @@ package io.github.takoeats.excelannotator.internal.metadata.extractor;
 
 import io.github.takoeats.excelannotator.annotation.ExcelColumn;
 import io.github.takoeats.excelannotator.internal.metadata.ColumnInfo;
+import io.github.takoeats.excelannotator.internal.metadata.SheetInfo;
 import io.github.takoeats.excelannotator.internal.metadata.style.ColumnStyleResolver;
 import io.github.takoeats.excelannotator.internal.metadata.style.ConditionalStyleParser;
 import io.github.takoeats.excelannotator.style.CustomExcelCellStyle;
@@ -24,6 +25,8 @@ public final class ColumnInfoExtractor {
             return Collections.emptyList();
         }
 
+        SheetInfo sheetInfo = SheetInfoExtractor.extract(clazz);
+
         List<ColumnInfo> columnInfos = new ArrayList<>();
 
         Field[] fields = clazz.getDeclaredFields();
@@ -32,7 +35,7 @@ public final class ColumnInfoExtractor {
         }
 
         for (Field field : fields) {
-            ColumnInfo columnInfo = processField(field);
+            ColumnInfo columnInfo = processField(field, sheetInfo);
             if (columnInfo != null) {
                 columnInfos.add(columnInfo);
             }
@@ -43,14 +46,14 @@ public final class ColumnInfoExtractor {
         return columnInfos;
     }
 
-    private static ColumnInfo processField(Field field) {
+    private static ColumnInfo processField(Field field, SheetInfo sheetInfo) {
         ExcelColumn excelColumn = field.getAnnotation(ExcelColumn.class);
         if (excelColumn != null && !excelColumn.exclude()) {
 
             String format = excelColumn.format();
 
-            CustomExcelCellStyle headerStyle = ColumnStyleResolver.resolveHeaderStyle(excelColumn);
-            CustomExcelCellStyle columnStyle = ColumnStyleResolver.resolveColumnStyle(excelColumn, field);
+            CustomExcelCellStyle headerStyle = ColumnStyleResolver.resolveHeaderStyle(excelColumn, sheetInfo);
+            CustomExcelCellStyle columnStyle = ColumnStyleResolver.resolveColumnStyle(excelColumn, field, sheetInfo);
             int width = ColumnStyleResolver.calculateWidth(excelColumn, columnStyle);
 
             List<StyleRule> conditionalStyleRules = ConditionalStyleParser.parse(excelColumn.conditionalStyles());

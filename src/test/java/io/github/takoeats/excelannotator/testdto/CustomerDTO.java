@@ -2,8 +2,8 @@ package io.github.takoeats.excelannotator.testdto;
 
 import io.github.takoeats.excelannotator.annotation.ExcelColumn;
 import io.github.takoeats.excelannotator.annotation.ExcelSheet;
-import io.github.takoeats.excelannotator.example.style.DateOnlyStyle;
-import io.github.takoeats.excelannotator.example.style.PurpleHeaderStyle;
+import io.github.takoeats.excelannotator.teststyle.DateOnlyStyle;
+import io.github.takoeats.excelannotator.teststyle.PurpleHeaderStyle;
 import java.time.LocalDate;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

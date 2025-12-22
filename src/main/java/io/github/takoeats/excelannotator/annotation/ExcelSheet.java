@@ -1,5 +1,9 @@
 package io.github.takoeats.excelannotator.annotation;
 
+import io.github.takoeats.excelannotator.style.CustomExcelCellStyle;
+import io.github.takoeats.excelannotator.style.defaultstyle.DefaultColumnStyle;
+import io.github.takoeats.excelannotator.style.defaultstyle.DefaultHeaderStyle;
+
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -35,4 +39,22 @@ public @interface ExcelSheet {
      * @return 시트 순서 (기본값: Integer.MIN_VALUE - 미지정 상태)
      */
     int order() default Integer.MIN_VALUE;
+
+    /**
+     * 시트 전체의 기본 헤더 스타일
+     * <p>개별 컬럼의 {@link ExcelColumn#headerStyle()}이 명시적으로 지정되지 않은 경우 이 스타일이 적용됩니다.</p>
+     * <p>우선순위: 1) @ExcelColumn.headerStyle > 2) @ExcelSheet.defaultHeaderStyle > 3) DefaultHeaderStyle</p>
+     *
+     * @return 기본 헤더 스타일 클래스
+     */
+    Class<? extends CustomExcelCellStyle> defaultHeaderStyle() default DefaultHeaderStyle.class;
+
+    /**
+     * 시트 전체의 기본 컬럼 스타일
+     * <p>개별 컬럼의 {@link ExcelColumn#columnStyle()}이 명시적으로 지정되지 않은 경우 이 스타일이 적용됩니다.</p>
+     * <p>우선순위: 1) @ExcelColumn.columnStyle > 2) @ExcelSheet.defaultColumnStyle > 3) DefaultColumnStyle (또는 숫자 타입의 경우 DefaultNumberStyle)</p>
+     *
+     * @return 기본 컬럼 스타일 클래스
+     */
+    Class<? extends CustomExcelCellStyle> defaultColumnStyle() default DefaultColumnStyle.class;
 }

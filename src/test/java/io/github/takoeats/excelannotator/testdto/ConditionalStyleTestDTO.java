@@ -2,9 +2,9 @@ package io.github.takoeats.excelannotator.testdto;
 
 import io.github.takoeats.excelannotator.annotation.ExcelColumn;
 import io.github.takoeats.excelannotator.annotation.ExcelSheet;
-import io.github.takoeats.excelannotator.example.style.CriticalAlertStyle;
-import io.github.takoeats.excelannotator.example.style.HighlightStyle;
-import io.github.takoeats.excelannotator.example.style.SignatureStyle;
+import io.github.takoeats.excelannotator.teststyle.CriticalAlertStyle;
+import io.github.takoeats.excelannotator.teststyle.HighlightStyle;
+import io.github.takoeats.excelannotator.teststyle.SignatureStyle;
 import io.github.takoeats.excelannotator.annotation.ConditionalStyle;
 import lombok.AllArgsConstructor;
 import lombok.Data;

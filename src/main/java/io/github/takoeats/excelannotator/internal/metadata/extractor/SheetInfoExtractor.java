@@ -18,6 +18,8 @@ public final class SheetInfoExtractor {
                     .name(excelSheet.value())
                     .hasHeader(excelSheet.hasHeader())
                     .order(excelSheet.order())
+                    .defaultHeaderStyle(excelSheet.defaultHeaderStyle())
+                    .defaultColumnStyle(excelSheet.defaultColumnStyle())
                     .build();
         }
         throw new ExcelExporterException(ErrorCode.METADATA_EXTRACTION_FAILED,

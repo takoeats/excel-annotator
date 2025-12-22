@@ -2,6 +2,7 @@ package io.github.takoeats.excelannotator.internal.metadata.style;
 
 import io.github.takoeats.excelannotator.annotation.ConditionalStyle;
 import io.github.takoeats.excelannotator.annotation.ExcelColumn;
+import io.github.takoeats.excelannotator.internal.metadata.SheetInfo;
 import io.github.takoeats.excelannotator.style.CustomExcelCellStyle;
 import io.github.takoeats.excelannotator.style.ExcelCellStyleConfigurer;
 import io.github.takoeats.excelannotator.style.defaultstyle.DefaultColumnStyle;
@@ -18,8 +19,9 @@ class ColumnStyleResolverTest {
     @Test
     void resolveHeaderStyle_withDefaultHeaderStyle_returnsDefaultHeaderStyle() throws NoSuchFieldException {
         ExcelColumn excelColumn = createExcelColumn("Header", 0, 0, DefaultHeaderStyle.class, DefaultColumnStyle.class);
+        SheetInfo sheetInfo = createDefaultSheetInfo();
 
-        CustomExcelCellStyle headerStyle = ColumnStyleResolver.resolveHeaderStyle(excelColumn);
+        CustomExcelCellStyle headerStyle = ColumnStyleResolver.resolveHeaderStyle(excelColumn, sheetInfo);
 
         assertNotNull(headerStyle);
         assertInstanceOf(DefaultHeaderStyle.class, headerStyle);
@@ -28,8 +30,9 @@ class ColumnStyleResolverTest {
     @Test
     void resolveHeaderStyle_withCustomStyle_returnsStyleInstance() throws NoSuchFieldException {
         ExcelColumn excelColumn = createExcelColumn("Header", 0, 0, TestHeaderStyle.class, DefaultColumnStyle.class);
+        SheetInfo sheetInfo = createDefaultSheetInfo();
 
-        CustomExcelCellStyle headerStyle = ColumnStyleResolver.resolveHeaderStyle(excelColumn);
+        CustomExcelCellStyle headerStyle = ColumnStyleResolver.resolveHeaderStyle(excelColumn, sheetInfo);
 
         assertNotNull(headerStyle);
         assertInstanceOf(TestHeaderStyle.class, headerStyle);
@@ -39,8 +42,9 @@ class ColumnStyleResolverTest {
     void resolveColumnStyle_withDefaultColumnStyleAndNumericType_returnsDefaultNumberStyle() throws NoSuchFieldException {
         Field numericField = TestDTO.class.getDeclaredField("age");
         ExcelColumn excelColumn = createExcelColumn("Age", 0, 0, DefaultHeaderStyle.class, DefaultColumnStyle.class);
+        SheetInfo sheetInfo = createDefaultSheetInfo();
 
-        CustomExcelCellStyle columnStyle = ColumnStyleResolver.resolveColumnStyle(excelColumn, numericField);
+        CustomExcelCellStyle columnStyle = ColumnStyleResolver.resolveColumnStyle(excelColumn, numericField, sheetInfo);
 
         assertNotNull(columnStyle);
         assertInstanceOf(DefaultNumberStyle.class, columnStyle);
@@ -50,8 +54,9 @@ class ColumnStyleResolverTest {
     void resolveColumnStyle_withDefaultColumnStyleAndStringType_returnsDefaultColumnStyle() throws NoSuchFieldException {
         Field stringField = TestDTO.class.getDeclaredField("name");
         ExcelColumn excelColumn = createExcelColumn("Name", 0, 0, DefaultHeaderStyle.class, DefaultColumnStyle.class);
+        SheetInfo sheetInfo = createDefaultSheetInfo();
 
-        CustomExcelCellStyle columnStyle = ColumnStyleResolver.resolveColumnStyle(excelColumn, stringField);
+        CustomExcelCellStyle columnStyle = ColumnStyleResolver.resolveColumnStyle(excelColumn, stringField, sheetInfo);
 
         assertNotNull(columnStyle);
         assertInstanceOf(DefaultColumnStyle.class, columnStyle);
@@ -61,11 +66,82 @@ class ColumnStyleResolverTest {
     void resolveColumnStyle_withCustomStyle_returnsStyleInstance() throws NoSuchFieldException {
         Field stringField = TestDTO.class.getDeclaredField("name");
         ExcelColumn excelColumn = createExcelColumn("Name", 0, 0, DefaultHeaderStyle.class, TestColumnStyle.class);
+        SheetInfo sheetInfo = createDefaultSheetInfo();
 
-        CustomExcelCellStyle columnStyle = ColumnStyleResolver.resolveColumnStyle(excelColumn, stringField);
+        CustomExcelCellStyle columnStyle = ColumnStyleResolver.resolveColumnStyle(excelColumn, stringField, sheetInfo);
 
         assertNotNull(columnStyle);
         assertInstanceOf(TestColumnStyle.class, columnStyle);
+    }
+
+    @Test
+    void resolveHeaderStyle_withSheetDefaultHeaderStyle_returnsSheetDefaultStyle() {
+        ExcelColumn excelColumn = createExcelColumn("Header", 0, 0, DefaultHeaderStyle.class, DefaultColumnStyle.class);
+        SheetInfo sheetInfo = createSheetInfoWithStyles(TestHeaderStyle.class, DefaultColumnStyle.class);
+
+        CustomExcelCellStyle headerStyle = ColumnStyleResolver.resolveHeaderStyle(excelColumn, sheetInfo);
+
+        assertNotNull(headerStyle);
+        assertInstanceOf(TestHeaderStyle.class, headerStyle);
+    }
+
+    @Test
+    void resolveHeaderStyle_columnStyleOverridesSheetStyle_returnsColumnStyle() {
+        ExcelColumn excelColumn = createExcelColumn("Header", 0, 0, TestColumnStyle.class, DefaultColumnStyle.class);
+        SheetInfo sheetInfo = createSheetInfoWithStyles(TestHeaderStyle.class, DefaultColumnStyle.class);
+
+        CustomExcelCellStyle headerStyle = ColumnStyleResolver.resolveHeaderStyle(excelColumn, sheetInfo);
+
+        assertNotNull(headerStyle);
+        assertInstanceOf(TestColumnStyle.class, headerStyle);
+    }
+
+    @Test
+    void resolveColumnStyle_withSheetDefaultColumnStyle_returnsSheetDefaultStyle() throws NoSuchFieldException {
+        Field stringField = TestDTO.class.getDeclaredField("name");
+        ExcelColumn excelColumn = createExcelColumn("Name", 0, 0, DefaultHeaderStyle.class, DefaultColumnStyle.class);
+        SheetInfo sheetInfo = createSheetInfoWithStyles(DefaultHeaderStyle.class, TestColumnStyle.class);
+
+        CustomExcelCellStyle columnStyle = ColumnStyleResolver.resolveColumnStyle(excelColumn, stringField, sheetInfo);
+
+        assertNotNull(columnStyle);
+        assertInstanceOf(TestColumnStyle.class, columnStyle);
+    }
+
+    @Test
+    void resolveColumnStyle_columnStyleOverridesSheetStyle_returnsColumnStyle() throws NoSuchFieldException {
+        Field stringField = TestDTO.class.getDeclaredField("name");
+        ExcelColumn excelColumn = createExcelColumn("Name", 0, 0, DefaultHeaderStyle.class, TestHeaderStyle.class);
+        SheetInfo sheetInfo = createSheetInfoWithStyles(DefaultHeaderStyle.class, TestColumnStyle.class);
+
+        CustomExcelCellStyle columnStyle = ColumnStyleResolver.resolveColumnStyle(excelColumn, stringField, sheetInfo);
+
+        assertNotNull(columnStyle);
+        assertInstanceOf(TestHeaderStyle.class, columnStyle);
+    }
+
+    @Test
+    void resolveColumnStyle_sheetDefaultStyleWithNumericType_returnsSheetStyle() throws NoSuchFieldException {
+        Field numericField = TestDTO.class.getDeclaredField("age");
+        ExcelColumn excelColumn = createExcelColumn("Age", 0, 0, DefaultHeaderStyle.class, DefaultColumnStyle.class);
+        SheetInfo sheetInfo = createSheetInfoWithStyles(DefaultHeaderStyle.class, TestColumnStyle.class);
+
+        CustomExcelCellStyle columnStyle = ColumnStyleResolver.resolveColumnStyle(excelColumn, numericField, sheetInfo);
+
+        assertNotNull(columnStyle);
+        assertInstanceOf(TestColumnStyle.class, columnStyle);
+    }
+
+    @Test
+    void resolveColumnStyle_noSheetStyleWithNumericType_returnsDefaultNumberStyle() throws NoSuchFieldException {
+        Field numericField = TestDTO.class.getDeclaredField("age");
+        ExcelColumn excelColumn = createExcelColumn("Age", 0, 0, DefaultHeaderStyle.class, DefaultColumnStyle.class);
+        SheetInfo sheetInfo = createDefaultSheetInfo();
+
+        CustomExcelCellStyle columnStyle = ColumnStyleResolver.resolveColumnStyle(excelColumn, numericField, sheetInfo);
+
+        assertNotNull(columnStyle);
+        assertInstanceOf(DefaultNumberStyle.class, columnStyle);
     }
 
     @Test
@@ -116,6 +192,28 @@ class ColumnStyleResolverTest {
         int width = ColumnStyleResolver.calculateWidth(excelColumn, columnStyle);
 
         assertEquals(100, width);
+    }
+
+    private SheetInfo createDefaultSheetInfo() {
+        return SheetInfo.builder()
+                .name("Sheet1")
+                .hasHeader(true)
+                .order(Integer.MIN_VALUE)
+                .defaultHeaderStyle(DefaultHeaderStyle.class)
+                .defaultColumnStyle(DefaultColumnStyle.class)
+                .build();
+    }
+
+    private SheetInfo createSheetInfoWithStyles(
+            Class<? extends CustomExcelCellStyle> defaultHeaderStyle,
+            Class<? extends CustomExcelCellStyle> defaultColumnStyle) {
+        return SheetInfo.builder()
+                .name("Sheet1")
+                .hasHeader(true)
+                .order(Integer.MIN_VALUE)
+                .defaultHeaderStyle(defaultHeaderStyle)
+                .defaultColumnStyle(defaultColumnStyle)
+                .build();
     }
 
     private ExcelColumn createExcelColumn(

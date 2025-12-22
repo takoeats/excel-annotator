@@ -188,81 +188,98 @@ return ResponseEntity.ok()
 
 ### 2️⃣ 스타일 적용
 
-#### 사전 정의 스타일 사용
+#### 커스텀 스타일 생성
 
+`CustomExcelCellStyle`을 확장하여 재사용 가능한 스타일을 만드세요:
+
+**예제: 통화 스타일**
 ```java
-import io.github.takoeats.excelannotator.example.style.CurrencyStyle;
-import io.github.takoeats.excelannotator.example.style.DateOnlyStyle;
-import io.github.takoeats.excelannotator.example.style.PercentageStyle;
+import io.github.takoeats.excelannotator.style.CustomExcelCellStyle;
+import io.github.takoeats.excelannotator.style.ExcelCellStyleConfigurer;
+import org.apache.poi.ss.usermodel.HorizontalAlignment;
+import org.apache.poi.ss.usermodel.VerticalAlignment;
 
+public class CurrencyStyle extends CustomExcelCellStyle {
+    @Override
+    protected void configure(ExcelCellStyleConfigurer configurer) {
+        configurer
+                .dataFormat("₩#,##0")  // 또는 "$#,##0" (달러)
+                .alignment(HorizontalAlignment.RIGHT, VerticalAlignment.CENTER);
+    }
+}
+```
+
+**예제: 날짜 스타일**
+```java
+public class DateOnlyStyle extends CustomExcelCellStyle {
+    @Override
+    protected void configure(ExcelCellStyleConfigurer configurer) {
+        configurer
+                .dataFormat("yyyy-MM-dd")
+                .alignment(HorizontalAlignment.CENTER, VerticalAlignment.CENTER);
+    }
+}
+```
+
+**예제: 퍼센트 스타일**
+```java
+public class PercentageStyle extends CustomExcelCellStyle {
+    @Override
+    protected void configure(ExcelCellStyleConfigurer configurer) {
+        configurer
+                .dataFormat("0.00%")
+                .alignment(HorizontalAlignment.RIGHT, VerticalAlignment.CENTER);
+    }
+}
+```
+
+**예제: 경고 스타일**
+```java
+import io.github.takoeats.excelannotator.style.FontStyle;
+
+public class CriticalAlertStyle extends CustomExcelCellStyle {
+    @Override
+    protected void configure(ExcelCellStyleConfigurer configurer) {
+        configurer
+                .backgroundColor(220, 20, 60)  // Crimson
+                .fontColor(255, 255, 255)      // White
+                .font("Arial", 11, FontStyle.BOLD)
+                .alignment(HorizontalAlignment.CENTER, VerticalAlignment.CENTER);
+    }
+}
+```
+
+> **중요**: 포맷에 맞는 필드 타입을 사용하세요:
+> - 통화/숫자 스타일 → `BigDecimal`, `Integer`, `Long`, `Double`
+> - 날짜 스타일 → `LocalDate`, `LocalDateTime`, `Date`
+> - 퍼센트 스타일 → `Double` 또는 `BigDecimal`
+
+**DTO에서 사용:**
+```java
 @ExcelSheet("판매 내역")
 public class SalesDTO {
 
     @ExcelColumn(
             header = "판매금액",
             order = 1,
-            columnStyle = CurrencyStyle.class  // 통화 포맷: ₩#,##0
+            columnStyle = CurrencyStyle.class
     )
     private BigDecimal amount;
 
     @ExcelColumn(
             header = "판매일",
             order = 2,
-            columnStyle = DateOnlyStyle.class  // 날짜 포맷: yyyy-MM-dd
+            columnStyle = DateOnlyStyle.class
     )
     private LocalDate saleDate;
 
     @ExcelColumn(
             header = "달성률",
             order = 3,
-            columnStyle = PercentageStyle.class  // 퍼센트 포맷: 0.00%
+            columnStyle = PercentageStyle.class
     )
     private Double achievementRate;
 }
-```
-
-
-**주요 사전 정의 스타일:**
-
-| 스타일 | 설명 | 포맷 |
-|--------|------|------|
-| `CurrencyStyle` | 통화 | ₩#,##0 |
-| `DecimalNumberStyle` | 소수점 숫자 | #,##0.00 |
-| `PercentageStyle` | 퍼센트 | 0.00% |
-| `DateOnlyStyle` | 날짜 | yyyy-MM-dd |
-| `DateTimeStyle` | 날짜+시간 | yyyy-MM-dd HH:mm:ss |
-| `KoreanDateStyle` | 한글 날짜 | yyyy년 MM월 dd일 |
-| `TableHeaderStyle` | 테이블 헤더 | 파란 배경 + 흰색 글자 |
-| `CriticalAlertStyle` | 위험 경고 | 빨간 배경 + 흰색 글자 |
-| `HighlightStyle` | 강조 | 노란 배경 |
-
-#### 커스텀 스타일 생성
-
-```java
-import io.github.takoeats.excelannotator.style.CustomExcelCellStyle;
-import io.github.takoeats.excelannotator.style.ExcelCellStyleConfigurer;
-
-public class MyCustomStyle extends CustomExcelCellStyle {
-    @Override
-    protected void configure(ExcelCellStyleConfigurer configurer) {
-        configurer
-                .backgroundColor(144, 238, 144)  // RGB: Light Green
-                .fontColor(0, 100, 0)            // RGB: Dark Green
-                .bold(true)
-                .alignment(HorizontalAlignment.CENTER, VerticalAlignment.CENTER)
-                .numberFormat("#,##0");
-    }
-}
-```
-
-**사용:**
-```java
-@ExcelColumn(
-    header = "매출",
-    order = 1,
-    columnStyle = MyCustomStyle.class
-)
-private BigDecimal revenue;
 ```
 
 ---
