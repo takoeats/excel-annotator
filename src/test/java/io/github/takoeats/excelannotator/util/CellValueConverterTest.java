@@ -228,6 +228,84 @@ class CellValueConverterTest {
   }
 
   @Test
+  @DisplayName("getCellValueAsString - FORMULA 결과가 STRING인 경우")
+  void shouldReadFormulaCellWithStringResult() {
+    Cell cell = row.createCell(0);
+    cell.setCellFormula("CONCATENATE(\"Hello\", \" \", \"World\")");
+
+    workbook.getCreationHelper().createFormulaEvaluator().evaluateAll();
+
+    String result = CellValueConverter.getCellValueAsString(cell);
+    assertEquals("Hello World", result);
+  }
+
+  @Test
+  @DisplayName("getCellValueAsString - FORMULA 결과가 NUMERIC인 경우")
+  void shouldReadFormulaCellWithNumericResult() {
+    Cell cell = row.createCell(0);
+    cell.setCellFormula("1+1");
+
+    workbook.getCreationHelper().createFormulaEvaluator().evaluateAll();
+
+    String result = CellValueConverter.getCellValueAsString(cell);
+    assertEquals("2.0", result);
+  }
+
+  @Test
+  @DisplayName("getCellValueAsString - FORMULA 결과가 BOOLEAN인 경우")
+  void shouldReadFormulaCellWithBooleanResult() {
+    Cell cell = row.createCell(0);
+    cell.setCellFormula("TRUE");
+
+    workbook.getCreationHelper().createFormulaEvaluator().evaluateAll();
+
+    String result = CellValueConverter.getCellValueAsString(cell);
+    assertEquals("true", result);
+  }
+
+  @Test
+  @DisplayName("getCellValueAsString - FORMULA 결과가 복잡한 수식인 경우")
+  void shouldReadFormulaCellWithComplexNumericFormula() {
+    Cell cellA1 = row.createCell(0);
+    cellA1.setCellValue(10);
+
+    Cell cellA2 = row.createCell(1);
+    cellA2.setCellValue(20);
+
+    Cell formulaCell = row.createCell(2);
+    formulaCell.setCellFormula("A1+B1");
+
+    workbook.getCreationHelper().createFormulaEvaluator().evaluateAll();
+
+    String result = CellValueConverter.getCellValueAsString(formulaCell);
+    assertEquals("30.0", result);
+  }
+
+  @Test
+  @DisplayName("getCellValueAsString - FORMULA 결과가 음수인 경우")
+  void shouldReadFormulaCellWithNegativeResult() {
+    Cell cell = row.createCell(0);
+    cell.setCellFormula("5-10");
+
+    workbook.getCreationHelper().createFormulaEvaluator().evaluateAll();
+
+    String result = CellValueConverter.getCellValueAsString(cell);
+    assertEquals("-5.0", result);
+  }
+
+  @Test
+  @DisplayName("getCellValueAsString - FORMULA 결과가 FALSE인 경우")
+  void shouldReadFormulaCellWithFalseResult() {
+    Cell cell = row.createCell(0);
+    cell.setCellFormula("FALSE");
+
+    workbook.getCreationHelper().createFormulaEvaluator().evaluateAll();
+
+    String result = CellValueConverter.getCellValueAsString(cell);
+    assertEquals("false", result);
+  }
+
+  @Test
   @DisplayName("toDoubleSafe - 정수 문자열을 double로 변환")
   void shouldConvertIntegerString() {
     assertEquals(123.0, CellValueConverter.toDoubleSafe("123"), 0.001);

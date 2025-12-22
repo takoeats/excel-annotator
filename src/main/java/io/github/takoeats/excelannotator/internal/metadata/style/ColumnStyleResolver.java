@@ -8,14 +8,14 @@ import io.github.takoeats.excelannotator.style.StyleCache;
 import io.github.takoeats.excelannotator.style.defaultstyle.DefaultColumnStyle;
 import io.github.takoeats.excelannotator.style.defaultstyle.DefaultHeaderStyle;
 import io.github.takoeats.excelannotator.style.defaultstyle.DefaultNumberStyle;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
 import java.lang.reflect.Field;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class ColumnStyleResolver {
 
-    private ColumnStyleResolver() {
-        throw new AssertionError("Utility class cannot be instantiated");
-    }
 
     public static CustomExcelCellStyle resolveHeaderStyle(ExcelColumn excelColumn, SheetInfo sheetInfo) {
         Class<? extends CustomExcelCellStyle> styleClass = excelColumn.headerStyle();

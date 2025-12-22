@@ -3,6 +3,8 @@ package io.github.takoeats.excelannotator.internal.metadata;
 import io.github.takoeats.excelannotator.internal.metadata.extractor.ColumnInfoExtractor;
 import io.github.takoeats.excelannotator.internal.metadata.extractor.FieldValueExtractorFactory;
 import io.github.takoeats.excelannotator.internal.metadata.extractor.SheetInfoExtractor;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
@@ -13,11 +15,9 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Slf4j
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class MetadataAssembler {
 
-    private MetadataAssembler() {
-        throw new AssertionError("Utility class cannot be instantiated");
-    }
 
     public static <T> ExcelMetadata<T> assemble(Class<T> clazz) {
         if (clazz == null) {

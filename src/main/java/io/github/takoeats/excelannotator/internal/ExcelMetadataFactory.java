@@ -2,15 +2,15 @@ package io.github.takoeats.excelannotator.internal;
 
 import io.github.takoeats.excelannotator.internal.metadata.*;
 import io.github.takoeats.excelannotator.internal.metadata.extractor.SheetInfoExtractor;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
 import java.util.Map;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class ExcelMetadataFactory {
     private static final MultiSheetMetadataBuilder MULTI_SHEET_BUILDER = new MultiSheetMetadataBuilder();
 
-    private ExcelMetadataFactory() {
-        throw new AssertionError("Utility class cannot be instantiated");
-    }
 
     public static <T> ExcelMetadata<T> extractExcelMetadata(Class<T> clazz) {
         return MetadataAssembler.assemble(clazz);

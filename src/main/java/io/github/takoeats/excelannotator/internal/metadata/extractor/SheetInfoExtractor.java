@@ -5,11 +5,12 @@ import io.github.takoeats.excelannotator.exception.ErrorCode;
 import io.github.takoeats.excelannotator.exception.ExcelExporterException;
 import io.github.takoeats.excelannotator.internal.metadata.SheetInfo;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class SheetInfoExtractor {
 
-    private SheetInfoExtractor() {
-        throw new AssertionError("Utility class cannot be instantiated");
-    }
 
     public static SheetInfo extract(Class<?> clazz) {
         ExcelSheet excelSheet = clazz.getAnnotation(ExcelSheet.class);

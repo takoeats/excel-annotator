@@ -267,4 +267,19 @@ class BinaryOpNodeTest {
         context.update(5, null, 0, 0, "field");
         assertFalse(node.evaluate(context));
     }
+
+    @Test
+    void evaluate_unsupportedOperator_throwsIllegalStateException() {
+        ExpressionNode left = ExpressionParser.parseToTree("value > 0");
+        ExpressionNode right = ExpressionParser.parseToTree("value < 100");
+        BinaryOpNode node = new BinaryOpNode(ExpressionNode.LogicalOperator.NOT, left, right);
+        CellContext context = CellContext.acquire();
+
+        context.update(50, null, 0, 0, "field");
+        IllegalStateException exception = assertThrows(
+            IllegalStateException.class,
+            () -> node.evaluate(context)
+        );
+        assertEquals("Unsupported binary operator: NOT", exception.getMessage());
+    }
 }

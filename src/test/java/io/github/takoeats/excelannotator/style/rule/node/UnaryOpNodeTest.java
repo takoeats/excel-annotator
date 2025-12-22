@@ -202,4 +202,46 @@ class UnaryOpNodeTest {
         assertTrue(negativeNode.evaluate(context));
         assertFalse(zeroNode.evaluate(context));
     }
+
+    @Test
+    void evaluate_unsupportedAndOperator_throwsIllegalStateException() {
+        ExpressionNode operand = ExpressionParser.parseToTree("value > 0");
+        UnaryOpNode node = new UnaryOpNode(ExpressionNode.LogicalOperator.AND, operand);
+        CellContext context = CellContext.acquire();
+
+        context.update(50, null, 0, 0, "field");
+        IllegalStateException exception = assertThrows(
+            IllegalStateException.class,
+            () -> node.evaluate(context)
+        );
+        assertEquals("Unsupported unary operator: AND", exception.getMessage());
+    }
+
+    @Test
+    void evaluate_unsupportedOrOperator_throwsIllegalStateException() {
+        ExpressionNode operand = ExpressionParser.parseToTree("value > 0");
+        UnaryOpNode node = new UnaryOpNode(ExpressionNode.LogicalOperator.OR, operand);
+        CellContext context = CellContext.acquire();
+
+        context.update(50, null, 0, 0, "field");
+        IllegalStateException exception = assertThrows(
+            IllegalStateException.class,
+            () -> node.evaluate(context)
+        );
+        assertEquals("Unsupported unary operator: OR", exception.getMessage());
+    }
+
+    @Test
+    void evaluate_unsupportedXorOperator_throwsIllegalStateException() {
+        ExpressionNode operand = ExpressionParser.parseToTree("value > 0");
+        UnaryOpNode node = new UnaryOpNode(ExpressionNode.LogicalOperator.XOR, operand);
+        CellContext context = CellContext.acquire();
+
+        context.update(50, null, 0, 0, "field");
+        IllegalStateException exception = assertThrows(
+            IllegalStateException.class,
+            () -> node.evaluate(context)
+        );
+        assertEquals("Unsupported unary operator: XOR", exception.getMessage());
+    }
 }

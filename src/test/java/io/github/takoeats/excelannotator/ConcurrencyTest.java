@@ -1,5 +1,7 @@
 package io.github.takoeats.excelannotator;
 
+import io.github.takoeats.excelannotator.style.CustomExcelCellStyle;
+import io.github.takoeats.excelannotator.style.ExcelCellStyleConfigurer;
 import io.github.takoeats.excelannotator.testdto.EmployeeDTO;
 import io.github.takoeats.excelannotator.util.ExcelAssertions;
 import io.github.takoeats.excelannotator.util.ExcelTestHelper;
@@ -128,5 +130,51 @@ class ConcurrencyTest {
         String header1 = wb1.getSheetAt(0).getRow(0).getCell(0).getStringCellValue();
         String header2 = wb2.getSheetAt(0).getRow(0).getCell(0).getStringCellValue();
         assertEquals(header1, header2);
+    }
+
+    @Test
+    void customStyleConfigurer_concurrentInitialization_usesCompareAndSetElseBranch() throws Exception {
+        int threadCount = 100;
+        ExecutorService executor = Executors.newFixedThreadPool(threadCount);
+        CountDownLatch startLatch = new CountDownLatch(1);
+        CountDownLatch doneLatch = new CountDownLatch(threadCount);
+        List<Integer> widths = new CopyOnWriteArrayList<>();
+        List<Exception> exceptions = new CopyOnWriteArrayList<>();
+
+        CustomExcelCellStyle sharedStyle = new CustomExcelCellStyle() {
+            @Override
+            protected void configure(ExcelCellStyleConfigurer configurer) {
+                configurer.width(250);
+            }
+        };
+
+        for (int i = 0; i < threadCount; i++) {
+            executor.submit(() -> {
+                try {
+                    startLatch.await();
+                    int width = sharedStyle.getColumnWidth();
+                    widths.add(width);
+                } catch (Exception e) {
+                    exceptions.add(e);
+                } finally {
+                    doneLatch.countDown();
+                }
+            });
+        }
+
+        startLatch.countDown();
+        assertTrue(doneLatch.await(10, TimeUnit.SECONDS));
+        executor.shutdown();
+
+        assertTrue(exceptions.isEmpty(), "No exceptions should occur during concurrent access");
+        assertEquals(threadCount, widths.size(), "All threads should complete successfully");
+        assertTrue(widths.stream().allMatch(w -> w == 250), "All threads should get the same configured width");
+    }
+
+    private static class TestConcurrentStyle extends CustomExcelCellStyle {
+        @Override
+        protected void configure(ExcelCellStyleConfigurer configurer) {
+            configurer.width(200);
+        }
     }
 }

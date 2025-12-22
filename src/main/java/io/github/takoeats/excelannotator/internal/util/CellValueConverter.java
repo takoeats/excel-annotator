@@ -90,11 +90,20 @@ public final class CellValueConverter {
             case BOOLEAN:
                 return String.valueOf(cell.getBooleanCellValue());
             case FORMULA:
-                try {
-                    return cell.getStringCellValue();
-                } catch (IllegalStateException e) {
-                    return "";
-                }
+                return getFormulaCellValueAsString(cell);
+            default:
+                return "";
+        }
+    }
+
+    private static String getFormulaCellValueAsString(Cell cell) {
+        switch (cell.getCachedFormulaResultType()) {
+            case STRING:
+                return cell.getStringCellValue();
+            case NUMERIC:
+                return String.valueOf(cell.getNumericCellValue());
+            case BOOLEAN:
+                return String.valueOf(cell.getBooleanCellValue());
             default:
                 return "";
         }

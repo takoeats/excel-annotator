@@ -6,6 +6,8 @@ import io.github.takoeats.excelannotator.exception.ExcelExporterException;
 import io.github.takoeats.excelannotator.internal.util.FilenameSecurityValidator;
 import io.github.takoeats.excelannotator.internal.writer.CsvWriter;
 import io.github.takoeats.excelannotator.internal.writer.ExcelWriter;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 
@@ -26,15 +28,13 @@ import java.util.stream.Stream;
  * <p>Apache POI 기반 어노테이션 방식 Excel 생성 및 다운로드</p>
  */
 @Slf4j
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class ExcelExporter {
 
     private static final String XLSX = ".xlsx";
     private static final String DEFAULT_FILE_NAME = "download";
     private static final int MAX_ROWS_FOR_LIST_API = 1000000;
 
-    private ExcelExporter() {
-        throw new AssertionError("Utility class cannot be instantiated");
-    }
 
     /**
      * 어노테이션 기반 Excel 파일 다운로드 (단순 버전)

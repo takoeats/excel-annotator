@@ -7,6 +7,8 @@ import io.github.takoeats.excelannotator.internal.metadata.style.ColumnStyleReso
 import io.github.takoeats.excelannotator.internal.metadata.style.ConditionalStyleParser;
 import io.github.takoeats.excelannotator.style.CustomExcelCellStyle;
 import io.github.takoeats.excelannotator.style.rule.StyleRule;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -14,11 +16,8 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class ColumnInfoExtractor {
-
-    private ColumnInfoExtractor() {
-        throw new AssertionError("Utility class cannot be instantiated");
-    }
 
     public static List<ColumnInfo> extractAll(Class<?> clazz) {
         if (clazz == null) {

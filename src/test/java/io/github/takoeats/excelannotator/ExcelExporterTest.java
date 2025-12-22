@@ -269,4 +269,180 @@ class ExcelExporterTest {
     assertTrue(baos.toByteArray().length > 0);
   }
 
+  @Test
+  void excelFromStream_multiSheetWithStreams_consolidatesBySheetName() throws Exception {
+    Map<String, Stream<?>> sheetStreams = new LinkedHashMap<>();
+    sheetStreams.put("partA", Stream.of(new CustomerPartADTO("C001", "김철수")));
+    sheetStreams.put("partB", Stream.of(new CustomerPartBDTO("kim@example.com", "010-1234-5678")));
+
+    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+    String name = ExcelExporter.excelFromStream(baos, "consolidated_stream.xlsx", sheetStreams);
+    assertEquals("consolidated_stream.xlsx", name);
+
+    Workbook wb = WorkbookFactory.create(new ByteArrayInputStream(baos.toByteArray()));
+    assertEquals(1, wb.getNumberOfSheets());
+    Sheet sheet = wb.getSheetAt(0);
+    assertEquals("고객", sheet.getSheetName());
+
+    DataFormatter fmt = new DataFormatter();
+    Row headerRow = sheet.getRow(0);
+    assertEquals("고객ID", fmt.formatCellValue(headerRow.getCell(0)));
+    assertEquals("고객명", fmt.formatCellValue(headerRow.getCell(1)));
+    assertEquals("이메일", fmt.formatCellValue(headerRow.getCell(2)));
+    assertEquals("전화번호", fmt.formatCellValue(headerRow.getCell(3)));
+
+    wb.close();
+  }
+
+  @Test
+  void excelFromStream_multiSheetWithDefaultFileName_addsTimestamp() throws Exception {
+    Map<String, Stream<?>> sheetStreams = new LinkedHashMap<>();
+    sheetStreams.put("partA", Stream.of(new CustomerPartADTO("C001", "김철수")));
+
+    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+    String name = ExcelExporter.excelFromStream(baos, "download", sheetStreams);
+    assertTrue(name.startsWith("download_"));
+    assertTrue(name.endsWith(".xlsx"));
+    assertTrue(baos.toByteArray().length > 0);
+  }
+
+  @Test
+  void excelFromList_withDataProvider_transformsAndExportsData() throws Exception {
+    List<String> sourceData = Arrays.asList("Alice", "Bob");
+
+    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+    String name = ExcelExporter.excelFromList(
+        baos,
+        "provider.xlsx",
+        "queryParam",
+        queryParams -> sourceData,
+        sourceName -> new PersonDTO(sourceName, 30, new BigDecimal("100.00"))
+    );
+
+    assertEquals("provider.xlsx", name);
+
+    Workbook wb = WorkbookFactory.create(new ByteArrayInputStream(baos.toByteArray()));
+    assertEquals(1, wb.getNumberOfSheets());
+    Sheet sheet = wb.getSheetAt(0);
+    assertEquals(3, sheet.getPhysicalNumberOfRows());
+
+    DataFormatter fmt = new DataFormatter();
+    Row row1 = sheet.getRow(1);
+    assertEquals("Alice", fmt.formatCellValue(row1.getCell(0)));
+
+    Row row2 = sheet.getRow(2);
+    assertEquals("Bob", fmt.formatCellValue(row2.getCell(0)));
+
+    wb.close();
+  }
+
+  @Test
+  void excelFromList_withDataProviderDefaultFileName_addsTimestamp() {
+    List<String> sourceData = Arrays.asList("Test");
+
+    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+    String name = ExcelExporter.excelFromList(
+        baos,
+        "queryParam",
+        queryParams -> sourceData,
+        sourceName -> new PersonDTO(sourceName, 30, new BigDecimal("100.00"))
+    );
+
+    assertTrue(name.startsWith("download_"));
+    assertTrue(name.endsWith(".xlsx"));
+    assertTrue(baos.toByteArray().length > 0);
+  }
+
+  @Test
+  void csvFromList_withExplicitFileName_writesCSV() throws Exception {
+    List<PersonDTO> list = Arrays.asList(
+        new PersonDTO("Alice", 30, new BigDecimal("123.45")),
+        new PersonDTO("Bob", 40, new BigDecimal("67.89"))
+    );
+
+    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+    String returnedName = ExcelExporter.csvFromList(baos, "report.csv", list);
+    assertEquals("report.csv", returnedName);
+
+    String csvContent = baos.toString("UTF-8");
+    assertTrue(csvContent.contains("Name"));
+    assertTrue(csvContent.contains("Age"));
+    assertTrue(csvContent.contains("Salary"));
+    assertTrue(csvContent.contains("Alice"));
+    assertTrue(csvContent.contains("Bob"));
+  }
+
+  @Test
+  void csvFromStream_withExplicitFileName_writesCSV() throws Exception {
+    Stream<PersonDTO> stream = Stream.of(
+        new PersonDTO("Charlie", 25, new BigDecimal("50.00"))
+    );
+
+    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+    String returnedName = ExcelExporter.csvFromStream(baos, "stream.csv", stream);
+    assertEquals("stream.csv", returnedName);
+
+    String csvContent = baos.toString("UTF-8");
+    assertTrue(csvContent.contains("Name"));
+    assertTrue(csvContent.contains("Charlie"));
+  }
+
+  @Test
+  void csvFromList_withDefaultFileName_addsTimestamp() {
+    List<PersonDTO> list = Collections.singletonList(
+        new PersonDTO("Test", 1, new BigDecimal("1.00"))
+    );
+
+    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+    String returnedName = ExcelExporter.csvFromList(baos, "download", list);
+    assertTrue(returnedName.startsWith("download_"));
+    assertTrue(returnedName.endsWith(".csv"));
+    assertTrue(baos.toByteArray().length > 0);
+  }
+
+  @Test
+  void csvFromStream_withDefaultFileName_addsTimestamp() {
+    Stream<PersonDTO> stream = Stream.of(
+        new PersonDTO("Test", 1, new BigDecimal("1.00"))
+    );
+
+    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+    String returnedName = ExcelExporter.csvFromStream(baos, "download", stream);
+    assertTrue(returnedName.startsWith("download_"));
+    assertTrue(returnedName.endsWith(".csv"));
+    assertTrue(baos.toByteArray().length > 0);
+  }
+
+  @Test
+  void excelFromList_nullData_throwsEmptyDataException() {
+    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+
+    ExcelExporterException exception =
+        assertThrows(ExcelExporterException.class,
+            () -> ExcelExporter.excelFromList(baos, "test.xlsx", (List<PersonDTO>) null));
+
+    assertTrue(exception
+        .getMessage()
+        .contains("EMPTY_DATA") ||
+        exception
+            .getMessage()
+            .contains("데이터가 없습니다"));
+  }
+
+  @Test
+  void excelFromList_emptyList_throwsEmptyDataException() {
+    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+
+    ExcelExporterException exception =
+        assertThrows(ExcelExporterException.class,
+            () -> ExcelExporter.excelFromList(baos, "test.xlsx", Collections.emptyList()));
+
+    assertTrue(exception
+        .getMessage()
+        .contains("EMPTY_DATA") ||
+        exception
+            .getMessage()
+            .contains("데이터가 없습니다"));
+  }
+
 }

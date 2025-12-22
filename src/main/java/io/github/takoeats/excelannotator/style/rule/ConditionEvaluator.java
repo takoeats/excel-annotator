@@ -2,6 +2,8 @@ package io.github.takoeats.excelannotator.style.rule;
 
 import io.github.takoeats.excelannotator.exception.ErrorCode;
 import io.github.takoeats.excelannotator.exception.ExcelExporterException;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import java.lang.reflect.Constructor;
@@ -13,14 +15,11 @@ import java.util.concurrent.ConcurrentHashMap;
  * <p>StyleCondition 인스턴스를 캐싱하고 생성합니다.</p>
  */
 @Slf4j
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class ConditionEvaluator {
 
     private static final Map<Class<? extends StyleCondition>, StyleCondition> CONDITION_CACHE =
             new ConcurrentHashMap<>();
-
-    private ConditionEvaluator() {
-        throw new AssertionError("Utility class cannot be instantiated");
-    }
 
     /**
      * StyleCondition 인스턴스 생성 (캐싱됨)
@@ -62,11 +61,8 @@ public final class ConditionEvaluator {
     /**
      * 숫자 비교 유틸리티
      */
+    @NoArgsConstructor(access = AccessLevel.PRIVATE)
     public static class NumberComparator {
-
-        private NumberComparator() {
-            throw new AssertionError("Utility class cannot be instantiated");
-        }
 
         /**
          * 값이 임계값보다 큰지 확인
@@ -171,11 +167,8 @@ public final class ConditionEvaluator {
     /**
      * 문자열 비교 유틸리티
      */
+    @NoArgsConstructor(access = AccessLevel.PRIVATE)
     public static class StringComparator {
-
-        private StringComparator() {
-            throw new AssertionError("Utility class cannot be instantiated");
-        }
 
         /**
          * 값이 특정 문자열과 같은지 확인 (대소문자 구분)

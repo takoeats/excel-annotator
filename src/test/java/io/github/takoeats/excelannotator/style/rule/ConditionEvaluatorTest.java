@@ -5,6 +5,8 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -373,6 +375,56 @@ class ConditionEvaluatorTest {
         } finally {
             context.close();
         }
+    }
+
+    @Test
+    void greaterThan_booleanValue_returnsFalse() {
+        assertFalse(ConditionEvaluator.NumberComparator.greaterThan(Boolean.TRUE, 0));
+        assertFalse(ConditionEvaluator.NumberComparator.greaterThan(Boolean.FALSE, 0));
+    }
+
+    @Test
+    void greaterThan_listValue_returnsFalse() {
+        assertFalse(ConditionEvaluator.NumberComparator.greaterThan(new ArrayList<>(), 0));
+    }
+
+    @Test
+    void greaterThan_mapValue_returnsFalse() {
+        assertFalse(ConditionEvaluator.NumberComparator.greaterThan(new HashMap<>(), 0));
+    }
+
+    @Test
+    void greaterThan_customObject_returnsFalse() {
+        Object customObject = new Object();
+        assertFalse(ConditionEvaluator.NumberComparator.greaterThan(customObject, 0));
+    }
+
+    @Test
+    void lessThan_booleanValue_returnsFalse() {
+        assertFalse(ConditionEvaluator.NumberComparator.lessThan(Boolean.TRUE, 100));
+        assertFalse(ConditionEvaluator.NumberComparator.lessThan(Boolean.FALSE, 100));
+    }
+
+    @Test
+    void between_booleanValue_returnsFalse() {
+        assertFalse(ConditionEvaluator.NumberComparator.between(Boolean.TRUE, 0, 100));
+    }
+
+    @Test
+    void isNegative_booleanValue_returnsFalse() {
+        assertFalse(ConditionEvaluator.NumberComparator.isNegative(Boolean.TRUE));
+        assertFalse(ConditionEvaluator.NumberComparator.isNegative(Boolean.FALSE));
+    }
+
+    @Test
+    void isPositive_customObject_returnsFalse() {
+        Object customObject = new Object();
+        assertFalse(ConditionEvaluator.NumberComparator.isPositive(customObject));
+    }
+
+    @Test
+    void isZero_listValue_returnsFalse() {
+        assertFalse(ConditionEvaluator.NumberComparator.isZero(new ArrayList<>()));
     }
 
     public static class TestCondition implements StyleCondition {

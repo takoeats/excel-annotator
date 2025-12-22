@@ -3,6 +3,8 @@ package io.github.takoeats.excelannotator.internal.metadata.extractor;
 import io.github.takoeats.excelannotator.exception.ErrorCode;
 import io.github.takoeats.excelannotator.exception.ExcelExporterException;
 import io.github.takoeats.excelannotator.internal.metadata.ColumnInfo;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import java.lang.reflect.InvocationTargetException;
@@ -10,11 +12,9 @@ import java.lang.reflect.Method;
 import java.util.function.Function;
 
 @Slf4j
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class FieldValueExtractorFactory {
 
-    private FieldValueExtractorFactory() {
-        throw new AssertionError("Utility class cannot be instantiated");
-    }
 
     public static <T> Function<T, Object> createExtractor(ColumnInfo columnInfo) {
         return obj -> {

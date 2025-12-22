@@ -1,5 +1,8 @@
 package io.github.takoeats.excelannotator.internal.metadata.extractor;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.LocalDate;
@@ -7,11 +10,9 @@ import java.time.LocalDateTime;
 import java.util.Calendar;
 import java.util.Date;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class FieldTypeClassifier {
 
-    private FieldTypeClassifier() {
-        throw new AssertionError("Utility class cannot be instantiated");
-    }
 
     public static boolean isNumericType(Class<?> fieldType) {
         return fieldType == int.class || fieldType == Integer.class
