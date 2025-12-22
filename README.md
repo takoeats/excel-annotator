@@ -18,7 +18,7 @@ you'll love Excel Annotator.
 
 [![Java](https://img.shields.io/badge/Java-1.8+-007396?style=flat&logo=java)](https://www.oracle.com/java/)
 [![Apache POI](https://img.shields.io/badge/Apache%20POI-5.4.0-D22128?style=flat)](https://poi.apache.org/)
-[![Version](https://img.shields.io/badge/version-1.0.5-blue.svg)](https://github.com/yourusername/excel-exporter)
+[![Version](https://img.shields.io/badge/version-2.0.0-blue.svg)](https://github.com/takoeats/excel-annotator)
 [![License](https://img.shields.io/badge/license-Apache--2.0-green.svg)](LICENSE)
 
 **Generate Excel files with annotations only - no POI code required!**
