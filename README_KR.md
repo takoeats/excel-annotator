@@ -1201,7 +1201,7 @@ ExcelExporter.excelFromList(response, "매출보고서.xlsx", data);
 
 처리 결과
 
-매출보고서_20251216_143025.xlsx
+매출보고서.xlsx
 
 ---
 

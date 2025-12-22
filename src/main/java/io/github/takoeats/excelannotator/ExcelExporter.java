@@ -62,7 +62,7 @@ public final class ExcelExporter {
      *
      * @param <T>      Excel DTO 타입 (반드시 @ExcelSheet와 @ExcelColumn 어노테이션 필요)
      * @param response HTTP 응답 객체 (Excel 파일이 이 응답으로 전송됨)
-     * @param fileName 다운로드될 파일명 (타임스탬프가 자동으로 추가됨, 예: "customers_20250110_153045.xlsx")
+     * @param fileName 다운로드될 파일명 (명시적 파일명은 그대로 사용, 기본값 "download"만 타임스탬프 추가)
      * @param data     Excel로 변환할 데이터 리스트
      * @throws ExcelExporterException 데이터가 null이거나 비어있을 경우, 또는 Excel 생성 중 오류 발생 시
      */
@@ -79,12 +79,12 @@ public final class ExcelExporter {
      * <h3>사용 예시</h3>
      * <pre>{@code
      * String fileName = ExcelExporter.excelFromList(fos, "customers.xlsx", customers);
-     * // fileName: "customers_20250119_135348.xlsx" (보안 검증 및 인코딩 적용)
+     * // fileName: "customers.xlsx" (보안 검증 및 인코딩 적용, 명시적 파일명은 타임스탬프 없음)
      * }</pre>
      *
      * @param <T>          Excel DTO 타입 (반드시 @ExcelSheet와 @ExcelColumn 어노테이션 필요)
      * @param outputStream Excel 데이터가 출력될 스트림 (호출자가 스트림 닫기 책임)
-     * @param fileName     파일명 (타임스탬프 자동 추가, 보안 검증 및 인코딩 적용)
+     * @param fileName     파일명 (명시적 파일명은 그대로 사용, 기본값 "download"만 타임스탬프 추가, 보안 검증 및 인코딩 적용)
      * @param data         Excel로 변환할 데이터 리스트
      * @return 보안 검증 및 인코딩이 적용된 최종 파일명
      * @throws ExcelExporterException 데이터가 null이거나 비어있을 경우, 또는 Excel 생성 중 오류 발생 시
@@ -138,7 +138,7 @@ public final class ExcelExporter {
      *
      * @param <T>          Excel DTO 타입 (반드시 @ExcelSheet와 @ExcelColumn 어노테이션 필요)
      * @param outputStream Excel 데이터가 출력될 스트림 (호출자가 스트림 닫기 책임)
-     * @param fileName     파일명 (타임스탬프 자동 추가, 보안 검증 및 인코딩 적용)
+     * @param fileName     파일명 (명시적 파일명은 그대로 사용, 기본값 "download"만 타임스탬프 추가, 보안 검증 및 인코딩 적용)
      * @param dataStream   Excel로 변환할 데이터 스트림
      * @return 보안 검증 및 인코딩이 적용된 최종 파일명
      * @throws ExcelExporterException Excel 생성 중 오류 발생 시
@@ -192,7 +192,7 @@ public final class ExcelExporter {
      * }</pre>
      *
      * @param response       HTTP 응답 객체
-     * @param fileName       다운로드될 파일명 (타임스탬프 자동 추가)
+     * @param fileName       다운로드될 파일명 (명시적 파일명은 그대로 사용, 기본값 "download"만 타임스탬프 추가)
      * @param sheetStreamMap 식별자-스트림 매핑 (순서 보장을 위해 LinkedHashMap 권장)
      * @throws ExcelExporterException 멀티 시트 Excel 생성 중 오류 발생 시
      */
@@ -220,7 +220,7 @@ public final class ExcelExporter {
      * }</pre>
      *
      * @param outputStream   Excel 데이터가 출력될 스트림
-     * @param fileName       파일명 (타임스탬프 자동 추가, 보안 검증 및 인코딩 적용)
+     * @param fileName       파일명 (명시적 파일명은 그대로 사용, 기본값 "download"만 타임스탬프 추가, 보안 검증 및 인코딩 적용)
      * @param sheetStreamMap 식별자-스트림 매핑 (순서 보장을 위해 LinkedHashMap 권장)
      * @return 보안 검증 및 인코딩이 적용된 최종 파일명
      * @throws ExcelExporterException 멀티 시트 Excel 생성 중 오류 발생 시
@@ -249,7 +249,7 @@ public final class ExcelExporter {
      *
      * @param <T>        Excel DTO 타입 (반드시 @ExcelSheet와 @ExcelColumn 어노테이션 필요)
      * @param response   HTTP 응답 객체 (Excel 파일이 이 응답으로 전송됨)
-     * @param fileName   다운로드될 파일명 (타임스탬프가 자동으로 추가됨)
+     * @param fileName   다운로드될 파일명 (명시적 파일명은 그대로 사용, 기본값 "download"만 타임스탬프 추가)
      * @param dataStream Excel로 변환할 데이터 스트림
      * @throws ExcelExporterException Excel 생성 중 오류 발생 시
      */
@@ -309,7 +309,7 @@ public final class ExcelExporter {
      * @param <R>          서비스 응답 데이터 타입 (Entity, Response 객체 등)
      * @param <E>          Excel DTO 타입 (@ExcelSheet, @ExcelColumn 어노테이션 필요)
      * @param response     HTTP 응답 객체
-     * @param fileName     다운로드될 파일명 (타임스탬프 자동 추가)
+     * @param fileName     다운로드될 파일명 (명시적 파일명은 그대로 사용, 기본값 "download"만 타임스탬프 추가)
      * @param queryParams  데이터 조회에 사용될 조건 객체
      * @param dataProvider 데이터 조회 함수 (queryParams → List&lt;R&gt;)
      * @param converter    데이터 변환 함수 (R → E)
@@ -337,7 +337,7 @@ public final class ExcelExporter {
      *         customerService::getCustomerList,
      *         customerConverter::toExcelDTO
      *     );
-     *     // fileName: "customers_20250119_135348.xlsx"
+     *     // fileName: "customers.xlsx" (명시적 파일명은 타임스탬프 없음)
      * } catch (ExcelExporterException ex) {
      *     // 에러 처리
      * }
@@ -347,7 +347,7 @@ public final class ExcelExporter {
      * @param <R>          서비스 응답 데이터 타입 (Entity, Response 객체 등)
      * @param <E>          Excel DTO 타입 (@ExcelSheet, @ExcelColumn 어노테이션 필요)
      * @param outputStream Excel 데이터가 출력될 스트림
-     * @param fileName     파일명 (타임스탬프 자동 추가, 보안 검증 및 인코딩 적용)
+     * @param fileName     파일명 (명시적 파일명은 그대로 사용, 기본값 "download"만 타임스탬프 추가, 보안 검증 및 인코딩 적용)
      * @param queryParams  데이터 조회에 사용될 조건 객체
      * @param dataProvider 데이터 조회 함수 (queryParams → List&lt;R&gt;)
      * @param converter    데이터 변환 함수 (R → E)
@@ -473,7 +473,7 @@ public final class ExcelExporter {
      * }</pre>
      *
      * @param response     HTTP 응답 객체
-     * @param fileName     다운로드될 파일명 (타임스탬프 자동 추가)
+     * @param fileName     다운로드될 파일명 (명시적 파일명은 그대로 사용, 기본값 "download"만 타임스탬프 추가)
      * @param sheetDataMap 식별자-데이터 매핑 (순서 보장을 위해 LinkedHashMap 권장)
      * @throws ExcelExporterException 멀티 시트 Excel 생성 중 오류 발생 시
      */
@@ -501,7 +501,7 @@ public final class ExcelExporter {
      * }</pre>
      *
      * @param outputStream Excel 데이터가 출력될 스트림
-     * @param fileName     파일명 (타임스탬프 자동 추가, 보안 검증 및 인코딩 적용)
+     * @param fileName     파일명 (명시적 파일명은 그대로 사용, 기본값 "download"만 타임스탬프 추가, 보안 검증 및 인코딩 적용)
      * @param sheetDataMap 식별자-데이터 매핑 (순서 보장을 위해 LinkedHashMap 권장)
      * @return 보안 검증 및 인코딩이 적용된 최종 파일명
      * @throws ExcelExporterException 멀티 시트 Excel 생성 중 오류 발생 시
@@ -590,7 +590,7 @@ public final class ExcelExporter {
      *
      * @param <T>      CSV DTO 타입 (반드시 @ExcelSheet와 @ExcelColumn 어노테이션 필요)
      * @param response HTTP 응답 객체 (CSV 파일이 이 응답으로 전송됨)
-     * @param fileName 다운로드될 파일명 (타임스탬프가 자동으로 추가됨)
+     * @param fileName 다운로드될 파일명 (명시적 파일명은 그대로 사용, 기본값 "download"만 타임스탬프 추가)
      * @param data     CSV로 변환할 데이터 리스트
      * @throws ExcelExporterException 데이터가 null이거나 비어있을 경우, 또는 CSV 생성 중 오류 발생 시
      */
@@ -612,7 +612,7 @@ public final class ExcelExporter {
      *
      * @param <T>          CSV DTO 타입 (반드시 @ExcelSheet와 @ExcelColumn 어노테이션 필요)
      * @param outputStream CSV 데이터가 출력될 스트림 (호출자가 스트림 닫기 책임)
-     * @param fileName     파일명 (타임스탬프 자동 추가, 보안 검증 및 인코딩 적용)
+     * @param fileName     파일명 (명시적 파일명은 그대로 사용, 기본값 "download"만 타임스탬프 추가, 보안 검증 및 인코딩 적용)
      * @param data         CSV로 변환할 데이터 리스트
      * @return 보안 검증 및 인코딩이 적용된 최종 파일명
      * @throws ExcelExporterException 데이터가 null이거나 비어있을 경우, 또는 CSV 생성 중 오류 발생 시
@@ -641,7 +641,7 @@ public final class ExcelExporter {
      *
      * @param <T>        CSV DTO 타입 (반드시 @ExcelSheet와 @ExcelColumn 어노테이션 필요)
      * @param response   HTTP 응답 객체 (CSV 파일이 이 응답으로 전송됨)
-     * @param fileName   다운로드될 파일명 (타임스탬프가 자동으로 추가됨)
+     * @param fileName   다운로드될 파일명 (명시적 파일명은 그대로 사용, 기본값 "download"만 타임스탬프 추가)
      * @param dataStream CSV로 변환할 데이터 스트림
      * @throws ExcelExporterException CSV 생성 중 오류 발생 시
      */
@@ -666,7 +666,7 @@ public final class ExcelExporter {
      *
      * @param <T>          CSV DTO 타입 (반드시 @ExcelSheet와 @ExcelColumn 어노테이션 필요)
      * @param outputStream CSV 데이터가 출력될 스트림 (호출자가 스트림 닫기 책임)
-     * @param fileName     파일명 (타임스탬프 자동 추가, 보안 검증 및 인코딩 적용)
+     * @param fileName     파일명 (명시적 파일명은 그대로 사용, 기본값 "download"만 타임스탬프 추가, 보안 검증 및 인코딩 적용)
      * @param dataStream   CSV로 변환할 데이터 스트림
      * @return 보안 검증 및 인코딩이 적용된 최종 파일명
      * @throws ExcelExporterException CSV 생성 중 오류 발생 시
