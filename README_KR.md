@@ -21,15 +21,15 @@
 <dependency>
     <groupId>io.github.takoeats</groupId>
     <artifactId>excel-annotator</artifactId>
-    <version>1.0.5</version>
+    <version>2.0.0</version>
 </dependency>
 ```
 
 ### 2. DTO에 어노테이션 추가
 
 ```java
-import com.junho.excel.annotation.ExcelSheet;
-import com.junho.excel.annotation.ExcelColumn;
+import annotation.io.github.takoeats.excelannotator.ExcelSheet;
+import annotation.io.github.takoeats.excelannotator.ExcelColumn;
 
 @ExcelSheet("고객 목록")
 public class CustomerDTO {
@@ -47,7 +47,7 @@ public class CustomerDTO {
 ### 3. Excel 다운로드
 
 ```java
-import com.junho.excel.ExcelExporter;
+import io.github.takoeats.excelannotator.ExcelExporter;
 
 @PostMapping("/download/customers")
 public void downloadExcel(HttpServletResponse response) {
@@ -191,29 +191,31 @@ return ResponseEntity.ok()
 #### 사전 정의 스타일 사용
 
 ```java
-import com.junho.excel.example.style.*;
+import io.github.takoeats.excelannotator.example.style.CurrencyStyle;
+import io.github.takoeats.excelannotator.example.style.DateOnlyStyle;
+import io.github.takoeats.excelannotator.example.style.PercentageStyle;
 
 @ExcelSheet("판매 내역")
 public class SalesDTO {
 
     @ExcelColumn(
-        header = "판매금액",
-        order = 1,
-        columnStyle = CurrencyStyle.class  // 통화 포맷: ₩#,##0
+            header = "판매금액",
+            order = 1,
+            columnStyle = CurrencyStyle.class  // 통화 포맷: ₩#,##0
     )
     private BigDecimal amount;
 
     @ExcelColumn(
-        header = "판매일",
-        order = 2,
-        columnStyle = DateOnlyStyle.class  // 날짜 포맷: yyyy-MM-dd
+            header = "판매일",
+            order = 2,
+            columnStyle = DateOnlyStyle.class  // 날짜 포맷: yyyy-MM-dd
     )
     private LocalDate saleDate;
 
     @ExcelColumn(
-        header = "달성률",
-        order = 3,
-        columnStyle = PercentageStyle.class  // 퍼센트 포맷: 0.00%
+            header = "달성률",
+            order = 3,
+            columnStyle = PercentageStyle.class  // 퍼센트 포맷: 0.00%
     )
     private Double achievementRate;
 }
@@ -237,18 +239,18 @@ public class SalesDTO {
 #### 커스텀 스타일 생성
 
 ```java
-import com.junho.excel.style.CustomExcelCellStyle;
-import com.junho.excel.style.configurer.ExcelCellStyleConfigurer;
+import io.github.takoeats.excelannotator.style.CustomExcelCellStyle;
+import io.github.takoeats.excelannotator.style.configurer.ExcelCellStyleConfigurer;
 
 public class MyCustomStyle extends CustomExcelCellStyle {
     @Override
     protected void configure(ExcelCellStyleConfigurer configurer) {
         configurer
-            .backgroundColor(144, 238, 144)  // RGB: Light Green
-            .fontColor(0, 100, 0)            // RGB: Dark Green
-            .bold(true)
-            .alignment(HorizontalAlignment.CENTER, VerticalAlignment.CENTER)
-            .numberFormat("#,##0");
+                .backgroundColor(144, 238, 144)  // RGB: Light Green
+                .fontColor(0, 100, 0)            // RGB: Dark Green
+                .bold(true)
+                .alignment(HorizontalAlignment.CENTER, VerticalAlignment.CENTER)
+                .numberFormat("#,##0");
     }
 }
 ```
@@ -270,21 +272,21 @@ private BigDecimal revenue;
 #### 기본 조건부 스타일
 
 ```java
-import com.junho.excel.annotation.ConditionalStyle;
+import annotation.io.github.takoeats.excelannotator.ConditionalStyle;
 
 @ExcelSheet("재무 리포트")
 public class FinanceDTO {
 
     @ExcelColumn(
-        header = "손익",
-        order = 1,
-        conditionalStyles = {
-            @ConditionalStyle(
-                when = "value < 0",                   // 음수일 때
-                style = CriticalAlertStyle.class,     // 빨간 배경
-                priority = 10
-            )
-        }
+            header = "손익",
+            order = 1,
+            conditionalStyles = {
+                    @ConditionalStyle(
+                            when = "value < 0",                   // 음수일 때
+                            style = CriticalAlertStyle.class,     // 빨간 배경
+                            priority = 10
+                    )
+            }
     )
     private BigDecimal profitLoss;
 }
@@ -932,14 +934,14 @@ public ResponseEntity<?> downloadCustomers(HttpServletResponse response) {
 <dependency>
     <groupId>io.github.takoeats</groupId>
     <artifactId>excel-annotator</artifactId>
-    <version>1.0.5</version>
+    <version>2.0.0</version>
 </dependency>
 ```
 
 ### Gradle
 
 ```gradle
-implementation 'io.github.takoeats:excel-annotator:1.0.5'
+implementation 'io.github.takoeats:excel-annotator:2.0.0'
 ```
 
 ### 필요 의존성
@@ -1231,6 +1233,6 @@ ExcelExporter.excelFromList(response, "매출보고서.xlsx", data);
 
 **⭐ 이 프로젝트가 유용하셨다면 Star를 눌러주세요! ⭐**
 
-Made with ❤️ by [Junho](https://github.com/takoeats)
+Made with ❤️ by [takoeats](https://github.com/takoeats)
 
 </div>

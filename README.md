@@ -33,15 +33,15 @@ you'll love Excel Annotator.
 <dependency>
     <groupId>io.github.takoeats</groupId>
     <artifactId>excel-annotator</artifactId>
-    <version>1.0.5</version>
+    <version>2.0.0</version>
 </dependency>
 ```
 
 ### 2. Add Annotations to DTO
 
 ```java
-import com.junho.excel.annotation.ExcelSheet;
-import com.junho.excel.annotation.ExcelColumn;
+import annotation.io.github.takoeats.excelannotator.ExcelSheet;
+import annotation.io.github.takoeats.excelannotator.ExcelColumn;
 
 @ExcelSheet("Customer List")
 public class CustomerDTO {
@@ -59,7 +59,7 @@ public class CustomerDTO {
 ### 3. Download Excel
 
 ```java
-import com.junho.excel.ExcelExporter;
+import io.github.takoeats.excelannotator.ExcelExporter;
 
 @PostMapping("/download/customers")
 public void downloadExcel(HttpServletResponse response) {
@@ -207,29 +207,31 @@ return ResponseEntity.ok()
 #### Using Predefined Styles
 
 ```java
-import com.junho.excel.example.style.*;
+import io.github.takoeats.excelannotator.example.style.CurrencyStyle;
+import io.github.takoeats.excelannotator.example.style.DateOnlyStyle;
+import io.github.takoeats.excelannotator.example.style.PercentageStyle;
 
 @ExcelSheet("Sales Records")
 public class SalesDTO {
 
     @ExcelColumn(
-        header = "Amount",
-        order = 1,
-        columnStyle = CurrencyStyle.class  // Currency format: ₩#,##0
+            header = "Amount",
+            order = 1,
+            columnStyle = CurrencyStyle.class  // Currency format: ₩#,##0
     )
     private BigDecimal amount;
 
     @ExcelColumn(
-        header = "Sale Date",
-        order = 2,
-        columnStyle = DateOnlyStyle.class  // Date format: yyyy-MM-dd
+            header = "Sale Date",
+            order = 2,
+            columnStyle = DateOnlyStyle.class  // Date format: yyyy-MM-dd
     )
     private LocalDate saleDate;
 
     @ExcelColumn(
-        header = "Achievement Rate",
-        order = 3,
-        columnStyle = PercentageStyle.class  // Percentage format: 0.00%
+            header = "Achievement Rate",
+            order = 3,
+            columnStyle = PercentageStyle.class  // Percentage format: 0.00%
     )
     private Double achievementRate;
 }
@@ -252,18 +254,18 @@ public class SalesDTO {
 #### Creating Custom Styles
 
 ```java
-import com.junho.excel.style.CustomExcelCellStyle;
-import com.junho.excel.style.configurer.ExcelCellStyleConfigurer;
+import io.github.takoeats.excelannotator.style.CustomExcelCellStyle;
+import io.github.takoeats.excelannotator.style.configurer.ExcelCellStyleConfigurer;
 
 public class MyCustomStyle extends CustomExcelCellStyle {
     @Override
     protected void configure(ExcelCellStyleConfigurer configurer) {
         configurer
-            .backgroundColor(144, 238, 144)  // RGB: Light Green
-            .fontColor(0, 100, 0)            // RGB: Dark Green
-            .bold(true)
-            .alignment(HorizontalAlignment.CENTER, VerticalAlignment.CENTER)
-            .numberFormat("#,##0");
+                .backgroundColor(144, 238, 144)  // RGB: Light Green
+                .fontColor(0, 100, 0)            // RGB: Dark Green
+                .bold(true)
+                .alignment(HorizontalAlignment.CENTER, VerticalAlignment.CENTER)
+                .numberFormat("#,##0");
     }
 }
 ```
@@ -285,21 +287,21 @@ private BigDecimal revenue;
 #### Basic Conditional Style
 
 ```java
-import com.junho.excel.annotation.ConditionalStyle;
+import annotation.io.github.takoeats.excelannotator.ConditionalStyle;
 
 @ExcelSheet("Financial Report")
 public class FinanceDTO {
 
     @ExcelColumn(
-        header = "Profit/Loss",
-        order = 1,
-        conditionalStyles = {
-            @ConditionalStyle(
-                when = "value < 0",                   // When negative
-                style = CriticalAlertStyle.class,     // Red background
-                priority = 10
-            )
-        }
+            header = "Profit/Loss",
+            order = 1,
+            conditionalStyles = {
+                    @ConditionalStyle(
+                            when = "value < 0",                   // When negative
+                            style = CriticalAlertStyle.class,     // Red background
+                            priority = 10
+                    )
+            }
     )
     private BigDecimal profitLoss;
 }
@@ -950,14 +952,14 @@ public ResponseEntity<?> downloadCustomers(HttpServletResponse response) {
 <dependency>
     <groupId>io.github.takoeats</groupId>
     <artifactId>excel-annotator</artifactId>
-    <version>1.0.5</version>
+    <version>2.0.0</version>
 </dependency>
 ```
 
 ### Gradle
 
 ```gradle
-implementation 'io.github.takoeats:excel-annotator:1.0.5'
+implementation 'io.github.takoeats:excel-annotator:2.0.0'
 ```
 
 ### Dependencies
@@ -1249,6 +1251,6 @@ Please report bugs and feature requests on [GitHub Issues](https://github.com/ta
 
 **⭐ Star this project if you find it useful! ⭐**
 
-Made with ❤️ by [Junho](https://github.com/takoeats)
+Made with ❤️ by [takoeats](https://github.com/takoeats)
 
 </div>
