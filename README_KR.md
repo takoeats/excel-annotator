@@ -28,8 +28,8 @@
 ### 2. DTO에 어노테이션 추가
 
 ```java
-import annotation.io.github.takoeats.excelannotator.ExcelSheet;
-import annotation.io.github.takoeats.excelannotator.ExcelColumn;
+import io.github.takoeats.excelannotator.annotation.ExcelSheet;
+import io.github.takoeats.excelannotator.annotation.ExcelColumn;
 
 @ExcelSheet("고객 목록")
 public class CustomerDTO {
