@@ -40,8 +40,8 @@ you'll love Excel Annotator.
 ### 2. Add Annotations to DTO
 
 ```java
-import annotation.io.github.takoeats.excelannotator.ExcelSheet;
-import annotation.io.github.takoeats.excelannotator.ExcelColumn;
+import io.github.takoeats.excelannotator.annotation.ExcelSheet;
+import io.github.takoeats.excelannotator.annotation.ExcelColumn;
 
 @ExcelSheet("Customer List")
 public class CustomerDTO {
