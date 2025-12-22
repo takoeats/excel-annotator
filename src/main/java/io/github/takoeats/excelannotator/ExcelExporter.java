@@ -37,6 +37,31 @@ public final class ExcelExporter {
 
 
     /**
+     * 어노테이션 기반 Excel 파일 다운로드 (단순 버전, 기본 파일명)
+     * <p>데이터 리스트를 Excel 파일로 변환하여 HTTP 응답으로 전송합니다.</p>
+     * <p>파일명이 지정되지 않으면 "download_타임스탬프.xlsx" 형식으로 생성됩니다.</p>
+     *
+     * <h3>사용 예시</h3>
+     * <pre>{@code
+     * // Controller에서 호출
+     * try {
+     *     List<CustomerDTO> customers = service.getCustomers();
+     *     ExcelExporter.excelFromList(response, customers);
+     * } catch (ExcelExporterException ex) {
+     *     // 에러 처리
+     * }
+     * }</pre>
+     *
+     * @param <T>      Excel DTO 타입 (반드시 @ExcelSheet와 @ExcelColumn 어노테이션 필요)
+     * @param response HTTP 응답 객체 (Excel 파일이 이 응답으로 전송됨)
+     * @param data     Excel로 변환할 데이터 리스트
+     * @throws ExcelExporterException 데이터가 null이거나 비어있을 경우, 또는 Excel 생성 중 오류 발생 시
+     */
+    public static <T> void excelFromList(HttpServletResponse response, List<T> data) {
+        excelFromList(response, DEFAULT_FILE_NAME, data);
+    }
+
+    /**
      * 어노테이션 기반 Excel 파일 다운로드 (단순 버전)
      * <p>데이터 리스트를 Excel 파일로 변환하여 HTTP 응답으로 전송합니다.</p>
      *
@@ -742,6 +767,9 @@ public final class ExcelExporter {
                 ? fileName.substring(0, fileName.lastIndexOf('.'))
                 : fileName;
     }
+
+
+
 
     /**
      * Excel 데이터 제공 함수형 인터페이스
