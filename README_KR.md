@@ -240,7 +240,7 @@ public class SalesDTO {
 
 ```java
 import io.github.takoeats.excelannotator.style.CustomExcelCellStyle;
-import io.github.takoeats.excelannotator.style.configurer.ExcelCellStyleConfigurer;
+import io.github.takoeats.excelannotator.style.ExcelCellStyleConfigurer;
 
 public class MyCustomStyle extends CustomExcelCellStyle {
     @Override
@@ -272,7 +272,7 @@ private BigDecimal revenue;
 #### 기본 조건부 스타일
 
 ```java
-import annotation.io.github.takoeats.excelannotator.ConditionalStyle;
+import io.github.takoeats.excelannotator.annotation.ConditionalStyle;
 
 @ExcelSheet("재무 리포트")
 public class FinanceDTO {
