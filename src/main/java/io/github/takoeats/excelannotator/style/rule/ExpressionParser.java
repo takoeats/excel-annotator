@@ -379,31 +379,32 @@ public class ExpressionParser {
 
             while (position < input.length()) {
                 char ch = input.charAt(position);
-
-                // 괄호 카운트
-                if (ch == '(') parenCount++;
-                if (ch == ')') {
-                    if (parenCount == 0) break;
-                    parenCount--;
+                int nextParenCount = updateParenDepth(ch, parenCount);
+                if ((ch == ')' && parenCount == 0) || (nextParenCount == 0 && isLogicalOperator(position))) {
+                    break;
                 }
 
-                // 논리 연산자 확인 (괄호 밖에서만)
-                if (parenCount == 0) {
-                    if (position + 1 < input.length()) {
-                        String twoChar = input.substring(position, position + 2);
-                        if (twoChar.equals("&&") || twoChar.equals("||")) {
-                            break;
-                        }
-                    }
-                    if (ch == '^') break;
-                }
-
+                parenCount = nextParenCount;
                 position++;
             }
 
             String condition = input.substring(start, position).trim();
             skipWhitespace();
             return condition;
+        }
+
+        private int updateParenDepth(char ch, int currentDepth) {
+            if (ch == '(') return currentDepth + 1;
+            if (ch == ')') return currentDepth - 1;
+            return currentDepth;
+        }
+
+        private boolean isLogicalOperator(int pos) {
+            if (pos + 1 < input.length()) {
+                String twoChar = input.substring(pos, pos + 2);
+                if (twoChar.equals("&&") || twoChar.equals("||")) return true;
+            }
+            return input.charAt(pos) == '^';
         }
 
         private void skipWhitespace() {
