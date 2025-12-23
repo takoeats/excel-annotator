@@ -3,6 +3,7 @@ package io.github.takoeats.excelannotator.internal.metadata.style;
 import io.github.takoeats.excelannotator.annotation.ConditionalStyle;
 import io.github.takoeats.excelannotator.annotation.ExcelColumn;
 import io.github.takoeats.excelannotator.internal.metadata.SheetInfo;
+import io.github.takoeats.excelannotator.masking.Masking;
 import io.github.takoeats.excelannotator.style.CustomExcelCellStyle;
 import io.github.takoeats.excelannotator.style.ExcelCellStyleConfigurer;
 import io.github.takoeats.excelannotator.style.defaultstyle.DefaultColumnStyle;
@@ -272,6 +273,12 @@ class ColumnStyleResolverTest {
             public Class<ExcelColumn> annotationType() {
                 return ExcelColumn.class;
             }
+
+            @Override
+            public Masking masking() {
+                return Masking.NONE;
+            }
+
         };
     }
 

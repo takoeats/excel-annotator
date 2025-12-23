@@ -6,7 +6,7 @@
 
 [![Java](https://img.shields.io/badge/Java-1.8+-007396?style=flat&logo=java)](https://www.oracle.com/java/)
 [![Apache POI](https://img.shields.io/badge/Apache%20POI-5.4.0-D22128?style=flat)](https://poi.apache.org/)
-[![Version](https://img.shields.io/badge/version-2.1.0-blue.svg)](https://github.com/takoeats/excel-annotator)
+[![Version](https://img.shields.io/badge/version-2.2.0-blue.svg)](https://github.com/takoeats/excel-annotator)
 [![License](https://img.shields.io/badge/license-Apache--2.0-green.svg)](LICENSE)
 
 **POI 코드 작성 없이 어노테이션만으로 Excel 파일을 생성하세요!**
@@ -21,7 +21,7 @@
 <dependency>
     <groupId>io.github.takoeats</groupId>
     <artifactId>excel-annotator</artifactId>
-    <version>2.1.0</version>
+    <version>2.2.0</version>
 </dependency>
 ```
 
@@ -41,6 +41,19 @@ public class CustomerDTO {
 
     @ExcelColumn(header = "이메일", order = 3)
     private String email;
+}
+```
+
+**또는 `autoColumn`으로 더욱 간단하게:**
+
+```java
+import io.github.takoeats.excelannotator.annotation.ExcelSheet;
+
+@ExcelSheet(value = "고객 목록", autoColumn = true)
+public class CustomerDTO {
+    private Long customerId;     // 자동 내보내기: header = "customerId"
+    private String customerName; // 자동 내보내기: header = "customerName"
+    private String email;        // 자동 내보내기: header = "email"
 }
 ```
 
@@ -607,11 +620,114 @@ public void downloadLargeCustomersAsCsv(HttpServletResponse response) {
 | 범용성 | 보통 | 높음 |
 | 처리 속도 | 보통 | 빠름 |
 
+### 7️⃣ 데이터 마스킹
+
+내장 프리셋을 사용하여 민감한 개인정보(PII)를 자동으로 마스킹할 수 있습니다.
+
+#### 사용 가능한 마스킹 프리셋
+
+| 프리셋 | 입력 예시 | 출력 예시 | 사용 용도 |
+|--------|----------|----------|----------|
+| `PHONE` | 010-1234-5678 | 010-****-5678 | 전화번호 |
+| `EMAIL` | user@example.com | u***@example.com | 이메일 주소 |
+| `SSN` | 123456-1234567 | 123456-******* | 주민등록번호 |
+| `NAME` | 홍길동 | 홍*동 | 개인 이름 |
+| `CREDIT_CARD` | 1234-5678-9012-3456 | ****-****-****-3456 | 신용카드 번호 |
+| `ACCOUNT_NUMBER` | 110-123-456789 | 110-***-***789 | 은행 계좌번호 |
+| `ADDRESS` | 서울시 강남구 테헤란로 123 | 서울시 강남구 *** | 도로명 주소 |
+| `ZIP_CODE` | 12345 | 123** | 우편번호 |
+| `IP_ADDRESS` | 192.168.1.100 | 192.168.*.* | IP 주소 |
+| `PASSPORT` | M12345678 | M12***678 | 여권번호 |
+| `LICENSE_PLATE` | 12가3456 | 12가**56 | 차량번호 |
+| `PARTIAL_LEFT` | ABC12345 | ****2345 | 왼쪽 마스킹, 오른쪽 4자리 보존 |
+| `PARTIAL_RIGHT` | ABC12345 | ABC1**** | 오른쪽 마스킹, 왼쪽 4자리 보존 |
+| `MIDDLE` | ABC12345 | AB****45 | 중간 마스킹, 양쪽 보존 |
+
+#### 기본 사용법
+
+```java
+import io.github.takoeats.excelannotator.masking.Masking;
+
+@ExcelSheet("고객정보")
+public class CustomerDTO {
+    @ExcelColumn(header = "이름", order = 1, masking = Masking.NAME)
+    private String name;
+
+    @ExcelColumn(header = "전화번호", order = 2, masking = Masking.PHONE)
+    private String phoneNumber;
+
+    @ExcelColumn(header = "이메일", order = 3, masking = Masking.EMAIL)
+    private String email;
+
+    @ExcelColumn(header = "주민번호", order = 4, masking = Masking.SSN)
+    private String socialSecurityNumber;
+}
+```
+
+#### 실무 예시: 개인정보보호법 준수
+
+```java
+@ExcelSheet("사용자 데이터 내보내기")
+public class UserExportDTO {
+    @ExcelColumn(header = "사용자 ID", order = 1)
+    private Long userId;  // 마스킹 없음
+
+    @ExcelColumn(header = "이름", order = 2, masking = Masking.NAME)
+    private String fullName;  // 홍길동 → 홍*동
+
+    @ExcelColumn(header = "이메일", order = 3, masking = Masking.EMAIL)
+    private String email;  // user@domain.com → u***@domain.com
+
+    @ExcelColumn(header = "전화번호", order = 4, masking = Masking.PHONE)
+    private String phone;  // 010-1234-5678 → 010-****-5678
+
+    @ExcelColumn(header = "주소", order = 5, masking = Masking.ADDRESS)
+    private String address;  // 서울시 강남구 테헤란로 123 → 서울시 강남구 ***
+}
+
+// Controller
+@PostMapping("/export/users")
+public void exportUsers(HttpServletResponse response) {
+    List<UserExportDTO> users = userService.getAllUsers();
+    ExcelExporter.excelFromList(response, "사용자_데이터.xlsx", users);
+    // 다운로드되는 파일에는 마스킹된 민감정보가 포함됩니다
+}
+```
+
+#### 조건부 스타일과 함께 사용
+
+```java
+@ExcelSheet("금융거래 내역")
+public class TransactionDTO {
+    @ExcelColumn(header = "계좌번호", order = 1, masking = Masking.ACCOUNT_NUMBER)
+    private String accountNumber;
+
+    @ExcelColumn(
+        header = "금액",
+        order = 2,
+        conditionalStyles = @ConditionalStyle(
+            when = "value < 0",
+            style = RedBackgroundStyle.class
+        )
+    )
+    private BigDecimal amount;
+
+    @ExcelColumn(header = "카드번호", order = 3, masking = Masking.CREDIT_CARD)
+    private String cardNumber;
+}
+```
+
+**중요 사항:**
+- 마스킹은 **String 필드에만** 적용됩니다
+- 비문자열 타입(Integer, Date 등)은 **무시됩니다**
+- 커스텀 마스킹 로직이 필요한 경우, DTO 값을 설정하기 **전에** 마스킹을 적용하세요
+- `null` 및 빈 문자열은 안전하게 처리됩니다 (에러 없음)
+
 ---
 
 ## 🔧 고급 사용법
 
-### 7️⃣ Data Provider 패턴
+### 8️⃣ Data Provider 패턴
 
 쿼리 로직과 변환 로직을 분리하여 재사용성을 높이는 전용 API입니다.
 
@@ -684,7 +800,90 @@ public void downloadSearchResults(
 - ✅ 테스트 용이성 (각 함수를 독립적으로 테스트)
 - ✅ 코드 가독성 (관심사 분리)
 
-### 8️⃣ 컬럼 너비 설정
+### 9️⃣ 자동 컬럼 생성 (Auto Column)
+
+모든 필드에 `@ExcelColumn`을 일일이 추가하지 않고도 자동으로 엑셀 컬럼으로 변환할 수 있습니다.
+
+#### 기본 사용법
+
+```java
+import io.github.takoeats.excelannotator.annotation.ExcelSheet;
+
+@ExcelSheet(value = "고객", autoColumn = true)
+public class CustomerDTO {
+    private String name;        // 자동 포함: header = "name", order = 1
+    private Integer age;        // 자동 포함: header = "age", order = 2
+    private String email;       // 자동 포함: header = "email", order = 3
+    private Double salary;      // 자동 포함: header = "salary", order = 4
+}
+```
+
+**결과:**
+- 모든 필드가 자동으로 엑셀로 내보내기됨
+- 헤더명은 필드명 사용
+- 컬럼 순서는 필드 선언 순서를 따름
+
+#### 특정 필드 제외
+
+```java
+import io.github.takoeats.excelannotator.annotation.ExcelColumn;
+
+@ExcelSheet(value = "사용자", autoColumn = true)
+public class UserDTO {
+    private String username;    // 자동 포함
+
+    @ExcelColumn(exclude = true)
+    private String password;    // 내보내기에서 제외
+
+    private String email;       // 자동 포함
+    private Integer age;        // 자동 포함
+}
+```
+
+**결과:** username, email, age만 내보내기됨 (password는 제외)
+
+#### 자동 컬럼과 수동 어노테이션 혼용
+
+```java
+@ExcelSheet(value = "상품", autoColumn = true)
+public class ProductDTO {
+    @ExcelColumn(header = "전체 이름", order = 1)
+    private String name;        // 명시적 어노테이션이 우선 적용
+
+    private Integer age;        // 자동: header = "age", order = 2
+
+    @ExcelColumn(header = "이메일 주소", order = 3)
+    private String email;       // 명시적 어노테이션이 우선 적용
+
+    private String phone;       // 자동: header = "phone", order = 4
+
+    @ExcelColumn(exclude = true)
+    private String internalId;  // 제외
+}
+```
+
+**결과:**
+- `@ExcelColumn`이 있는 필드는 어노테이션 설정 사용
+- 어노테이션이 없는 필드는 자동 생성
+- `exclude = true` 필드는 건너뜀
+
+#### 자동 컬럼 사용 시기
+
+**✅ 적합한 경우:**
+- 필드가 많은 단순한 DTO
+- 빠른 프로토타이핑
+- 필드명을 헤더로 사용해도 무방한 내부 리포트
+
+**❌ 권장하지 않는 경우:**
+- 전문적인 헤더가 필요한 사용자 대상 내보내기
+- 컬럼별로 복잡한 스타일링이 필요한 경우
+- 여러 DTO에서 정확한 컬럼 순서 조정이 필요한 경우
+
+**💡 팁:** 개발 단계에서 `autoColumn = true`로 시작한 후, 요구사항이 구체화되면 점진적으로 명시적 `@ExcelColumn` 어노테이션을 추가할 수 있습니다.
+
+---
+
+### 🔟 컬럼 너비 설정
 
 #### 너비 우선순위
 
@@ -752,7 +951,7 @@ private String name;  // 자동으로 DefaultColumnStyle 적용
 private BigDecimal amount;
 ```
 
-### 9️⃣ 헤더 제어
+### 1️⃣1️⃣ 헤더 제어
 
 #### 헤더 없는 시트
 ```java
@@ -777,7 +976,7 @@ public class DataDTO {
 private BigDecimal totalAmount;
 ```
 
-### 🔟 시트 순서 지정
+### 1️⃣2️⃣ 시트 순서 지정
 
 ```java
 @ExcelSheet(value = "요약", order = 1)  // 첫 번째 시트
@@ -951,14 +1150,14 @@ public ResponseEntity<?> downloadCustomers(HttpServletResponse response) {
 <dependency>
     <groupId>io.github.takoeats</groupId>
     <artifactId>excel-annotator</artifactId>
-    <version>2.1.0</version>
+    <version>2.2.0</version>
 </dependency>
 ```
 
 ### Gradle
 
 ```gradle
-implementation 'io.github.takoeats:excel-annotator:2.1.0'
+implementation 'io.github.takoeats:excel-annotator:2.2.0'
 ```
 
 ### 필요 의존성

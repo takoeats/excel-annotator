@@ -18,7 +18,7 @@ you'll love Excel Annotator.
 
 [![Java](https://img.shields.io/badge/Java-1.8+-007396?style=flat&logo=java)](https://www.oracle.com/java/)
 [![Apache POI](https://img.shields.io/badge/Apache%20POI-5.4.0-D22128?style=flat)](https://poi.apache.org/)
-[![Version](https://img.shields.io/badge/version-2.1.0-blue.svg)](https://github.com/takoeats/excel-annotator)
+[![Version](https://img.shields.io/badge/version-2.2.0-blue.svg)](https://github.com/takoeats/excel-annotator)
 [![License](https://img.shields.io/badge/license-Apache--2.0-green.svg)](LICENSE)
 
 **Generate Excel files with annotations only - no POI code required!**
@@ -33,7 +33,7 @@ you'll love Excel Annotator.
 <dependency>
     <groupId>io.github.takoeats</groupId>
     <artifactId>excel-annotator</artifactId>
-    <version>2.1.0</version>
+    <version>2.2.0</version>
 </dependency>
 ```
 
@@ -53,6 +53,19 @@ public class CustomerDTO {
 
     @ExcelColumn(header = "Email", order = 3)
     private String email;
+}
+```
+
+**Or use `autoColumn` for even simpler setup:**
+
+```java
+import io.github.takoeats.excelannotator.annotation.ExcelSheet;
+
+@ExcelSheet(value = "Customer List", autoColumn = true)
+public class CustomerDTO {
+    private Long customerId;     // Auto-exported: header = "customerId"
+    private String customerName; // Auto-exported: header = "customerName"
+    private String email;        // Auto-exported: header = "email"
 }
 ```
 
@@ -623,11 +636,114 @@ public void downloadLargeCustomersAsCsv(HttpServletResponse response) {
 | Compatibility | Medium | High |
 | Processing speed | Medium | Fast |
 
+### 7️⃣ Data Masking
+
+Mask sensitive personal information (PII) automatically with built-in presets.
+
+#### Available Masking Presets
+
+| Preset | Input Example | Output Example | Use Case |
+|--------|---------------|----------------|----------|
+| `PHONE` | 010-1234-5678 | 010-****-5678 | Phone numbers |
+| `EMAIL` | user@example.com | u***@example.com | Email addresses |
+| `SSN` | 123456-1234567 | 123456-******* | Social Security Numbers |
+| `NAME` | 홍길동 | 홍*동 | Personal names |
+| `CREDIT_CARD` | 1234-5678-9012-3456 | ****-****-****-3456 | Credit card numbers |
+| `ACCOUNT_NUMBER` | 110-123-456789 | 110-***-***789 | Bank account numbers |
+| `ADDRESS` | 서울시 강남구 테헤란로 123 | 서울시 강남구 *** | Street addresses |
+| `ZIP_CODE` | 12345 | 123** | Postal codes |
+| `IP_ADDRESS` | 192.168.1.100 | 192.168.*.* | IP addresses |
+| `PASSPORT` | M12345678 | M12***678 | Passport numbers |
+| `LICENSE_PLATE` | 12가3456 | 12가**56 | Vehicle license plates |
+| `PARTIAL_LEFT` | ABC12345 | ****2345 | Mask left, show right 4 |
+| `PARTIAL_RIGHT` | ABC12345 | ABC1**** | Mask right, show left 4 |
+| `MIDDLE` | ABC12345 | AB****45 | Mask middle, show sides |
+
+#### Basic Usage
+
+```java
+import io.github.takoeats.excelannotator.masking.Masking;
+
+@ExcelSheet("Customer Information")
+public class CustomerDTO {
+    @ExcelColumn(header = "Name", order = 1, masking = Masking.NAME)
+    private String name;
+
+    @ExcelColumn(header = "Phone", order = 2, masking = Masking.PHONE)
+    private String phoneNumber;
+
+    @ExcelColumn(header = "Email", order = 3, masking = Masking.EMAIL)
+    private String email;
+
+    @ExcelColumn(header = "SSN", order = 4, masking = Masking.SSN)
+    private String socialSecurityNumber;
+}
+```
+
+#### Real-world Example: GDPR Compliance
+
+```java
+@ExcelSheet("User Data Export")
+public class UserExportDTO {
+    @ExcelColumn(header = "User ID", order = 1)
+    private Long userId;  // No masking
+
+    @ExcelColumn(header = "Name", order = 2, masking = Masking.NAME)
+    private String fullName;  // 홍길동 → 홍*동
+
+    @ExcelColumn(header = "Email", order = 3, masking = Masking.EMAIL)
+    private String email;  // user@domain.com → u***@domain.com
+
+    @ExcelColumn(header = "Phone", order = 4, masking = Masking.PHONE)
+    private String phone;  // 010-1234-5678 → 010-****-5678
+
+    @ExcelColumn(header = "Address", order = 5, masking = Masking.ADDRESS)
+    private String address;  // 서울시 강남구 테헤란로 123 → 서울시 강남구 ***
+}
+
+// Controller
+@PostMapping("/export/users")
+public void exportUsers(HttpServletResponse response) {
+    List<UserExportDTO> users = userService.getAllUsers();
+    ExcelExporter.excelFromList(response, "user_data.xlsx", users);
+    // Downloaded file contains masked sensitive data
+}
+```
+
+#### Combined with Conditional Styling
+
+```java
+@ExcelSheet("Financial Report")
+public class TransactionDTO {
+    @ExcelColumn(header = "Account Number", order = 1, masking = Masking.ACCOUNT_NUMBER)
+    private String accountNumber;
+
+    @ExcelColumn(
+        header = "Amount",
+        order = 2,
+        conditionalStyles = @ConditionalStyle(
+            when = "value < 0",
+            style = RedBackgroundStyle.class
+        )
+    )
+    private BigDecimal amount;
+
+    @ExcelColumn(header = "Card Number", order = 3, masking = Masking.CREDIT_CARD)
+    private String cardNumber;
+}
+```
+
+**Important Notes:**
+- Masking only applies to **String fields**
+- Non-string types (Integer, Date, etc.) are **ignored**
+- For custom masking logic, apply masking **before** setting DTO values
+- `null` and empty strings are handled gracefully (no errors)
+
 ---
 
 ## 🔧 Advanced Usage
 
-### 7️⃣ Data Provider Pattern
+### 8️⃣ Data Provider Pattern
 
 Dedicated API that separates query logic and transformation logic for improved reusability.
 
@@ -701,7 +817,90 @@ public void downloadSearchResults(
 - ✅ Testability (independently test each function)
 - ✅ Code readability (separation of concerns)
 
-### 8️⃣ Column Width Settings
+### 9️⃣ Auto Column Generation
+
+Automatically convert all fields to Excel columns without manually adding `@ExcelColumn` to each field.
+
+#### Basic Usage
+
+```java
+import io.github.takoeats.excelannotator.annotation.ExcelSheet;
+
+@ExcelSheet(value = "Customers", autoColumn = true)
+public class CustomerDTO {
+    private String name;        // Auto-included: header = "name", order = 1
+    private Integer age;        // Auto-included: header = "age", order = 2
+    private String email;       // Auto-included: header = "email", order = 3
+    private Double salary;      // Auto-included: header = "salary", order = 4
+}
+```
+
+**Result:**
+- All fields are automatically exported to Excel
+- Header names use field names
+- Column order follows field declaration order
+
+#### Excluding Specific Fields
+
+```java
+import io.github.takoeats.excelannotator.annotation.ExcelColumn;
+
+@ExcelSheet(value = "Users", autoColumn = true)
+public class UserDTO {
+    private String username;    // Auto-included
+
+    @ExcelColumn(exclude = true)
+    private String password;    // Excluded from export
+
+    private String email;       // Auto-included
+    private Integer age;        // Auto-included
+}
+```
+
+**Result:** Only username, email, and age are exported (password is excluded)
+
+#### Mixing Auto Columns with Manual Annotations
+
+```java
+@ExcelSheet(value = "Products", autoColumn = true)
+public class ProductDTO {
+    @ExcelColumn(header = "Full Name", order = 1)
+    private String name;        // Explicit annotation takes priority
+
+    private Integer age;        // Auto: header = "age", order = 2
+
+    @ExcelColumn(header = "Email Address", order = 3)
+    private String email;       // Explicit annotation takes priority
+
+    private String phone;       // Auto: header = "phone", order = 4
+
+    @ExcelColumn(exclude = true)
+    private String internalId;  // Excluded
+}
+```
+
+**Result:**
+- Fields with `@ExcelColumn` use the annotation settings
+- Fields without annotation are auto-generated
+- `exclude = true` fields are skipped
+
+#### When to Use Auto Column
+
+**✅ Good for:**
+- Simple DTOs with many fields
+- Quick prototyping
+- Internal reports where field names are acceptable as headers
+
+**❌ Not recommended for:**
+- User-facing exports requiring professional headers
+- Complex styling requirements per column
+- When precise column ordering across multiple DTOs is needed
+
+**💡 Tip:** You can start with `autoColumn = true` during development, then add explicit `@ExcelColumn` annotations as your requirements become more specific.
+
+---
+
+### 🔟 Column Width Settings
 
 #### Width Priority
 
@@ -769,7 +968,7 @@ private String name;  // Automatically uses DefaultColumnStyle
 private BigDecimal amount;
 ```
 
-### 9️⃣ Header Control
+### 1️⃣1️⃣ Header Control
 
 #### Sheet without Header
 
@@ -796,7 +995,7 @@ public class DataDTO {
 private BigDecimal totalAmount;
 ```
 
-### 🔟 Sheet Order
+### 1️⃣2️⃣ Sheet Order
 
 ```java
 @ExcelSheet(value = "Summary", order = 1)  // First sheet
@@ -970,14 +1169,14 @@ public ResponseEntity<?> downloadCustomers(HttpServletResponse response) {
 <dependency>
     <groupId>io.github.takoeats</groupId>
     <artifactId>excel-annotator</artifactId>
-    <version>2.1.0</version>
+    <version>2.2.0</version>
 </dependency>
 ```
 
 ### Gradle
 
 ```gradle
-implementation 'io.github.takoeats:excel-annotator:2.1.0'
+implementation 'io.github.takoeats:excel-annotator:2.2.0'
 ```
 
 ### Dependencies

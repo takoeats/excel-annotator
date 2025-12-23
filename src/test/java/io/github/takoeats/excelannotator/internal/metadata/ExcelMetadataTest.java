@@ -5,6 +5,7 @@ import io.github.takoeats.excelannotator.style.ExcelCellStyleConfigurer;
 import io.github.takoeats.excelannotator.style.rule.StyleRule;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import io.github.takoeats.excelannotator.masking.Masking;
 
 import java.lang.reflect.Field;
 import java.util.Arrays;
@@ -40,7 +41,8 @@ class ExcelMetadataTest {
                 null,
                 null,
                 Collections.emptyList(),
-                "Sheet1"
+                "Sheet1",
+                Masking.NONE
         );
 
         ColumnInfo col2 = new ColumnInfo(
@@ -52,7 +54,8 @@ class ExcelMetadataTest {
                 null,
                 null,
                 Arrays.asList(StyleRule.builder().priority(1).build()),
-                "Sheet1"
+                "Sheet1",
+                Masking.NONE
         );
 
         testColumnInfos = Arrays.asList(col1, col2);
@@ -297,7 +300,8 @@ class ExcelMetadataTest {
                 headerStyle,
                 null,
                 Collections.emptyList(),
-                "Sheet1"
+                "Sheet1",
+                Masking.NONE
         );
 
         ExcelMetadata<Object> metadata = ExcelMetadata.<Object>builder()
@@ -324,7 +328,8 @@ class ExcelMetadataTest {
                 null,
                 columnStyle,
                 Collections.emptyList(),
-                "Sheet1"
+                "Sheet1",
+                Masking.NONE
         );
 
         ExcelMetadata<Object> metadata = ExcelMetadata.<Object>builder()
@@ -347,11 +352,13 @@ class ExcelMetadataTest {
 
         ColumnInfo col1 = new ColumnInfo(
                 "Name", 1, 100, "", mockField1,
-                headerStyle1, null, Collections.emptyList(), "Sheet1"
+                headerStyle1, null, Collections.emptyList(), "Sheet1",
+                Masking.NONE
         );
         ColumnInfo col2 = new ColumnInfo(
                 "Age", 2, 50, "", mockField2,
-                headerStyle2, null, Collections.emptyList(), "Sheet1"
+                headerStyle2, null, Collections.emptyList(), "Sheet1",
+                Masking.NONE
         );
 
         ExcelMetadata<Object> metadata = ExcelMetadata.<Object>builder()
@@ -372,11 +379,13 @@ class ExcelMetadataTest {
 
         ColumnInfo col1 = new ColumnInfo(
                 "Name", 1, 100, "", mockField1,
-                null, columnStyle1, Collections.emptyList(), "Sheet1"
+                null, columnStyle1, Collections.emptyList(), "Sheet1",
+                Masking.NONE
         );
         ColumnInfo col2 = new ColumnInfo(
                 "Age", 2, 50, "", mockField2,
-                null, columnStyle2, Collections.emptyList(), "Sheet1"
+                null, columnStyle2, Collections.emptyList(), "Sheet1",
+                Masking.NONE
         );
 
         ExcelMetadata<Object> metadata = ExcelMetadata.<Object>builder()

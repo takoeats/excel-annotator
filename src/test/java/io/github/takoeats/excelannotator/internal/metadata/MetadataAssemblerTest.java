@@ -2,6 +2,7 @@ package io.github.takoeats.excelannotator.internal.metadata;
 
 import io.github.takoeats.excelannotator.annotation.ExcelColumn;
 import io.github.takoeats.excelannotator.annotation.ExcelSheet;
+import io.github.takoeats.excelannotator.masking.Masking;
 import org.junit.jupiter.api.Test;
 
 import java.util.LinkedHashMap;
@@ -88,7 +89,8 @@ class MetadataAssemblerTest {
                 null,
                 null,
                 null,
-                null
+                null,
+                Masking.NONE
         );
 
         ColumnInfo col2 = new ColumnInfo(
@@ -100,7 +102,8 @@ class MetadataAssemblerTest {
                 null,
                 null,
                 null,
-                null
+                null,
+                Masking.NONE
         );
 
         mergedColumns.put(1, col1);
@@ -121,7 +124,8 @@ class MetadataAssemblerTest {
                 null,
                 null,
                 null,
-                null
+                null,
+                Masking.NONE
         );
 
         mergedColumns.put(1, col1);
