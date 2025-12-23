@@ -45,6 +45,8 @@ public enum ErrorCode {
 
     ROW_WRITE_ERROR("E020", "엑셀 행 작성 중 오류가 발생했습니다."),
 
+    NO_EXCEL_COLUMNS("E021", "@ExcelColumn 어노테이션이 적용된 필드가 없습니다."),
+
     @Deprecated
     EMPTY_SHEET_DATA("E012-deprecated", "멀티 시트 데이터가 비어있습니다. EMPTY_DATA 사용 권장"),
 

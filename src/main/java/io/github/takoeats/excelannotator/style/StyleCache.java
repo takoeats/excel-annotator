@@ -2,6 +2,8 @@ package io.github.takoeats.excelannotator.style;
 
 import io.github.takoeats.excelannotator.exception.ErrorCode;
 import io.github.takoeats.excelannotator.exception.ExcelExporterException;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -16,13 +18,11 @@ import java.util.concurrent.ConcurrentHashMap;
  * <p>커스텀 스타일 객체만 캐싱, POI CellStyle은 매번 생성</p>
  */
 @Slf4j
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public final class StyleCache {
 
     private static final Map<Class<?>, CustomExcelCellStyle> STYLE_INSTANCES = new ConcurrentHashMap<>();
 
-    private StyleCache() {
-        throw new AssertionError("Utility class cannot be instantiated");
-    }
 
     /**
      * 스타일 클래스 인스턴스 캐싱 반환

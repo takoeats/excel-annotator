@@ -57,4 +57,15 @@ public @interface ExcelSheet {
      * @return 기본 컬럼 스타일 클래스
      */
     Class<? extends CustomExcelCellStyle> defaultColumnStyle() default DefaultColumnStyle.class;
+
+    /**
+     * 모든 필드를 자동으로 엑셀 컬럼으로 처리할지 여부
+     * <p>true로 설정하면 @ExcelColumn 어노테이션이 없는 필드도 자동으로 엑셀 컬럼으로 변환됩니다.</p>
+     * <p>필드 선언 순서대로 order가 자동 할당되며, 헤더명은 필드명이 사용됩니다.</p>
+     * <p>제외하려면 {@link ExcelColumn#exclude()} = true를 명시하세요.</p>
+     * <p>이미 @ExcelColumn이 있는 필드는 어노테이션의 설정이 우선 적용됩니다.</p>
+     *
+     * @return true이면 모든 필드를 자동으로 컬럼으로 처리
+     */
+    boolean autoColumn() default false;
 }

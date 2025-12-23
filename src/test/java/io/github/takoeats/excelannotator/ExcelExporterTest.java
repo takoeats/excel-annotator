@@ -5,9 +5,11 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import io.github.takoeats.excelannotator.exception.ErrorCode;
 import io.github.takoeats.excelannotator.testdto.CustomerPartADTO;
 import io.github.takoeats.excelannotator.testdto.CustomerPartBDTO;
 import io.github.takoeats.excelannotator.testdto.InvalidDTONoAnnotation;
+import io.github.takoeats.excelannotator.testdto.NoExcelColumnsDTO;
 import io.github.takoeats.excelannotator.testdto.OrderConflictDTO1;
 import io.github.takoeats.excelannotator.testdto.OrderConflictDTO2;
 import io.github.takoeats.excelannotator.testdto.PersonDTO;
@@ -443,6 +445,31 @@ class ExcelExporterTest {
         exception
             .getMessage()
             .contains("데이터가 없습니다"));
+  }
+
+  @Test
+  void excelFromList_withNoExcelColumns_throwsNoExcelColumnsException() {
+    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+
+    ExcelExporterException exception =
+        assertThrows(ExcelExporterException.class,
+            () -> ExcelExporter.excelFromList(baos, "test.xlsx", Collections.singletonList(new NoExcelColumnsDTO("test1", "test2"))));
+
+    assertEquals(ErrorCode.NO_EXCEL_COLUMNS, exception.getErrorCode());
+    assertTrue(exception.getMessage().contains("NoExcelColumnsDTO"));
+  }
+
+  @Test
+  void excelFromStream_withNoExcelColumns_throwsNoExcelColumnsException() {
+    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+    Stream<NoExcelColumnsDTO> stream = Stream.of(new NoExcelColumnsDTO("test1", "test2"));
+
+    ExcelExporterException exception =
+        assertThrows(ExcelExporterException.class,
+            () -> ExcelExporter.excelFromStream(baos, "test.xlsx", stream));
+
+    assertEquals(ErrorCode.NO_EXCEL_COLUMNS, exception.getErrorCode());
+    assertTrue(exception.getMessage().contains("NoExcelColumnsDTO"));
   }
 
 }

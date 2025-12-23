@@ -1,6 +1,8 @@
 package io.github.takoeats.excelannotator.internal.metadata.extractor;
 
 import io.github.takoeats.excelannotator.annotation.ExcelColumn;
+import io.github.takoeats.excelannotator.exception.ErrorCode;
+import io.github.takoeats.excelannotator.exception.ExcelExporterException;
 import io.github.takoeats.excelannotator.internal.metadata.ColumnInfo;
 import io.github.takoeats.excelannotator.internal.metadata.SheetInfo;
 import io.github.takoeats.excelannotator.internal.metadata.style.ColumnStyleResolver;
@@ -29,15 +31,31 @@ public final class ColumnInfoExtractor {
         List<ColumnInfo> columnInfos = new ArrayList<>();
 
         Field[] fields = clazz.getDeclaredFields();
-        if (fields.length == 0) {
-            return Collections.emptyList();
+
+        if (sheetInfo.isAutoColumn()) {
+            int autoOrder = 1;
+            for (Field field : fields) {
+                if (shouldSkipField(field)) {
+                    continue;
+                }
+                ColumnInfo columnInfo = processFieldWithAutoColumn(field, sheetInfo, autoOrder);
+                if (columnInfo != null) {
+                    columnInfos.add(columnInfo);
+                    autoOrder++;
+                }
+            }
+        } else {
+            for (Field field : fields) {
+                ColumnInfo columnInfo = processField(field, sheetInfo);
+                if (columnInfo != null) {
+                    columnInfos.add(columnInfo);
+                }
+            }
         }
 
-        for (Field field : fields) {
-            ColumnInfo columnInfo = processField(field, sheetInfo);
-            if (columnInfo != null) {
-                columnInfos.add(columnInfo);
-            }
+        if (columnInfos.isEmpty()) {
+            throw new ExcelExporterException(ErrorCode.NO_EXCEL_COLUMNS,
+                    String.format("클래스 '%s'에 @ExcelColumn 어노테이션이 적용된 필드가 없습니다.", clazz.getName()));
         }
 
         columnInfos.sort(Comparator.comparingInt(ColumnInfo::getOrder));
@@ -72,5 +90,37 @@ public final class ColumnInfoExtractor {
             );
         }
         return null;
+    }
+
+    private static boolean shouldSkipField(Field field) {
+        return field.isSynthetic() || field.getName().startsWith("$");
+    }
+
+    private static ColumnInfo processFieldWithAutoColumn(Field field, SheetInfo sheetInfo, int autoOrder) {
+        ExcelColumn excelColumn = field.getAnnotation(ExcelColumn.class);
+
+        if (excelColumn != null && excelColumn.exclude()) {
+            return null;
+        }
+
+        if (excelColumn != null) {
+            return processField(field, sheetInfo);
+        }
+
+        CustomExcelCellStyle headerStyle = ColumnStyleResolver.resolveHeaderStyleFromSheetInfo(sheetInfo);
+        CustomExcelCellStyle columnStyle = ColumnStyleResolver.resolveColumnStyleFromFieldType(field, sheetInfo);
+        int width = ColumnStyleResolver.calculateWidthFromStyle(columnStyle);
+
+        return new ColumnInfo(
+                field.getName(),
+                autoOrder,
+                width,
+                "",
+                field,
+                headerStyle,
+                columnStyle,
+                Collections.emptyList(),
+                ""
+        );
     }
 }

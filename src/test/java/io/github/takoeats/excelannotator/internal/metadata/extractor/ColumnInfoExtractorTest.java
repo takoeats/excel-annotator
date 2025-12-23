@@ -2,6 +2,8 @@ package io.github.takoeats.excelannotator.internal.metadata.extractor;
 
 import io.github.takoeats.excelannotator.annotation.ExcelColumn;
 import io.github.takoeats.excelannotator.annotation.ExcelSheet;
+import io.github.takoeats.excelannotator.exception.ErrorCode;
+import io.github.takoeats.excelannotator.exception.ExcelExporterException;
 import io.github.takoeats.excelannotator.internal.metadata.ColumnInfo;
 import org.junit.jupiter.api.Test;
 
@@ -56,11 +58,14 @@ class ColumnInfoExtractorTest {
     }
 
     @Test
-    void extractAll_withClassWithoutFields_returnsEmptyList() {
-        List<ColumnInfo> columnInfos = ColumnInfoExtractor.extractAll(EmptyDTO.class);
+    void extractAll_withClassWithoutFields_throwsException() {
+        ExcelExporterException exception = assertThrows(
+                ExcelExporterException.class,
+                () -> ColumnInfoExtractor.extractAll(EmptyDTO.class)
+        );
 
-        assertNotNull(columnInfos);
-        assertTrue(columnInfos.isEmpty());
+        assertEquals(ErrorCode.NO_EXCEL_COLUMNS, exception.getErrorCode());
+        assertTrue(exception.getMessage().contains("EmptyDTO"));
     }
 
     @Test
@@ -76,6 +81,28 @@ class ColumnInfoExtractorTest {
         assertEquals("#,##0.00", info.getFormat());
         assertEquals("amount", info.getField().getName());
         assertEquals("DataSheet", info.getSheetName());
+    }
+
+    @Test
+    void extractAll_withOnlyExcludedFields_throwsException() {
+        ExcelExporterException exception = assertThrows(
+                ExcelExporterException.class,
+                () -> ColumnInfoExtractor.extractAll(OnlyExcludedDTO.class)
+        );
+
+        assertEquals(ErrorCode.NO_EXCEL_COLUMNS, exception.getErrorCode());
+        assertTrue(exception.getMessage().contains("OnlyExcludedDTO"));
+    }
+
+    @Test
+    void extractAll_withFieldsButNoAnnotations_throwsException() {
+        ExcelExporterException exception = assertThrows(
+                ExcelExporterException.class,
+                () -> ColumnInfoExtractor.extractAll(NoAnnotationDTO.class)
+        );
+
+        assertEquals(ErrorCode.NO_EXCEL_COLUMNS, exception.getErrorCode());
+        assertTrue(exception.getMessage().contains("NoAnnotationDTO"));
     }
 
     @ExcelSheet("Test")
@@ -100,5 +127,21 @@ class ColumnInfoExtractorTest {
     private static class DetailedDTO {
         @ExcelColumn(header = "Amount", order = 1, width = 150, format = "#,##0.00", sheetName = "DataSheet")
         private Double amount;
+    }
+
+    @ExcelSheet("OnlyExcluded")
+    private static class OnlyExcludedDTO {
+        @ExcelColumn(header = "Field1", order = 1, exclude = true)
+        private String field1;
+
+        @ExcelColumn(header = "Field2", order = 2, exclude = true)
+        private String field2;
+    }
+
+    @ExcelSheet("NoAnnotation")
+    private static class NoAnnotationDTO {
+        private String field1;
+        private String field2;
+        private Integer field3;
     }
 }

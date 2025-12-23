@@ -67,4 +67,39 @@ public final class ColumnStyleResolver {
 
         return 100;
     }
+
+    public static CustomExcelCellStyle resolveHeaderStyleFromSheetInfo(SheetInfo sheetInfo) {
+        if (sheetInfo.getDefaultHeaderStyle() != null &&
+                !sheetInfo.getDefaultHeaderStyle().equals(DefaultHeaderStyle.class)) {
+            return StyleCache.getStyleInstance(sheetInfo.getDefaultHeaderStyle());
+        }
+
+        return StyleCache.getStyleInstance(DefaultHeaderStyle.class);
+    }
+
+    public static CustomExcelCellStyle resolveColumnStyleFromFieldType(Field field, SheetInfo sheetInfo) {
+        if (sheetInfo.getDefaultColumnStyle() != null &&
+                !sheetInfo.getDefaultColumnStyle().equals(DefaultColumnStyle.class)) {
+            return StyleCache.getStyleInstance(sheetInfo.getDefaultColumnStyle());
+        }
+
+        if (FieldTypeClassifier.isNumericType(field.getType())) {
+            return StyleCache.getStyleInstance(DefaultNumberStyle.class);
+        }
+
+        return StyleCache.getStyleInstance(DefaultColumnStyle.class);
+    }
+
+    public static int calculateWidthFromStyle(CustomExcelCellStyle columnStyle) {
+        if (columnStyle.isAutoWidth()) {
+            return -1;
+        }
+
+        int styleWidth = columnStyle.getColumnWidth();
+        if (styleWidth > 0) {
+            return styleWidth;
+        }
+
+        return 100;
+    }
 }

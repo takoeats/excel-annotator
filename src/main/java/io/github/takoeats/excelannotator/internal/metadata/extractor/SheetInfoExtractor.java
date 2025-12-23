@@ -21,6 +21,7 @@ public final class SheetInfoExtractor {
                     .order(excelSheet.order())
                     .defaultHeaderStyle(excelSheet.defaultHeaderStyle())
                     .defaultColumnStyle(excelSheet.defaultColumnStyle())
+                    .autoColumn(excelSheet.autoColumn())
                     .build();
         }
         throw new ExcelExporterException(ErrorCode.METADATA_EXTRACTION_FAILED,

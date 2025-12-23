@@ -220,6 +220,13 @@ public final class ExcelColors {
         return new int[]{210, 180, 140};
     }
 
+
+    /**
+     * @deprecated 이 메서드는 엑셀의 자동 색상 처리에 대한 유스케이스 부족으로 인해
+     * 차기 메이저 버전 3.0.0에서 삭제될 예정입니다.
+     * 대신 필요에 따라 직접 RGB 값을 지정하거나 black() 등을 사용하십시오.
+     */
+    @Deprecated
     public static int[] automatic() {
         return new int[]{128, 128, 128};
     }

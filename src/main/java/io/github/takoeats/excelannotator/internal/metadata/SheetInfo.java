@@ -12,6 +12,7 @@ public final class SheetInfo {
     private final int order;
     private final Class<? extends CustomExcelCellStyle> defaultHeaderStyle;
     private final Class<? extends CustomExcelCellStyle> defaultColumnStyle;
+    private final boolean autoColumn;
 
     public boolean hasOrder() {
         return order != Integer.MIN_VALUE;
