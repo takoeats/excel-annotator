@@ -2,6 +2,7 @@ package io.github.takoeats.excelannotator.internal.metadata.extractor;
 
 import io.github.takoeats.excelannotator.exception.ExcelExporterException;
 import io.github.takoeats.excelannotator.internal.metadata.ColumnInfo;
+import io.github.takoeats.excelannotator.masking.Masking;
 import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.Field;
@@ -15,7 +16,7 @@ class FieldValueExtractorFactoryTest {
     @Test
     void createExtractor_withStringField_returnsExtractorThatConvertsToString() throws NoSuchFieldException {
         Field nameField = TestDTO.class.getDeclaredField("name");
-        ColumnInfo columnInfo = new ColumnInfo("Name", 0, 100, "", nameField, null, null, null, null);
+        ColumnInfo columnInfo = new ColumnInfo("Name", 0, 100, "", nameField, null, null, null, null, Masking.NONE);
 
         Function<TestDTO, Object> extractor = FieldValueExtractorFactory.createExtractor(columnInfo);
 
@@ -30,7 +31,7 @@ class FieldValueExtractorFactoryTest {
     @Test
     void createExtractor_withNumberField_returnsExtractorThatPreservesNumber() throws NoSuchFieldException {
         Field ageField = TestDTO.class.getDeclaredField("age");
-        ColumnInfo columnInfo = new ColumnInfo("Age", 0, 50, "", ageField, null, null, null, null);
+        ColumnInfo columnInfo = new ColumnInfo("Age", 0, 50, "", ageField, null, null, null, null, Masking.NONE);
 
         Function<TestDTO, Object> extractor = FieldValueExtractorFactory.createExtractor(columnInfo);
 
@@ -45,7 +46,7 @@ class FieldValueExtractorFactoryTest {
     @Test
     void createExtractor_withDateField_returnsExtractorThatPreservesDate() throws NoSuchFieldException {
         Field birthDateField = TestDTO.class.getDeclaredField("birthDate");
-        ColumnInfo columnInfo = new ColumnInfo("BirthDate", 0, 100, "", birthDateField, null, null, null, null);
+        ColumnInfo columnInfo = new ColumnInfo("BirthDate", 0, 100, "", birthDateField, null, null, null, null, Masking.NONE);
 
         Function<TestDTO, Object> extractor = FieldValueExtractorFactory.createExtractor(columnInfo);
 
@@ -61,7 +62,7 @@ class FieldValueExtractorFactoryTest {
     @Test
     void createExtractor_withBooleanField_returnsExtractorThatPreservesBoolean() throws NoSuchFieldException {
         Field activeField = TestDTO.class.getDeclaredField("active");
-        ColumnInfo columnInfo = new ColumnInfo("Active", 0, 50, "", activeField, null, null, null, null);
+        ColumnInfo columnInfo = new ColumnInfo("Active", 0, 50, "", activeField, null, null, null, null, Masking.NONE);
 
         Function<TestDTO, Object> extractor = FieldValueExtractorFactory.createExtractor(columnInfo);
 
@@ -76,7 +77,7 @@ class FieldValueExtractorFactoryTest {
     @Test
     void createExtractor_withNullObject_returnsNull() throws NoSuchFieldException {
         Field nameField = TestDTO.class.getDeclaredField("name");
-        ColumnInfo columnInfo = new ColumnInfo("Name", 0, 100, "", nameField, null, null, null, null);
+        ColumnInfo columnInfo = new ColumnInfo("Name", 0, 100, "", nameField, null, null, null, null, Masking.NONE);
 
         Function<TestDTO, Object> extractor = FieldValueExtractorFactory.createExtractor(columnInfo);
 
@@ -87,7 +88,7 @@ class FieldValueExtractorFactoryTest {
     @Test
     void createExtractor_withNullFieldValue_returnsNull() throws NoSuchFieldException {
         Field nameField = TestDTO.class.getDeclaredField("name");
-        ColumnInfo columnInfo = new ColumnInfo("Name", 0, 100, "", nameField, null, null, null, null);
+        ColumnInfo columnInfo = new ColumnInfo("Name", 0, 100, "", nameField, null, null, null, null, Masking.NONE);
 
         Function<TestDTO, Object> extractor = FieldValueExtractorFactory.createExtractor(columnInfo);
 
@@ -101,7 +102,7 @@ class FieldValueExtractorFactoryTest {
     @Test
     void createExtractor_withNoGetter_throwsException() throws NoSuchFieldException {
         Field noGetterField = TestDTO.class.getDeclaredField("noGetter");
-        ColumnInfo columnInfo = new ColumnInfo("NoGetter", 0, 100, "", noGetterField, null, null, null, null);
+        ColumnInfo columnInfo = new ColumnInfo("NoGetter", 0, 100, "", noGetterField, null, null, null, null, Masking.NONE);
 
         Function<TestDTO, Object> extractor = FieldValueExtractorFactory.createExtractor(columnInfo);
 
@@ -112,7 +113,7 @@ class FieldValueExtractorFactoryTest {
     @Test
     void createExtractor_withVoidReturnGetter_returnsNull() throws NoSuchFieldException {
         Field voidReturnField = TestDTO.class.getDeclaredField("voidReturn");
-        ColumnInfo columnInfo = new ColumnInfo("VoidReturn", 0, 100, "", voidReturnField, null, null, null, null);
+        ColumnInfo columnInfo = new ColumnInfo("VoidReturn", 0, 100, "", voidReturnField, null, null, null, null, Masking.NONE);
 
         Function<TestDTO, Object> extractor = FieldValueExtractorFactory.createExtractor(columnInfo);
 
@@ -124,7 +125,7 @@ class FieldValueExtractorFactoryTest {
     @Test
     void createExtractor_withParameterizedGetter_throwsException() throws NoSuchFieldException {
         Field withParamField = TestDTO.class.getDeclaredField("withParam");
-        ColumnInfo columnInfo = new ColumnInfo("WithParam", 0, 100, "", withParamField, null, null, null, null);
+        ColumnInfo columnInfo = new ColumnInfo("WithParam", 0, 100, "", withParamField, null, null, null, null, Masking.NONE);
 
         Function<TestDTO, Object> extractor = FieldValueExtractorFactory.createExtractor(columnInfo);
 

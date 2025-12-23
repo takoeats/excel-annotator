@@ -2,6 +2,7 @@ package io.github.takoeats.excelannotator.internal.writer;
 
 import io.github.takoeats.excelannotator.internal.metadata.ExcelMetadata;
 import io.github.takoeats.excelannotator.internal.util.CellValueConverter;
+import io.github.takoeats.excelannotator.masking.Masking;
 import io.github.takoeats.excelannotator.style.CustomExcelCellStyle;
 import io.github.takoeats.excelannotator.style.StyleCache;
 import io.github.takoeats.excelannotator.style.rule.CellContext;
@@ -24,7 +25,8 @@ public class CellWriter {
             int columnIndex,
             StyleCacheManager styleCacheManager) {
 
-        CellValueConverter.setCellValueSafely(cell, value);
+        Object maskedValue = applyMasking(value, metadata, columnIndex);
+        CellValueConverter.setCellValueSafely(cell, maskedValue);
 
         CustomExcelCellStyle defaultStyle = metadata.getColumnStyleAt(columnIndex);
         Class<? extends CustomExcelCellStyle> styleClass = defaultStyle != null
@@ -46,7 +48,8 @@ public class CellWriter {
             CellContext cellContext,
             StyleCacheManager styleCacheManager) {
 
-        CellValueConverter.setCellValueSafely(cell, value);
+        Object maskedValue = applyMasking(value, metadata, columnIndex);
+        CellValueConverter.setCellValueSafely(cell, maskedValue);
 
         Class<? extends CustomExcelCellStyle> styleClass =
                 determineStyleClass(metadata, columnIndex, value, dataItem, dataRowIndex, cellContext);
@@ -123,6 +126,23 @@ public class CellWriter {
         }
 
         return null;
+    }
+
+    private <T> Object applyMasking(Object value, ExcelMetadata<T> metadata, int columnIndex) {
+        if (value == null) {
+            return value;
+        }
+
+        if (!(value instanceof String)) {
+            return value;
+        }
+
+        Masking masking = metadata.getMaskingAt(columnIndex);
+        if (masking == null || masking == Masking.NONE) {
+            return value;
+        }
+
+        return masking.mask((String) value);
     }
 
     <T> void writeCells(

@@ -1,5 +1,6 @@
 package io.github.takoeats.excelannotator.internal.metadata;
 
+import io.github.takoeats.excelannotator.masking.Masking;
 import io.github.takoeats.excelannotator.style.CustomExcelCellStyle;
 import io.github.takoeats.excelannotator.style.rule.StyleRule;
 import org.junit.jupiter.api.Test;
@@ -29,7 +30,8 @@ class ColumnInfoTest {
                 headerStyle,
                 columnStyle,
                 rules,
-                "Sheet1"
+                "Sheet1",
+                Masking.NONE
         );
 
         assertNotNull(columnInfo);
@@ -57,7 +59,8 @@ class ColumnInfoTest {
                 null,
                 null,
                 null,
-                null
+                null,
+                Masking.NONE
         );
 
         assertNotNull(columnInfo.getConditionalStyleRules());
@@ -81,7 +84,8 @@ class ColumnInfoTest {
                 null,
                 null,
                 rules,
-                "Data"
+                "Data",
+                Masking.NONE
         );
 
         assertEquals("Amount", columnInfo.getHeader());

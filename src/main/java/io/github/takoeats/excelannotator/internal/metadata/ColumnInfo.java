@@ -1,5 +1,6 @@
 package io.github.takoeats.excelannotator.internal.metadata;
 
+import io.github.takoeats.excelannotator.masking.Masking;
 import io.github.takoeats.excelannotator.style.CustomExcelCellStyle;
 import io.github.takoeats.excelannotator.style.rule.StyleRule;
 import lombok.Getter;
@@ -19,10 +20,11 @@ public final class ColumnInfo {
     private final CustomExcelCellStyle columnStyle;
     private final List<StyleRule> conditionalStyleRules;
     private final String sheetName;
+    private final Masking masking;
 
     public ColumnInfo(String header, int order, int width, String format, Field field,
                       CustomExcelCellStyle headerStyle, CustomExcelCellStyle columnStyle,
-                      List<StyleRule> conditionalStyleRules, String sheetName) {
+                      List<StyleRule> conditionalStyleRules, String sheetName, Masking masking) {
         this.header = header;
         this.order = order;
         this.width = width;
@@ -34,5 +36,6 @@ public final class ColumnInfo {
                 ? conditionalStyleRules
                 : Collections.emptyList();
         this.sheetName = sheetName;
+        this.masking = masking != null ? masking : Masking.NONE;
     }
 }

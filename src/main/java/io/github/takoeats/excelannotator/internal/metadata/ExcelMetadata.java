@@ -1,5 +1,6 @@
 package io.github.takoeats.excelannotator.internal.metadata;
 
+import io.github.takoeats.excelannotator.masking.Masking;
 import io.github.takoeats.excelannotator.style.CustomExcelCellStyle;
 import io.github.takoeats.excelannotator.style.rule.StyleRule;
 import lombok.Builder;
@@ -84,5 +85,12 @@ public final class ExcelMetadata<T> {
             return columnInfos.get(index).getFormat();
         }
         return null;
+    }
+
+    public Masking getMaskingAt(int index) {
+        if (columnInfos != null && index >= 0 && index < columnInfos.size()) {
+            return columnInfos.get(index).getMasking();
+        }
+        return Masking.NONE;
     }
 }

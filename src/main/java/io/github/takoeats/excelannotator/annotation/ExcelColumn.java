@@ -1,5 +1,6 @@
 package io.github.takoeats.excelannotator.annotation;
 
+import io.github.takoeats.excelannotator.masking.Masking;
 import io.github.takoeats.excelannotator.style.CustomExcelCellStyle;
 import io.github.takoeats.excelannotator.style.defaultstyle.DefaultColumnStyle;
 import io.github.takoeats.excelannotator.style.defaultstyle.DefaultHeaderStyle;
@@ -103,4 +104,25 @@ public @interface ExcelColumn {
      * @return 조건부 스타일 배열
      */
     ConditionalStyle[] conditionalStyles() default {};
+
+    /**
+     * 데이터 마스킹 전략
+     * <p>민감한 개인정보, 금융정보 등을 마스킹 처리하여 보안을 강화합니다.</p>
+     * <p>마스킹은 String 타입 필드에만 적용됩니다.</p>
+     *
+     * <h3>사용 예시</h3>
+     * <pre>{@code
+     * @ExcelColumn(header = "전화번호", masking = Masking.PHONE)
+     * private String phoneNumber;
+     *
+     * @ExcelColumn(header = "이메일", masking = Masking.EMAIL)
+     * private String email;
+     *
+     * @ExcelColumn(header = "주민번호", masking = Masking.SSN)
+     * private String ssn;
+     * }</pre>
+     *
+     * @return 마스킹 전략
+     */
+    Masking masking() default Masking.NONE;
 }

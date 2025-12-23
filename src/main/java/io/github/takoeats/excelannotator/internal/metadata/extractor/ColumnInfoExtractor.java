@@ -7,6 +7,7 @@ import io.github.takoeats.excelannotator.internal.metadata.ColumnInfo;
 import io.github.takoeats.excelannotator.internal.metadata.SheetInfo;
 import io.github.takoeats.excelannotator.internal.metadata.style.ColumnStyleResolver;
 import io.github.takoeats.excelannotator.internal.metadata.style.ConditionalStyleParser;
+import io.github.takoeats.excelannotator.masking.Masking;
 import io.github.takoeats.excelannotator.style.CustomExcelCellStyle;
 import io.github.takoeats.excelannotator.style.rule.StyleRule;
 import lombok.AccessLevel;
@@ -76,6 +77,7 @@ public final class ColumnInfoExtractor {
             List<StyleRule> conditionalStyleRules = ConditionalStyleParser.parse(excelColumn.conditionalStyles());
 
             String sheetName = excelColumn.sheetName();
+            Masking masking = excelColumn.masking();
 
             return new ColumnInfo(
                     excelColumn.header(),
@@ -86,7 +88,8 @@ public final class ColumnInfoExtractor {
                     headerStyle,
                     columnStyle,
                     conditionalStyleRules,
-                    sheetName
+                    sheetName,
+                    masking
             );
         }
         return null;
@@ -120,7 +123,8 @@ public final class ColumnInfoExtractor {
                 headerStyle,
                 columnStyle,
                 Collections.emptyList(),
-                ""
+                "",
+                Masking.NONE
         );
     }
 }
