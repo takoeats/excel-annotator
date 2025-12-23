@@ -6,8 +6,10 @@ import io.github.takoeats.excelannotator.style.rule.node.BinaryOpNode;
 import io.github.takoeats.excelannotator.style.rule.node.ExpressionNode;
 import io.github.takoeats.excelannotator.style.rule.node.LeafNode;
 import io.github.takoeats.excelannotator.style.rule.node.UnaryOpNode;
+import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.Objects;
@@ -28,6 +30,7 @@ import java.util.regex.Pattern;
  * </ul>
  */
 @Slf4j
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class ExpressionParser {
 
     // 숫자 비교: value < 100
@@ -45,10 +48,6 @@ public class ExpressionParser {
     // 특수 조건: value is_negative
     private static final Pattern SPECIAL_PATTERN =
             Pattern.compile("^value\\s+(is_negative|is_positive|is_zero|is_null|is_not_null|is_empty|is_not_empty)$");
-
-    private ExpressionParser() {
-        throw new AssertionError("Utility class cannot be instantiated");
-    }
 
     /**
      * 표현식 문자열을 파싱하여 트리 구조로 변환합니다.
