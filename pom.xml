@@ -36,7 +36,7 @@
         <connection>scm:git:git://github.com/takoeats/excel-annotator.git</connection>
         <developerConnection>scm:git:ssh://git@github.com/takoeats/excel-annotator.git</developerConnection>
         <url>https://github.com/takoeats/excel-annotator</url>
-        <tag>HEAD</tag>
+        <tag>2.2.0</tag>
     </scm>
 
     <properties>
