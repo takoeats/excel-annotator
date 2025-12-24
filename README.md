@@ -77,19 +77,78 @@ import io.github.takoeats.excelannotator.ExcelExporter;
 @PostMapping("/download/customers")
 public void downloadExcel(HttpServletResponse response) {
     List<CustomerDTO> customers = customerService.getCustomers();
-    ExcelExporter.excelFromList(response, "customers.xlsx", customers);
+
+    // Fluent API (Recommended)
+    ExcelExporter.excel(response)
+        .fileName("customers.xlsx")
+        .write(customers);
 }
 ```
 
 **Done!** 🎉 The browser downloads `customers.xlsx`.
 
+> **Note:** The old API `excelFromList(response, fileName, data)` is still supported but deprecated. It will be removed in version 3.0.0. Please migrate to the Fluent API.
+
 ---
 
 ## 📖 API Entry Points
 
-ExcelExporter provides **17 static methods** for various use cases.
+### ✨ Fluent API (Recommended)
 
-### API Overview
+Simple, intuitive builder pattern for all export scenarios:
+
+#### Excel Export
+
+```java
+// HttpServletResponse (Web Download)
+ExcelExporter.excel(response)
+    .fileName("customers.xlsx")
+    .write(customerList);                      // List
+
+ExcelExporter.excel(response)
+    .fileName("customers.xlsx")
+    .write(customerStream);                    // Stream
+
+ExcelExporter.excel(response)
+    .fileName("report.xlsx")
+    .write(multiSheetMap);                     // Multi-sheet (Map<String, List<?>> or Map<String, Stream<?>>)
+
+ExcelExporter.excel(response)
+    .fileName("customers.xlsx")
+    .write(query, dataProvider, converter);    // Data provider pattern
+
+// OutputStream (File Save)
+String fileName = ExcelExporter.excel(outputStream)
+    .fileName("customers.xlsx")
+    .write(customerList);                      // Returns processed filename
+```
+
+#### CSV Export
+
+```java
+// HttpServletResponse (Web Download)
+ExcelExporter.csv(response)
+    .fileName("customers.csv")
+    .write(customerList);     // List
+    .write(customerStream);   // Stream
+
+// OutputStream (File Save)
+String fileName = ExcelExporter.csv(outputStream)
+    .fileName("customers.csv")
+    .write(customerList);
+```
+
+**Key Benefits:**
+- **Type-safe**: Compile-time guarantees for return types
+- **Unified interface**: Same pattern for Response/OutputStream, Excel/CSV
+- **Flexible data**: Supports List, Stream, Map (mixed List/Stream values)
+- **Cleaner code**: No method name confusion (`excelFromList` vs `excelFromStream`)
+
+---
+
+### 📚 Legacy API (Deprecated - Removed in 3.0.0)
+
+ExcelExporter provides **17 static methods** (deprecated) for various use cases.
 
 #### List-based API (Small datasets - max 1M rows)
 

@@ -1,6 +1,9 @@
 package io.github.takoeats.excelannotator;
 
 
+import io.github.takoeats.excelannotator.internal.builder.BuilderFactory;
+import io.github.takoeats.excelannotator.internal.builder.CsvBuilder;
+import io.github.takoeats.excelannotator.internal.builder.ExcelBuilder;
 import io.github.takoeats.excelannotator.exception.ErrorCode;
 import io.github.takoeats.excelannotator.exception.ExcelExporterException;
 import io.github.takoeats.excelannotator.internal.util.FilenameSecurityValidator;
@@ -35,6 +38,78 @@ public final class ExcelExporter {
     private static final String DEFAULT_FILE_NAME = "download";
     private static final int MAX_ROWS_FOR_LIST_API = 1000000;
 
+    /**
+     * Fluent API 진입점: Excel 파일을 HttpServletResponse로 다운로드
+     *
+     * <h3>사용 예시</h3>
+     * <pre>{@code
+     * ExcelExporter.excel(response)
+     *     .fileName("customers.xlsx")
+     *     .write(customerList);
+     * }</pre>
+     *
+     * @param response HTTP 응답 객체
+     * @return Excel 빌더 인스턴스
+     */
+    public static ExcelBuilder excel(HttpServletResponse response) {
+        return BuilderFactory.createExcelBuilder(response);
+    }
+
+    /**
+     * Fluent API 진입점: Excel 파일을 OutputStream에 작성
+     *
+     * <h3>사용 예시</h3>
+     * <pre>{@code
+     * try (FileOutputStream fos = new FileOutputStream("output.xlsx")) {
+     *     String fileName = ExcelExporter.excel(fos)
+     *         .fileName("customers.xlsx")
+     *         .write(customerList);
+     * }
+     * }</pre>
+     *
+     * @param outputStream 출력 스트림
+     * @return Excel 빌더 인스턴스
+     */
+    public static ExcelBuilder excel(OutputStream outputStream) {
+        return BuilderFactory.createExcelBuilder(outputStream);
+    }
+
+    /**
+     * Fluent API 진입점: CSV 파일을 HttpServletResponse로 다운로드
+     *
+     * <h3>사용 예시</h3>
+     * <pre>{@code
+     * ExcelExporter.csv(response)
+     *     .fileName("customers.csv")
+     *     .write(customerList);
+     * }</pre>
+     *
+     * @param response HTTP 응답 객체
+     * @return CSV 빌더 인스턴스
+     */
+    public static CsvBuilder csv(HttpServletResponse response) {
+        return BuilderFactory.createCsvBuilder(response);
+    }
+
+    /**
+     * Fluent API 진입점: CSV 파일을 OutputStream에 작성
+
+     * <h3>사용 예시</h3>
+     * <pre>{@code
+     * try (FileOutputStream fos = new FileOutputStream("output.csv")) {
+     *     String fileName = ExcelExporter.csv(fos)
+     *         .fileName("customers.csv")
+     *         .write(customerList);
+     * }
+     * }</pre>
+     *
+     * @param outputStream 출력 스트림
+     * @return CSV 빌더 인스턴스
+     */
+    public static CsvBuilder csv(OutputStream outputStream) {
+        return BuilderFactory.createCsvBuilder(outputStream);
+    }
+
 
     /**
      * 어노테이션 기반 Excel 파일 다운로드 (단순 버전, 기본 파일명)
@@ -56,9 +131,15 @@ public final class ExcelExporter {
      * @param response HTTP 응답 객체 (Excel 파일이 이 응답으로 전송됨)
      * @param data     Excel로 변환할 데이터 리스트
      * @throws ExcelExporterException 데이터가 null이거나 비어있을 경우, 또는 Excel 생성 중 오류 발생 시
+     * @deprecated 3.0.0에서 삭제 예정. {@link #excel(HttpServletResponse)} Fluent API를 사용하세요.
+     * <pre>{@code
+     * // 마이그레이션 예시
+     * ExcelExporter.excel(response).write(customers);
+     * }</pre>
      */
+    @Deprecated
     public static <T> void excelFromList(HttpServletResponse response, List<T> data) {
-        excelFromList(response, DEFAULT_FILE_NAME, data);
+        excel(response).write(data);
     }
 
     /**
@@ -90,11 +171,16 @@ public final class ExcelExporter {
      * @param fileName 다운로드될 파일명 (명시적 파일명은 그대로 사용, 기본값 "download"만 타임스탬프 추가)
      * @param data     Excel로 변환할 데이터 리스트
      * @throws ExcelExporterException 데이터가 null이거나 비어있을 경우, 또는 Excel 생성 중 오류 발생 시
+     * @deprecated 3.0.0에서 삭제 예정. {@link #excel(HttpServletResponse)} Fluent API를 사용하세요.
+     * <pre>{@code
+     * // 마이그레이션 예시
+     * ExcelExporter.excel(response).fileName("customers.xlsx").write(customers);
+     * }</pre>
      */
+    @Deprecated
     public static <T> void excelFromList(HttpServletResponse response, String fileName,
                                          List<T> data) {
-        setupResponseAndWriteExcel(response, fileName,
-                outputStream -> excelFromList(outputStream, data));
+        excel(response).fileName(fileName).write(data);
     }
 
     /**
@@ -113,14 +199,15 @@ public final class ExcelExporter {
      * @param data         Excel로 변환할 데이터 리스트
      * @return 보안 검증 및 인코딩이 적용된 최종 파일명
      * @throws ExcelExporterException 데이터가 null이거나 비어있을 경우, 또는 Excel 생성 중 오류 발생 시
+     * @deprecated 3.0.0에서 삭제 예정. {@link #excel(OutputStream)} Fluent API를 사용하세요.
+     * <pre>{@code
+     * // 마이그레이션 예시
+     * String fileName = ExcelExporter.excel(fos).fileName("customers.xlsx").write(customers);
+     * }</pre>
      */
+    @Deprecated
     public static <T> String excelFromList(OutputStream outputStream, String fileName, List<T> data) {
-        validateData(data);
-        String sanitizedFileName = encodeFileNameCommons(fileName);
-        String transFileName = getTransFileName(sanitizedFileName);
-        ExcelWriter writer = new ExcelWriter();
-        writeWorkbookAndHandleErrors(outputStream, () -> writer.write(data));
-        return transFileName;
+        return excel(outputStream).fileName(fileName).write(data);
     }
 
     /**
@@ -139,9 +226,15 @@ public final class ExcelExporter {
      * @param data         Excel로 변환할 데이터 리스트
      * @return 생성된 파일명 (download_타임스탬프.xlsx)
      * @throws ExcelExporterException 데이터가 null이거나 비어있을 경우, 또는 Excel 생성 중 오류 발생 시
+     * @deprecated 3.0.0에서 삭제 예정. {@link #excel(OutputStream)} Fluent API를 사용하세요.
+     * <pre>{@code
+     * // 마이그레이션 예시
+     * String fileName = ExcelExporter.excel(fos).write(customers);
+     * }</pre>
      */
+    @Deprecated
     public static <T> String excelFromList(OutputStream outputStream, List<T> data) {
-        return excelFromList(outputStream, DEFAULT_FILE_NAME, data);
+        return excel(outputStream).write(data);
     }
 
     /**
@@ -167,13 +260,16 @@ public final class ExcelExporter {
      * @param dataStream   Excel로 변환할 데이터 스트림
      * @return 보안 검증 및 인코딩이 적용된 최종 파일명
      * @throws ExcelExporterException Excel 생성 중 오류 발생 시
+     * @deprecated 3.0.0에서 삭제 예정. {@link #excel(OutputStream)} Fluent API를 사용하세요.
+     * <pre>{@code
+     * // 마이그레이션 예시
+     * String fileName = ExcelExporter.excel(fos).fileName("customers.xlsx").write(dataStream);
+     * }</pre>
      */
+    @Deprecated
     public static <T> String excelFromStream(OutputStream outputStream, String fileName,
                                              Stream<T> dataStream) {
-        String sanitizedFileName = encodeFileNameCommons(fileName);
-        String transFileName = getTransFileName(sanitizedFileName);
-        writeWorkbookToStream(outputStream, dataStream);
-        return transFileName;
+        return excel(outputStream).fileName(fileName).write(dataStream);
     }
 
     /**
@@ -193,9 +289,15 @@ public final class ExcelExporter {
      * @param dataStream   Excel로 변환할 데이터 스트림
      * @return 생성된 파일명 (download_타임스탬프.xlsx)
      * @throws ExcelExporterException Excel 생성 중 오류 발생 시
+     * @deprecated 3.0.0에서 삭제 예정. {@link #excel(OutputStream)} Fluent API를 사용하세요.
+     * <pre>{@code
+     * // 마이그레이션 예시
+     * String fileName = ExcelExporter.excel(fos).write(dataStream);
+     * }</pre>
      */
+    @Deprecated
     public static <T> String excelFromStream(OutputStream outputStream, Stream<T> dataStream) {
-        return excelFromStream(outputStream, DEFAULT_FILE_NAME, dataStream);
+        return excel(outputStream).write(dataStream);
     }
 
     /**
@@ -220,7 +322,13 @@ public final class ExcelExporter {
      * @param fileName       다운로드될 파일명 (명시적 파일명은 그대로 사용, 기본값 "download"만 타임스탬프 추가)
      * @param sheetStreamMap 식별자-스트림 매핑 (순서 보장을 위해 LinkedHashMap 권장)
      * @throws ExcelExporterException 멀티 시트 Excel 생성 중 오류 발생 시
+     * @deprecated 3.0.0에서 삭제 예정. {@link #excel(HttpServletResponse)} Fluent API를 사용하세요.
+     * <pre>{@code
+     * // 마이그레이션 예시
+     * ExcelExporter.excel(response).fileName("report.xlsx").write(sheetStreams);
+     * }</pre>
      */
+    @Deprecated
     public static void excelFromStream(HttpServletResponse response, String fileName,
                                        Map<String, Stream<?>> sheetStreamMap) {
         setupResponseAndWriteExcel(response, fileName,
@@ -249,7 +357,13 @@ public final class ExcelExporter {
      * @param sheetStreamMap 식별자-스트림 매핑 (순서 보장을 위해 LinkedHashMap 권장)
      * @return 보안 검증 및 인코딩이 적용된 최종 파일명
      * @throws ExcelExporterException 멀티 시트 Excel 생성 중 오류 발생 시
+     * @deprecated 3.0.0에서 삭제 예정. {@link #excel(OutputStream)} Fluent API를 사용하세요.
+     * <pre>{@code
+     * // 마이그레이션 예시
+     * String fileName = ExcelExporter.excel(fos).fileName("report.xlsx").write(sheetStreams);
+     * }</pre>
      */
+    @Deprecated
     public static String excelFromStream(OutputStream outputStream, String fileName,
                                          Map<String, Stream<?>> sheetStreamMap) {
         String sanitizedFileName = encodeFileNameCommons(fileName);
@@ -277,11 +391,16 @@ public final class ExcelExporter {
      * @param fileName   다운로드될 파일명 (명시적 파일명은 그대로 사용, 기본값 "download"만 타임스탬프 추가)
      * @param dataStream Excel로 변환할 데이터 스트림
      * @throws ExcelExporterException Excel 생성 중 오류 발생 시
+     * @deprecated 3.0.0에서 삭제 예정. {@link #excel(HttpServletResponse)} Fluent API를 사용하세요.
+     * <pre>{@code
+     * // 마이그레이션 예시
+     * ExcelExporter.excel(response).fileName("customers.xlsx").write(dataStream);
+     * }</pre>
      */
+    @Deprecated
     public static <T> void excelFromStream(HttpServletResponse response, String fileName,
                                            Stream<T> dataStream) {
-        setupResponseAndWriteExcel(response, fileName,
-                outputStream -> writeWorkbookToStream(outputStream, dataStream));
+        excel(response).fileName(fileName).write(dataStream);
     }
 
     private static String getTransFileName(String fileName) {
@@ -339,13 +458,18 @@ public final class ExcelExporter {
      * @param dataProvider 데이터 조회 함수 (queryParams → List&lt;R&gt;)
      * @param converter    데이터 변환 함수 (R → E)
      * @throws ExcelExporterException Excel 생성 중 오류 발생 시
+     * @deprecated 3.0.0에서 삭제 예정. {@link #excel(HttpServletResponse)} Fluent API를 사용하세요.
+     * <pre>{@code
+     * // 마이그레이션 예시
+     * ExcelExporter.excel(response).fileName("customers.xlsx").write(queryParams, dataProvider, converter);
+     * }</pre>
      */
+    @Deprecated
     public static <Q, R, E> void excelFromList(HttpServletResponse response, String fileName,
                                                Q queryParams,
                                                ExcelDataProvider<Q, R> dataProvider,
                                                Function<R, E> converter) {
-        List<E> excelData = transformData(queryParams, dataProvider, converter);
-        excelFromList(response, fileName, excelData);
+        excel(response).fileName(fileName).write(queryParams, dataProvider, converter);
     }
 
     /**
@@ -378,13 +502,18 @@ public final class ExcelExporter {
      * @param converter    데이터 변환 함수 (R → E)
      * @return 보안 검증 및 인코딩이 적용된 최종 파일명
      * @throws ExcelExporterException Excel 생성 중 오류 발생 시
+     * @deprecated 3.0.0에서 삭제 예정. {@link #excel(OutputStream)} Fluent API를 사용하세요.
+     * <pre>{@code
+     * // 마이그레이션 예시
+     * String fileName = ExcelExporter.excel(fos).fileName("customers.xlsx").write(queryParams, dataProvider, converter);
+     * }</pre>
      */
+    @Deprecated
     public static <Q, R, E> String excelFromList(OutputStream outputStream, String fileName,
                                                  Q queryParams,
                                                  ExcelDataProvider<Q, R> dataProvider,
                                                  Function<R, E> converter) {
-        List<E> excelData = transformData(queryParams, dataProvider, converter);
-        return excelFromList(outputStream, fileName, excelData);
+        return excel(outputStream).fileName(fileName).write(queryParams, dataProvider, converter);
     }
 
     /**
@@ -416,11 +545,17 @@ public final class ExcelExporter {
      * @param converter    데이터 변환 함수 (R → E)
      * @return 생성된 파일명 (download_타임스탬프.xlsx)
      * @throws ExcelExporterException Excel 생성 중 오류 발생 시
+     * @deprecated 3.0.0에서 삭제 예정. {@link #excel(OutputStream)} Fluent API를 사용하세요.
+     * <pre>{@code
+     * // 마이그레이션 예시
+     * String fileName = ExcelExporter.excel(fos).write(queryParams, dataProvider, converter);
+     * }</pre>
      */
+    @Deprecated
     public static <Q, R, E> String excelFromList(OutputStream outputStream, Q queryParams,
                                                  ExcelDataProvider<Q, R> dataProvider,
                                                  Function<R, E> converter) {
-        return excelFromList(outputStream, DEFAULT_FILE_NAME, queryParams, dataProvider, converter);
+        return excel(outputStream).write(queryParams, dataProvider, converter);
     }
 
     private static <Q, R, E> List<E> transformData(Q queryParams,
@@ -501,7 +636,13 @@ public final class ExcelExporter {
      * @param fileName     다운로드될 파일명 (명시적 파일명은 그대로 사용, 기본값 "download"만 타임스탬프 추가)
      * @param sheetDataMap 식별자-데이터 매핑 (순서 보장을 위해 LinkedHashMap 권장)
      * @throws ExcelExporterException 멀티 시트 Excel 생성 중 오류 발생 시
+     * @deprecated 3.0.0에서 삭제 예정. {@link #excel(HttpServletResponse)} Fluent API를 사용하세요.
+     * <pre>{@code
+     * // 마이그레이션 예시
+     * ExcelExporter.excel(response).fileName("report.xlsx").write(sheetData);
+     * }</pre>
      */
+    @Deprecated
     public static void excelFromList(HttpServletResponse response, String fileName,
                                      Map<String, List<?>> sheetDataMap) {
         setupResponseAndWriteExcel(response, fileName,
@@ -530,7 +671,13 @@ public final class ExcelExporter {
      * @param sheetDataMap 식별자-데이터 매핑 (순서 보장을 위해 LinkedHashMap 권장)
      * @return 보안 검증 및 인코딩이 적용된 최종 파일명
      * @throws ExcelExporterException 멀티 시트 Excel 생성 중 오류 발생 시
+     * @deprecated 3.0.0에서 삭제 예정. {@link #excel(OutputStream)} Fluent API를 사용하세요.
+     * <pre>{@code
+     * // 마이그레이션 예시
+     * String fileName = ExcelExporter.excel(fos).fileName("report.xlsx").write(sheetData);
+     * }</pre>
      */
+    @Deprecated
     public static String excelFromList(OutputStream outputStream, String fileName,
                                        Map<String, List<?>> sheetDataMap) {
         String sanitizedFileName = encodeFileNameCommons(fileName);
@@ -618,9 +765,15 @@ public final class ExcelExporter {
      * @param fileName 다운로드될 파일명 (명시적 파일명은 그대로 사용, 기본값 "download"만 타임스탬프 추가)
      * @param data     CSV로 변환할 데이터 리스트
      * @throws ExcelExporterException 데이터가 null이거나 비어있을 경우, 또는 CSV 생성 중 오류 발생 시
+     * @deprecated 3.0.0에서 삭제 예정. {@link #csv(HttpServletResponse)} Fluent API를 사용하세요.
+     * <pre>{@code
+     * // 마이그레이션 예시
+     * ExcelExporter.csv(response).fileName("customers.csv").write(customers);
+     * }</pre>
      */
+    @Deprecated
     public static <T> void csvFromList(HttpServletResponse response, String fileName, List<T> data) {
-        setupCsvResponseAndWrite(response, fileName, outputStream -> writeCsvFromList(outputStream, data));
+        csv(response).fileName(fileName).write(data);
     }
 
     /**
@@ -641,12 +794,15 @@ public final class ExcelExporter {
      * @param data         CSV로 변환할 데이터 리스트
      * @return 보안 검증 및 인코딩이 적용된 최종 파일명
      * @throws ExcelExporterException 데이터가 null이거나 비어있을 경우, 또는 CSV 생성 중 오류 발생 시
+     * @deprecated 3.0.0에서 삭제 예정. {@link #csv(OutputStream)} Fluent API를 사용하세요.
+     * <pre>{@code
+     * // 마이그레이션 예시
+     * String fileName = ExcelExporter.csv(fos).fileName("customers.csv").write(customers);
+     * }</pre>
      */
+    @Deprecated
     public static <T> String csvFromList(OutputStream outputStream, String fileName, List<T> data) {
-        String sanitizedFileName = encodeFileNameCommons(fileName);
-        String transFileName = getTransFileNameWithExtension(sanitizedFileName);
-        writeCsvFromList(outputStream, data);
-        return transFileName;
+        return csv(outputStream).fileName(fileName).write(data);
     }
 
     /**
@@ -669,10 +825,16 @@ public final class ExcelExporter {
      * @param fileName   다운로드될 파일명 (명시적 파일명은 그대로 사용, 기본값 "download"만 타임스탬프 추가)
      * @param dataStream CSV로 변환할 데이터 스트림
      * @throws ExcelExporterException CSV 생성 중 오류 발생 시
+     * @deprecated 3.0.0에서 삭제 예정. {@link #csv(HttpServletResponse)} Fluent API를 사용하세요.
+     * <pre>{@code
+     * // 마이그레이션 예시
+     * ExcelExporter.csv(response).fileName("customers.csv").write(dataStream);
+     * }</pre>
      */
+    @Deprecated
     public static <T> void csvFromStream(HttpServletResponse response, String fileName,
                                          Stream<T> dataStream) {
-        setupCsvResponseAndWrite(response, fileName, outputStream -> writeCsvFromStream(outputStream, dataStream));
+        csv(response).fileName(fileName).write(dataStream);
     }
 
     /**
@@ -695,13 +857,16 @@ public final class ExcelExporter {
      * @param dataStream   CSV로 변환할 데이터 스트림
      * @return 보안 검증 및 인코딩이 적용된 최종 파일명
      * @throws ExcelExporterException CSV 생성 중 오류 발생 시
+     * @deprecated 3.0.0에서 삭제 예정. {@link #csv(OutputStream)} Fluent API를 사용하세요.
+     * <pre>{@code
+     * // 마이그레이션 예시
+     * String fileName = ExcelExporter.csv(fos).fileName("customers.csv").write(dataStream);
+     * }</pre>
      */
+    @Deprecated
     public static <T> String csvFromStream(OutputStream outputStream, String fileName,
                                            Stream<T> dataStream) {
-        String sanitizedFileName = encodeFileNameCommons(fileName);
-        String transFileName = getTransFileNameWithExtension(sanitizedFileName);
-        writeCsvFromStream(outputStream, dataStream);
-        return transFileName;
+        return csv(outputStream).fileName(fileName).write(dataStream);
     }
 
     private static <T> void writeCsvFromList(OutputStream outputStream, List<T> data) {
