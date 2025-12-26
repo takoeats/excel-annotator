@@ -1047,6 +1047,120 @@ private String name;  // 자동으로 DefaultColumnStyle 적용
 private BigDecimal amount;
 ```
 
+### 1️⃣0️⃣ 병합 헤더 (2행 헤더)
+
+전문적인 Excel 파일을 위한 그룹화된 컬럼 헤더를 생성하세요:
+
+#### 기본 병합 헤더
+
+```java
+@ExcelSheet("판매 리포트")
+public class SalesDTO {
+    @ExcelColumn(
+        header = "이름",
+        order = 1,
+        mergeHeader = "고객 정보"  // 그룹 헤더
+    )
+    private String customerName;
+
+    @ExcelColumn(
+        header = "이메일",
+        order = 2,
+        mergeHeader = "고객 정보"  // 같은 그룹
+    )
+    private String email;
+
+    @ExcelColumn(header = "금액", order = 3)  // 병합 없음 → 자동 수직 병합
+    private BigDecimal amount;
+}
+```
+
+**결과:**
+```
+Row 0: [    고객 정보    ] [      ]
+Row 1: [ 이름  |  이메일 ] [ 금액 ]
+Data:  [홍길동 | a@ex.com] [10만원]
+```
+
+#### 여러 병합 그룹
+
+```java
+@ExcelSheet("직원 리포트")
+public class EmployeeDTO {
+    @ExcelColumn(header = "이름", order = 1, mergeHeader = "개인정보")
+    private String name;
+
+    @ExcelColumn(header = "나이", order = 2, mergeHeader = "개인정보")
+    private Integer age;
+
+    @ExcelColumn(header = "도로명", order = 3, mergeHeader = "주소")
+    private String street;
+
+    @ExcelColumn(header = "도시", order = 4, mergeHeader = "주소")
+    private String city;
+
+    @ExcelColumn(header = "급여", order = 5)  // 병합 그룹 없음
+    private BigDecimal salary;
+}
+```
+
+**결과:**
+```
+Row 0: [  개인정보  ] [    주소    ] [      ]
+Row 1: [이름 | 나이] [도로명|도시] [ 급여 ]
+```
+
+#### 스타일이 적용된 병합 헤더
+
+```java
+public class BlueHeaderStyle extends CustomExcelCellStyle {
+    @Override
+    protected void configure(ExcelCellStyleConfigurer configurer) {
+        configurer
+            .backgroundColor(ExcelColors.lightBlue())
+            .fontColor(ExcelColors.darkBlue());
+    }
+}
+
+@ExcelSheet("리포트")
+public class ReportDTO {
+    @ExcelColumn(
+        header = "1분기",
+        order = 1,
+        mergeHeader = "2024년 매출",
+        mergeHeaderStyle = BlueHeaderStyle.class  // 병합 헤더 커스텀 스타일
+    )
+    private BigDecimal q1Sales;
+
+    @ExcelColumn(
+        header = "2분기",
+        order = 2,
+        mergeHeader = "2024년 매출",
+        mergeHeaderStyle = BlueHeaderStyle.class
+    )
+    private BigDecimal q2Sales;
+}
+```
+
+**중요:**
+- ✅ 병합 그룹 내 컬럼들은 **연속된 order 값**을 가져야 합니다
+- ❌ order에 빈 공간이 있으면 `MERGE_HEADER_ORDER_GAP` 예외 발생
+- ✅ `mergeHeader`가 없는 컬럼은 자동으로 수직 병합 (1열 2행 병합)
+
+```java
+// ❌ 잘못된 예: order에 빈 공간
+@ExcelColumn(order = 1, mergeHeader = "그룹")  // ✓
+@ExcelColumn(order = 2)                        // ← 빈 공간!
+@ExcelColumn(order = 3, mergeHeader = "그룹")  // ✗ 에러!
+
+// ✅ 올바른 예: 연속된 order
+@ExcelColumn(order = 1, mergeHeader = "그룹")  // ✓
+@ExcelColumn(order = 2, mergeHeader = "그룹")  // ✓
+@ExcelColumn(order = 3)                        // ✓
+```
+
+---
+
 ### 1️⃣1️⃣ 헤더 제어
 
 #### 헤더 없는 시트

@@ -1062,6 +1062,120 @@ private String name;  // Automatically uses DefaultColumnStyle
 private BigDecimal amount;
 ```
 
+### 1️⃣0️⃣ Merged Headers (2-Row Headers)
+
+Create professional-looking Excel files with grouped column headers:
+
+#### Basic Merged Header
+
+```java
+@ExcelSheet("Sales Report")
+public class SalesDTO {
+    @ExcelColumn(
+        header = "Name",
+        order = 1,
+        mergeHeader = "Customer Info"  // Group header
+    )
+    private String customerName;
+
+    @ExcelColumn(
+        header = "Email",
+        order = 2,
+        mergeHeader = "Customer Info"  // Same group
+    )
+    private String email;
+
+    @ExcelColumn(header = "Amount", order = 3)  // No merge → auto vertical merge
+    private BigDecimal amount;
+}
+```
+
+**Result:**
+```
+Row 0: [  Customer Info  ] [      ]
+Row 1: [ Name  |  Email ] [Amount]
+Data:  [Alice  | a@ex.com] [ $100 ]
+```
+
+#### Multiple Merge Groups
+
+```java
+@ExcelSheet("Employee Report")
+public class EmployeeDTO {
+    @ExcelColumn(header = "Name", order = 1, mergeHeader = "Personal")
+    private String name;
+
+    @ExcelColumn(header = "Age", order = 2, mergeHeader = "Personal")
+    private Integer age;
+
+    @ExcelColumn(header = "Street", order = 3, mergeHeader = "Address")
+    private String street;
+
+    @ExcelColumn(header = "City", order = 4, mergeHeader = "Address")
+    private String city;
+
+    @ExcelColumn(header = "Salary", order = 5)  // No merge group
+    private BigDecimal salary;
+}
+```
+
+**Result:**
+```
+Row 0: [  Personal  ] [  Address  ] [      ]
+Row 1: [Name | Age] [St. | City] [Salary]
+```
+
+#### Styled Merged Headers
+
+```java
+public class BlueHeaderStyle extends CustomExcelCellStyle {
+    @Override
+    protected void configure(ExcelCellStyleConfigurer configurer) {
+        configurer
+            .backgroundColor(ExcelColors.lightBlue())
+            .fontColor(ExcelColors.darkBlue());
+    }
+}
+
+@ExcelSheet("Report")
+public class ReportDTO {
+    @ExcelColumn(
+        header = "Q1",
+        order = 1,
+        mergeHeader = "2024 Sales",
+        mergeHeaderStyle = BlueHeaderStyle.class  // Custom style for merge header
+    )
+    private BigDecimal q1Sales;
+
+    @ExcelColumn(
+        header = "Q2",
+        order = 2,
+        mergeHeader = "2024 Sales",
+        mergeHeaderStyle = BlueHeaderStyle.class
+    )
+    private BigDecimal q2Sales;
+}
+```
+
+**Important:**
+- ✅ Columns in a merge group must have **consecutive order values**
+- ❌ Gaps in order will throw `MERGE_HEADER_ORDER_GAP` exception
+- ✅ Columns without `mergeHeader` are automatically merged vertically (1 column, 2 rows)
+
+```java
+// ❌ Invalid: Gap in order
+@ExcelColumn(order = 1, mergeHeader = "Group")  // ✓
+@ExcelColumn(order = 2)                         // ← Gap!
+@ExcelColumn(order = 3, mergeHeader = "Group")  // ✗ Error!
+
+// ✅ Valid: Consecutive orders
+@ExcelColumn(order = 1, mergeHeader = "Group")  // ✓
+@ExcelColumn(order = 2, mergeHeader = "Group")  // ✓
+@ExcelColumn(order = 3)                         // ✓
+```
+
+---
+
 ### 1️⃣1️⃣ Header Control
 
 #### Sheet without Header
