@@ -18,7 +18,7 @@ you'll love Excel Annotator.
 
 [![Java](https://img.shields.io/badge/Java-1.8+-007396?style=flat&logo=java)](https://www.oracle.com/java/)
 [![Apache POI](https://img.shields.io/badge/Apache%20POI-5.4.0-D22128?style=flat)](https://poi.apache.org/)
-[![Version](https://img.shields.io/badge/version-2.2.0-blue.svg)](https://github.com/takoeats/excel-annotator)
+[![Version](https://img.shields.io/badge/version-2.3.0-blue.svg)](https://github.com/takoeats/excel-annotator)
 [![License](https://img.shields.io/badge/license-Apache--2.0-green.svg)](LICENSE)
 
 **Generate Excel files with annotations only - no POI code required!**
@@ -33,7 +33,7 @@ you'll love Excel Annotator.
 <dependency>
     <groupId>io.github.takoeats</groupId>
     <artifactId>excel-annotator</artifactId>
-    <version>2.2.0</version>
+    <version>2.3.0</version>
 </dependency>
 ```
 
@@ -81,19 +81,17 @@ public void downloadExcel(HttpServletResponse response) {
     // Fluent API (Recommended)
     ExcelExporter.excel(response)
         .fileName("customers.xlsx")
-        .write(customers);
+        .write(customers);  // Return value (final filename) can be ignored
 }
 ```
 
 **Done!** 🎉 The browser downloads `customers.xlsx`.
 
-> **Note:** The old API `excelFromList(response, fileName, data)` is still supported but deprecated. It will be removed in version 3.0.0. Please migrate to the Fluent API.
-
 ---
 
 ## 📖 API Entry Points
 
-### ✨ Fluent API (Recommended)
+### ✨ Fluent API
 
 Simple, intuitive builder pattern for all export scenarios:
 
@@ -103,34 +101,39 @@ Simple, intuitive builder pattern for all export scenarios:
 // HttpServletResponse (Web Download)
 ExcelExporter.excel(response)
     .fileName("customers.xlsx")
-    .write(customerList);                      // List
+    .write(customerList);  // Return value (final filename) can be ignored
 
 ExcelExporter.excel(response)
     .fileName("customers.xlsx")
-    .write(customerStream);                    // Stream
+    .write(customerStream);  // Return value (final filename) can be ignored
 
 ExcelExporter.excel(response)
     .fileName("report.xlsx")
-    .write(multiSheetMap);                     // Multi-sheet (Map<String, List<?>> or Map<String, Stream<?>>)
+    .write(multiSheetMap);  // Return value (final filename) can be ignored
 
 ExcelExporter.excel(response)
     .fileName("customers.xlsx")
-    .write(query, dataProvider, converter);    // Data provider pattern
+    .write(query, dataProvider, converter);  // Return value (final filename) can be ignored
 
 // OutputStream (File Save)
 String fileName = ExcelExporter.excel(outputStream)
     .fileName("customers.xlsx")
-    .write(customerList);                      // Returns processed filename
+    .write(customerList);  // Returns processed filename
 ```
 
 #### CSV Export
 
 ```java
 // HttpServletResponse (Web Download)
+// List
 ExcelExporter.csv(response)
     .fileName("customers.csv")
-    .write(customerList);     // List
-    .write(customerStream);   // Stream
+    .write(customerList);  // Return value (final filename) can be ignored
+
+// Stream
+ExcelExporter.csv(response)
+    .fileName("customers.csv")
+    .write(customerStream);  // Return value (final filename) can be ignored
 
 // OutputStream (File Save)
 String fileName = ExcelExporter.csv(outputStream)
@@ -146,7 +149,9 @@ String fileName = ExcelExporter.csv(outputStream)
 
 ---
 
-### 📚 Legacy API (Deprecated - Removed in 3.0.0)
+### 📚 Legacy API (Deprecated ⚠️)
+
+> **⚠️ Deprecation Notice:** The legacy static methods (`excelFromList`, `excelFromStream`, etc.) are deprecated and will be removed in version **3.0.0**. Please migrate to the Fluent API above for better type safety and readability.
 
 ExcelExporter provides **17 static methods** (deprecated) for various use cases.
 
@@ -220,8 +225,10 @@ public class ExcelController {
 
         List<CustomerDTO> customers = customerService.getAllCustomers();
 
-        // Download immediately in browser
-        ExcelExporter.excelFromList(response, "customers.xlsx", customers);
+        // Download immediately in browser using Fluent API
+        ExcelExporter.excel(response)
+            .fileName("customers.xlsx")
+            .write(customers);  // Return value (final filename) can be ignored
         // Actual download: customers.xlsx (explicit filename - no timestamp)
 
         // 📌 Headers automatically set by library:
@@ -238,7 +245,9 @@ public class ExcelController {
 // Specify filename
 try (FileOutputStream fos = new FileOutputStream("output.xlsx")) {
     List<CustomerDTO> customers = customerService.getCustomers();
-    String fileName = ExcelExporter.excelFromList(fos, "customers.xlsx", customers);
+    String fileName = ExcelExporter.excel(fos)
+        .fileName("customers.xlsx")
+        .write(customers);
     System.out.println("Created: " + fileName);
     // Output: Created: customers.xlsx (explicit filename - no timestamp)
 }
@@ -247,10 +256,11 @@ try (FileOutputStream fos = new FileOutputStream("output.xlsx")) {
 #### 1-3. Auto-generated Filename
 
 ```java
-// Auto-generates "download_yyyyMMdd_HHmmss.xlsx" if filename omitted
+// Auto-generates "download_yyyyMMdd_HHmmss.xlsx" if fileName() is not called
 try (FileOutputStream fos = new FileOutputStream("output.xlsx")) {
     List<CustomerDTO> customers = customerService.getCustomers();
-    String fileName = ExcelExporter.excelFromList(fos, customers);
+    String fileName = ExcelExporter.excel(fos)
+        .write(customers);  // No fileName() call → auto-generated
     System.out.println("Created: " + fileName);
     // Output: Created: download_20250108_143025.xlsx
 }
@@ -261,7 +271,9 @@ try (FileOutputStream fos = new FileOutputStream("output.xlsx")) {
 ```java
 // Generate in memory and return as byte array
 ByteArrayOutputStream baos = new ByteArrayOutputStream();
-ExcelExporter.excelFromList(baos, "customers.xlsx", customers);
+ExcelExporter.excel(baos)
+    .fileName("customers.xlsx")
+    .write(customers);
 
 byte[] excelBytes = baos.toByteArray();
 
@@ -479,8 +491,10 @@ public void downloadMultiSheetReport(HttpServletResponse response) {
     sheetData.put("orders", orderService.getOrders());           // @ExcelSheet("Orders")
     sheetData.put("products", productService.getProducts());     // @ExcelSheet("Products")
 
-    // Use Map version API
-    ExcelExporter.excelFromList(response, "integrated_report.xlsx", sheetData);
+    // Use Fluent API with Map
+    ExcelExporter.excel(response)
+        .fileName("integrated_report.xlsx")
+        .write(sheetData);  // Return value (final filename) can be ignored
 }
 ```
 
@@ -497,8 +511,10 @@ try (FileOutputStream fos = new FileOutputStream("report.xlsx")) {
     sheetData.put("customers", customerList);
     sheetData.put("orders", orderList);
 
-    // OutputStream + Map version API
-    String fileName = ExcelExporter.excelFromList(fos, "report.xlsx", sheetData);
+    // Fluent API with OutputStream + Map
+    String fileName = ExcelExporter.excel(fos)
+        .fileName("report.xlsx")
+        .write(sheetData);
     System.out.println("Multi-sheet created: " + fileName);
 }
 ```
@@ -531,7 +547,9 @@ Map<String, List<?>> data = new LinkedHashMap<>();
 data.put("basic", customerBasicList);
 data.put("extra", customerExtraList);
 
-ExcelExporter.excelFromList(response, "customers.xlsx", data);
+ExcelExporter.excel(response)
+    .fileName("customers.xlsx")
+    .write(data);  // Return value (final filename) can be ignored
 ```
 
 **Result:** Single sheet "Customers" with 4 columns (ID, Name, Email, Phone)
@@ -548,8 +566,10 @@ public void downloadLargeCustomers(HttpServletResponse response) {
     // JPA Repository returns Stream (cursor-based)
     Stream<CustomerDTO> customerStream = customerRepository.streamAllCustomers();
 
-    // Use Stream version API
-    ExcelExporter.excelFromStream(response, "large_customers.xlsx", customerStream);
+    // Use Fluent API with Stream
+    ExcelExporter.excel(response)
+        .fileName("large_customers.xlsx")
+        .write(customerStream);  // Return value (final filename) can be ignored
 }
 ```
 
@@ -565,7 +585,9 @@ public void downloadLargeCustomers(HttpServletResponse response) {
 try (FileOutputStream fos = new FileOutputStream("customers.xlsx");
      Stream<CustomerDTO> stream = customerRepository.streamAll()) {
 
-    String fileName = ExcelExporter.excelFromStream(fos, "customers.xlsx", stream);
+    String fileName = ExcelExporter.excel(fos)
+        .fileName("customers.xlsx")
+        .write(stream);
     System.out.println("Large file created: " + fileName);
 }
 
@@ -573,7 +595,8 @@ try (FileOutputStream fos = new FileOutputStream("customers.xlsx");
 try (FileOutputStream fos = new FileOutputStream("customers.xlsx");
      Stream<CustomerDTO> stream = customerRepository.streamAll()) {
 
-    String fileName = ExcelExporter.excelFromStream(fos, stream);
+    String fileName = ExcelExporter.excel(fos)
+        .write(stream);  // No fileName() call → auto-generated
     System.out.println("Large file created: " + fileName);
     // Output: Large file created: download_20250108_143025.xlsx
 }
@@ -590,8 +613,10 @@ public void downloadLargeReport(HttpServletResponse response) {
     sheetStreams.put("customers", customerRepository.streamAll());
     sheetStreams.put("orders", orderRepository.streamAll());
 
-    // Map<String, Stream<?>> version API
-    ExcelExporter.excelFromStream(response, "large_report.xlsx", sheetStreams);
+    // Fluent API with Stream Map
+    ExcelExporter.excel(response)
+        .fileName("large_report.xlsx")
+        .write(sheetStreams);  // Return value (final filename) can be ignored
 }
 ```
 
@@ -613,7 +638,9 @@ public class CustomerService {
     public void exportActiveCustomers(HttpServletResponse response) {
         try (Stream<CustomerEntity> stream = customerRepository.streamActiveCustomers()) {
             Stream<CustomerDTO> dtoStream = stream.map(this::toDTO);
-            ExcelExporter.excelFromStream(response, "customers.xlsx", dtoStream);
+            ExcelExporter.excel(response)
+                .fileName("customers.xlsx")
+                .write(dtoStream);  // Return value (final filename) can be ignored
         }
     }
 }
@@ -640,8 +667,10 @@ Generate CSV files with annotations. Fully compliant with RFC 4180 standard.
 public void downloadCustomersAsCsv(HttpServletResponse response) {
     List<CustomerDTO> customers = customerService.getAllCustomers();
 
-    // CSV download (uses same DTO as Excel)
-    ExcelExporter.csvFromList(response, "customers.csv", customers);
+    // CSV download using Fluent API (uses same DTO as Excel)
+    ExcelExporter.csv(response)
+        .fileName("customers.csv")
+        .write(customers);  // Return value (final filename) can be ignored
     // Actual download: customers.csv (explicit filename - no timestamp)
 }
 ```
@@ -651,7 +680,9 @@ public void downloadCustomersAsCsv(HttpServletResponse response) {
 ```java
 try (FileOutputStream fos = new FileOutputStream("customers.csv")) {
     List<CustomerDTO> customers = customerService.getCustomers();
-    String fileName = ExcelExporter.csvFromList(fos, "customers.csv", customers);
+    String fileName = ExcelExporter.csv(fos)
+        .fileName("customers.csv")
+        .write(customers);
     System.out.println("CSV created: " + fileName);
 }
 ```
@@ -663,8 +694,10 @@ try (FileOutputStream fos = new FileOutputStream("customers.csv")) {
 public void downloadLargeCustomersAsCsv(HttpServletResponse response) {
     Stream<CustomerDTO> stream = customerRepository.streamAllCustomers();
 
-    // Large CSV streaming
-    ExcelExporter.csvFromStream(response, "large_customers.csv", stream);
+    // Large CSV streaming using Fluent API
+    ExcelExporter.csv(response)
+        .fileName("large_customers.csv")
+        .write(stream);  // Return value (final filename) can be ignored
 }
 ```
 
@@ -764,7 +797,9 @@ public class UserExportDTO {
 @PostMapping("/export/users")
 public void exportUsers(HttpServletResponse response) {
     List<UserExportDTO> users = userService.getAllUsers();
-    ExcelExporter.excelFromList(response, "user_data.xlsx", users);
+    ExcelExporter.excel(response)
+        .fileName("user_data.xlsx")
+        .write(users);
     // Downloaded file contains masked sensitive data
 }
 ```
@@ -859,14 +894,14 @@ public void downloadSearchResults(
     @RequestBody CustomerSearchRequest request,
     HttpServletResponse response
 ) {
-    // Separate three concerns: query, fetch, transform
-    ExcelExporter.excelFromList(
-        response,
-        "search_results.xlsx",
-        request,                          // Q: Query params
-        customerService::searchCustomers,  // ExcelDataProvider<Q, R>
-        customerService::toDTO             // Function<R, E>
-    );
+    // Separate three concerns: query, fetch, transform using Fluent API
+    ExcelExporter.excel(response)
+        .fileName("search_results.xlsx")
+        .write(
+            request,                          // Q: Query params
+            customerService::searchCustomers,  // ExcelDataProvider<Q, R>
+            customerService::toDTO             // Function<R, E>
+        );  // Return value (final filename) can be ignored
 }
 ```
 
@@ -1143,7 +1178,9 @@ List<CustomerDTO> customers = customerService.getCustomers();
 if (customers.isEmpty()) {
     throw new CustomException("No customers found");
 }
-ExcelExporter.excelFromList(response, "customers.xlsx", customers);
+ExcelExporter.excel(response)
+    .fileName("customers.xlsx")
+    .write(customers);
 ```
 
 ### Q6: What are the multi-sheet merge rules?
@@ -1172,7 +1209,9 @@ ExcelExporter.excelFromList(response, "customers.xlsx", customers);
 @Async
 public void exportCustomers(Long userId, HttpServletResponse response) {
     List<CustomerDTO> customers = customerService.getCustomersByUser(userId);
-    ExcelExporter.excelFromList(response, "customers.xlsx", customers);
+    ExcelExporter.excel(response)
+        .fileName("customers.xlsx")
+        .write(customers);
 }
 ```
 
@@ -1197,7 +1236,9 @@ public void exportCustomers(Long userId, HttpServletResponse response) {
 public ResponseEntity<?> downloadCustomers(HttpServletResponse response) {
     try {
         List<CustomerDTO> customers = customerService.getCustomers();
-        ExcelExporter.excelFromList(response, "customers.xlsx", customers);
+        ExcelExporter.excel(response)
+            .fileName("customers.xlsx")
+            .write(customers);
         return ResponseEntity.ok().build();
 
     } catch (ExcelExporterException ex) {
@@ -1228,14 +1269,14 @@ public ResponseEntity<?> downloadCustomers(HttpServletResponse response) {
 <dependency>
     <groupId>io.github.takoeats</groupId>
     <artifactId>excel-annotator</artifactId>
-    <version>2.2.0</version>
+    <version>2.3.0</version>
 </dependency>
 ```
 
 ### Gradle
 
 ```gradle
-implementation 'io.github.takoeats:excel-annotator:2.2.0'
+implementation 'io.github.takoeats:excel-annotator:2.3.0'
 ```
 
 ### Dependencies
@@ -1265,7 +1306,9 @@ public class ExcelController {
     @GetMapping("/customers")
     public void downloadCustomers(HttpServletResponse response) {
         List<CustomerDTO> customers = customerService.getAllCustomers();
-        ExcelExporter.excelFromList(response, "customers.xlsx", customers);
+        ExcelExporter.excel(response)
+            .fileName("customers.xlsx")
+            .write(customers);
     }
 
     @GetMapping("/monthly-report")
@@ -1279,7 +1322,9 @@ public class ExcelController {
         report.put("orders", orderService.getOrdersByMonth(year, month));
 
         String fileName = String.format("monthly_report_%d_%d.xlsx", year, month);
-        ExcelExporter.excelFromList(response, fileName, report);
+        ExcelExporter.excel(response)
+            .fileName(fileName)
+            .write(report);
     }
 }
 ```
@@ -1351,7 +1396,9 @@ public class ExcelBatchService {
              Stream<CustomerEntity> stream = customerRepository.streamAll()) {
 
             Stream<CustomerDTO> dtoStream = stream.map(this::toDTO);
-            String fileName = ExcelExporter.excelFromStream(fos, "customers.xlsx", dtoStream);
+            String fileName = ExcelExporter.excel(fos)
+                .fileName("customers.xlsx")
+                .write(dtoStream);
 
             log.info("Batch export completed: {}", fileName);
             return fileName;
@@ -1391,7 +1438,9 @@ public void downloadPublicReport(HttpServletResponse response) {
     response.setHeader("Cache-Control", "public, max-age=3600");
 
     List<ReportDTO> data = reportService.getPublicData();
-    ExcelExporter.excelFromList(response, "report.xlsx", data);
+    ExcelExporter.excel(response)
+        .fileName("report.xlsx")
+        .write(data);
     // Cache-Control remains "public, max-age=3600"
 }
 ```
@@ -1410,7 +1459,9 @@ public void downloadSecureData(HttpServletResponse response) {
     response.setHeader("X-User-Role", currentUser.getRole());
 
     List<SecureDataDTO> data = secureDataService.getData();
-    ExcelExporter.excelFromList(response, "secure-data.xlsx", data);
+    ExcelExporter.excel(response)
+        .fileName("secure-data.xlsx")
+        .write(data);
     // ✅ All custom headers are preserved
 }
 ```

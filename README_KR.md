@@ -6,7 +6,7 @@
 
 [![Java](https://img.shields.io/badge/Java-1.8+-007396?style=flat&logo=java)](https://www.oracle.com/java/)
 [![Apache POI](https://img.shields.io/badge/Apache%20POI-5.4.0-D22128?style=flat)](https://poi.apache.org/)
-[![Version](https://img.shields.io/badge/version-2.2.0-blue.svg)](https://github.com/takoeats/excel-annotator)
+[![Version](https://img.shields.io/badge/version-2.3.0-blue.svg)](https://github.com/takoeats/excel-annotator)
 [![License](https://img.shields.io/badge/license-Apache--2.0-green.svg)](LICENSE)
 
 **POI 코드 작성 없이 어노테이션만으로 Excel 파일을 생성하세요!**
@@ -21,7 +21,7 @@
 <dependency>
     <groupId>io.github.takoeats</groupId>
     <artifactId>excel-annotator</artifactId>
-    <version>2.2.0</version>
+    <version>2.3.0</version>
 </dependency>
 ```
 
@@ -65,7 +65,11 @@ import io.github.takoeats.excelannotator.ExcelExporter;
 @PostMapping("/download/customers")
 public void downloadExcel(HttpServletResponse response) {
     List<CustomerDTO> customers = customerService.getCustomers();
-    ExcelExporter.excelFromList(response, "고객목록.xlsx", customers);
+
+    // Fluent API 사용 (권장)
+    ExcelExporter.excel(response)
+        .fileName("고객목록.xlsx")
+        .write(customers);  // 반환값(최종파일명)은 무시 가능
 }
 ```
 
@@ -75,7 +79,69 @@ public void downloadExcel(HttpServletResponse response) {
 
 ## 📖 API 진입점 (Entry Points)
 
-ExcelExporter는 다양한 사용 사례를 위한 **17개의 정적 메서드**를 제공합니다.
+### ✨ Fluent API
+
+간단하고 직관적인 빌더 패턴으로 모든 내보내기 시나리오를 지원합니다:
+
+#### Excel 내보내기
+
+```java
+// HttpServletResponse (웹 다운로드)
+ExcelExporter.excel(response)
+    .fileName("고객목록.xlsx")
+    .write(customerList);  // 반환값(최종파일명)은 무시 가능
+
+ExcelExporter.excel(response)
+    .fileName("고객목록.xlsx")
+    .write(customerStream);  // 반환값(최종파일명)은 무시 가능
+
+ExcelExporter.excel(response)
+    .fileName("리포트.xlsx")
+    .write(multiSheetMap);  // 반환값(최종파일명)은 무시 가능
+
+ExcelExporter.excel(response)
+    .fileName("고객목록.xlsx")
+    .write(query, dataProvider, converter);  // 반환값(최종파일명)은 무시 가능
+
+// OutputStream (파일 저장)
+String fileName = ExcelExporter.excel(outputStream)
+    .fileName("고객목록.xlsx")
+    .write(customerList);  // 처리된 파일명 반환
+```
+
+#### CSV 내보내기
+
+```java
+// HttpServletResponse (웹 다운로드)
+// List
+ExcelExporter.csv(response)
+    .fileName("고객목록.csv")
+    .write(customerList);  // 반환값(최종파일명)은 무시 가능
+
+// Stream
+ExcelExporter.csv(response)
+    .fileName("고객목록.csv")
+    .write(customerStream);  // 반환값(최종파일명)은 무시 가능
+
+// OutputStream (파일 저장)
+String fileName = ExcelExporter.csv(outputStream)
+    .fileName("고객목록.csv")
+    .write(customerList);
+```
+
+**주요 장점:**
+- **타입 안전성**: 컴파일 타임 타입 보장
+- **통일된 인터페이스**: Response/OutputStream, Excel/CSV 모두 동일한 패턴
+- **유연한 데이터**: List, Stream, Map (혼합 List/Stream 값) 지원
+- **깔끔한 코드**: 메서드명 혼동 없음 (`excelFromList` vs `excelFromStream`)
+
+---
+
+### 📚 Legacy API (Deprecated ⚠️)
+
+> **⚠️ Deprecation 공지:** 레거시 정적 메서드(`excelFromList`, `excelFromStream` 등)는 deprecated 되었으며 **3.0.0** 버전에서 제거됩니다. 더 나은 타입 안전성과 가독성을 위해 위의 Fluent API로 마이그레이션해주세요.
+
+ExcelExporter는 다양한 사용 사례를 위한 **17개의 정적 메서드**(deprecated)를 제공합니다.
 
 ### 전체 API 개요
 
@@ -148,8 +214,10 @@ public class ExcelController {
 
         List<CustomerDTO> customers = customerService.getAllCustomers();
 
-        // 브라우저에서 즉시 다운로드
-        ExcelExporter.excelFromList(response, "고객목록.xlsx", customers);
+        // 브라우저에서 즉시 다운로드 (Fluent API 사용)
+        ExcelExporter.excel(response)
+            .fileName("고객목록.xlsx")
+            .write(customers);  // 반환값(최종파일명)은 무시 가능
         // 실제 다운로드: 고객목록.xlsx (명시적 파일명 - 타임스탬프 없음)
 
         // 📌 라이브러리가 자동 설정하는 헤더:
@@ -165,7 +233,9 @@ public class ExcelController {
 // 파일명 지정
 try (FileOutputStream fos = new FileOutputStream("output.xlsx")) {
     List<CustomerDTO> customers = customerService.getCustomers();
-    String fileName = ExcelExporter.excelFromList(fos, "고객목록.xlsx", customers);
+    String fileName = ExcelExporter.excel(fos)
+        .fileName("고객목록.xlsx")
+        .write(customers);
     System.out.println("생성 완료: " + fileName);
     // 출력: 생성 완료: 고객목록.xlsx (명시적 파일명 - 타임스탬프 없음)
 }
@@ -173,10 +243,11 @@ try (FileOutputStream fos = new FileOutputStream("output.xlsx")) {
 
 #### 1-3. 파일명 자동 생성
 ```java
-// 파일명 생략 시 "download_yyyyMMdd_HHmmss.xlsx" 자동 생성
+// fileName() 호출 안 하면 "download_yyyyMMdd_HHmmss.xlsx" 자동 생성
 try (FileOutputStream fos = new FileOutputStream("output.xlsx")) {
     List<CustomerDTO> customers = customerService.getCustomers();
-    String fileName = ExcelExporter.excelFromList(fos, customers);
+    String fileName = ExcelExporter.excel(fos)
+        .write(customers);  // fileName() 호출 없음 → 자동 생성
     System.out.println("생성 완료: " + fileName);
     // 출력: 생성 완료: download_20250108_143025.xlsx
 }
@@ -186,7 +257,9 @@ try (FileOutputStream fos = new FileOutputStream("output.xlsx")) {
 ```java
 // 메모리에서 생성 후 바이트 배열로 반환
 ByteArrayOutputStream baos = new ByteArrayOutputStream();
-ExcelExporter.excelFromList(baos, "customers.xlsx", customers);
+ExcelExporter.excel(baos)
+    .fileName("customers.xlsx")
+    .write(customers);
 
 byte[] excelBytes = baos.toByteArray();
 
@@ -404,8 +477,10 @@ public void downloadMultiSheetReport(HttpServletResponse response) {
     sheetData.put("orders", orderService.getOrders());           // @ExcelSheet("주문 내역")
     sheetData.put("products", productService.getProducts());     // @ExcelSheet("상품 목록")
 
-    // Map 버전 API 사용
-    ExcelExporter.excelFromList(response, "통합_리포트.xlsx", sheetData);
+    // Fluent API로 Map 사용
+    ExcelExporter.excel(response)
+        .fileName("통합_리포트.xlsx")
+        .write(sheetData);  // 반환값(최종파일명)은 무시 가능
 }
 ```
 
@@ -422,8 +497,10 @@ try (FileOutputStream fos = new FileOutputStream("report.xlsx")) {
     sheetData.put("customers", customerList);
     sheetData.put("orders", orderList);
 
-    // OutputStream + Map 버전 API
-    String fileName = ExcelExporter.excelFromList(fos, "리포트.xlsx", sheetData);
+    // Fluent API로 OutputStream + Map
+    String fileName = ExcelExporter.excel(fos)
+        .fileName("리포트.xlsx")
+        .write(sheetData);
     System.out.println("멀티시트 생성 완료: " + fileName);
 }
 ```
@@ -456,7 +533,9 @@ Map<String, List<?>> data = new LinkedHashMap<>();
 data.put("basic", customerBasicList);
 data.put("extra", customerExtraList);
 
-ExcelExporter.excelFromList(response, "고객.xlsx", data);
+ExcelExporter.excel(response)
+    .fileName("고객.xlsx")
+    .write(data);  // 반환값(최종파일명)은 무시 가능
 ```
 
 **결과:** 단일 시트 "고객"에 4개 컬럼 (ID, 이름, 이메일, 전화번호)
@@ -473,8 +552,10 @@ public void downloadLargeCustomers(HttpServletResponse response) {
     // JPA Repository에서 Stream 반환 (커서 기반)
     Stream<CustomerDTO> customerStream = customerRepository.streamAllCustomers();
 
-    // Stream 버전 API 사용
-    ExcelExporter.excelFromStream(response, "대용량_고객.xlsx", customerStream);
+    // Fluent API로 Stream 사용
+    ExcelExporter.excel(response)
+        .fileName("대용량_고객.xlsx")
+        .write(customerStream);  // 반환값(최종파일명)은 무시 가능
 }
 ```
 
@@ -490,7 +571,9 @@ public void downloadLargeCustomers(HttpServletResponse response) {
 try (FileOutputStream fos = new FileOutputStream("customers.xlsx");
      Stream<CustomerDTO> stream = customerRepository.streamAll()) {
 
-    String fileName = ExcelExporter.excelFromStream(fos, "고객.xlsx", stream);
+    String fileName = ExcelExporter.excel(fos)
+        .fileName("고객.xlsx")
+        .write(stream);
     System.out.println("대용량 파일 생성: " + fileName);
 }
 
@@ -498,7 +581,8 @@ try (FileOutputStream fos = new FileOutputStream("customers.xlsx");
 try (FileOutputStream fos = new FileOutputStream("customers.xlsx");
      Stream<CustomerDTO> stream = customerRepository.streamAll()) {
 
-    String fileName = ExcelExporter.excelFromStream(fos, stream);
+    String fileName = ExcelExporter.excel(fos)
+        .write(stream);  // fileName() 호출 없음 → 자동 생성
     System.out.println("대용량 파일 생성: " + fileName);
     // 출력: 대용량 파일 생성: download_20250108_143025.xlsx
 }
@@ -515,8 +599,10 @@ public void downloadLargeReport(HttpServletResponse response) {
     sheetStreams.put("customers", customerRepository.streamAll());
     sheetStreams.put("orders", orderRepository.streamAll());
 
-    // Map<String, Stream<?>> 버전 API
-    ExcelExporter.excelFromStream(response, "대용량_리포트.xlsx", sheetStreams);
+    // Fluent API로 Stream Map 사용
+    ExcelExporter.excel(response)
+        .fileName("대용량_리포트.xlsx")
+        .write(sheetStreams);  // 반환값(최종파일명)은 무시 가능
 }
 ```
 
@@ -538,7 +624,9 @@ public class CustomerService {
     public void exportActiveCustomers(HttpServletResponse response) {
         try (Stream<CustomerEntity> stream = customerRepository.streamActiveCustomers()) {
             Stream<CustomerDTO> dtoStream = stream.map(this::toDTO);
-            ExcelExporter.excelFromStream(response, "고객.xlsx", dtoStream);
+            ExcelExporter.excel(response)
+                .fileName("고객.xlsx")
+                .write(dtoStream);  // 반환값(최종파일명)은 무시 가능
         }
     }
 }
@@ -565,8 +653,10 @@ public class CustomerService {
 public void downloadCustomersAsCsv(HttpServletResponse response) {
     List<CustomerDTO> customers = customerService.getAllCustomers();
 
-    // CSV 다운로드 (Excel과 동일한 DTO 사용)
-    ExcelExporter.csvFromList(response, "고객목록.csv", customers);
+    // Fluent API로 CSV 다운로드 (Excel과 동일한 DTO 사용)
+    ExcelExporter.csv(response)
+        .fileName("고객목록.csv")
+        .write(customers);  // 반환값(최종파일명)은 무시 가능
     // 실제 다운로드: 고객목록.csv (명시적 파일명 - 타임스탬프 없음)
 }
 ```
@@ -576,7 +666,9 @@ public void downloadCustomersAsCsv(HttpServletResponse response) {
 ```java
 try (FileOutputStream fos = new FileOutputStream("customers.csv")) {
     List<CustomerDTO> customers = customerService.getCustomers();
-    String fileName = ExcelExporter.csvFromList(fos, "고객.csv", customers);
+    String fileName = ExcelExporter.csv(fos)
+        .fileName("고객.csv")
+        .write(customers);
     System.out.println("CSV 생성 완료: " + fileName);
 }
 ```
@@ -588,8 +680,10 @@ try (FileOutputStream fos = new FileOutputStream("customers.csv")) {
 public void downloadLargeCustomersAsCsv(HttpServletResponse response) {
     Stream<CustomerDTO> stream = customerRepository.streamAllCustomers();
 
-    // 대용량 CSV 스트리밍
-    ExcelExporter.csvFromStream(response, "대용량_고객.csv", stream);
+    // Fluent API로 대용량 CSV 스트리밍
+    ExcelExporter.csv(response)
+        .fileName("대용량_고객.csv")
+        .write(stream);  // 반환값(최종파일명)은 무시 가능
 }
 ```
 
@@ -689,7 +783,9 @@ public class UserExportDTO {
 @PostMapping("/export/users")
 public void exportUsers(HttpServletResponse response) {
     List<UserExportDTO> users = userService.getAllUsers();
-    ExcelExporter.excelFromList(response, "사용자_데이터.xlsx", users);
+    ExcelExporter.excel(response)
+        .fileName("사용자_데이터.xlsx")
+        .write(users);
     // 다운로드되는 파일에는 마스킹된 민감정보가 포함됩니다
 }
 ```
@@ -783,14 +879,14 @@ public void downloadSearchResults(
     @RequestBody CustomerSearchRequest request,
     HttpServletResponse response
 ) {
-    // 세 가지 관심사 분리: 쿼리, 조회, 변환
-    ExcelExporter.excelFromList(
-        response,
-        "검색결과.xlsx",
-        request,                          // Q: Query params
-        customerService::searchCustomers,  // ExcelDataProvider<Q, R>
-        customerService::toDTO             // Function<R, E>
-    );
+    // Fluent API로 세 가지 관심사 분리: 쿼리, 조회, 변환
+    ExcelExporter.excel(response)
+        .fileName("검색결과.xlsx")
+        .write(
+            request,                          // Q: Query params
+            customerService::searchCustomers,  // ExcelDataProvider<Q, R>
+            customerService::toDTO             // Function<R, E>
+        );  // 반환값(최종파일명)은 무시 가능
 }
 ```
 
@@ -1065,7 +1161,9 @@ List<CustomerDTO> customers = customerService.getCustomers();
 if (customers.isEmpty()) {
     throw new CustomException("No customers found");
 }
-ExcelExporter.excelFromList(response, "customers.xlsx", customers);
+ExcelExporter.excel(response)
+    .fileName("customers.xlsx")
+    .write(customers);
 ```
 
 ### Q6: 멀티시트 병합 규칙은?
@@ -1094,7 +1192,9 @@ ExcelExporter.excelFromList(response, "customers.xlsx", customers);
 @Async
 public void exportCustomers(Long userId, HttpServletResponse response) {
     List<CustomerDTO> customers = customerService.getCustomersByUser(userId);
-    ExcelExporter.excelFromList(response, "customers.xlsx", customers);
+    ExcelExporter.excel(response)
+        .fileName("customers.xlsx")
+        .write(customers);
 }
 ```
 
@@ -1119,7 +1219,9 @@ public void exportCustomers(Long userId, HttpServletResponse response) {
 public ResponseEntity<?> downloadCustomers(HttpServletResponse response) {
     try {
         List<CustomerDTO> customers = customerService.getCustomers();
-        ExcelExporter.excelFromList(response, "고객목록.xlsx", customers);
+        ExcelExporter.excel(response)
+            .fileName("고객목록.xlsx")
+            .write(customers);
         return ResponseEntity.ok().build();
 
     } catch (ExcelExporterException ex) {
@@ -1150,14 +1252,14 @@ public ResponseEntity<?> downloadCustomers(HttpServletResponse response) {
 <dependency>
     <groupId>io.github.takoeats</groupId>
     <artifactId>excel-annotator</artifactId>
-    <version>2.2.0</version>
+    <version>2.3.0</version>
 </dependency>
 ```
 
 ### Gradle
 
 ```gradle
-implementation 'io.github.takoeats:excel-annotator:2.2.0'
+implementation 'io.github.takoeats:excel-annotator:2.3.0'
 ```
 
 ### 필요 의존성
@@ -1187,7 +1289,9 @@ public class ExcelController {
     @GetMapping("/customers")
     public void downloadCustomers(HttpServletResponse response) {
         List<CustomerDTO> customers = customerService.getAllCustomers();
-        ExcelExporter.excelFromList(response, "고객목록.xlsx", customers);
+        ExcelExporter.excel(response)
+            .fileName("고객목록.xlsx")
+            .write(customers);
     }
 
     @GetMapping("/monthly-report")
@@ -1201,7 +1305,9 @@ public class ExcelController {
         report.put("orders", orderService.getOrdersByMonth(year, month));
 
         String fileName = String.format("월간리포트_%d년%d월.xlsx", year, month);
-        ExcelExporter.excelFromList(response, fileName, report);
+        ExcelExporter.excel(response)
+            .fileName(fileName)
+            .write(report);
     }
 }
 ```
@@ -1273,7 +1379,9 @@ public class ExcelBatchService {
              Stream<CustomerEntity> stream = customerRepository.streamAll()) {
 
             Stream<CustomerDTO> dtoStream = stream.map(this::toDTO);
-            String fileName = ExcelExporter.excelFromStream(fos, "customers.xlsx", dtoStream);
+            String fileName = ExcelExporter.excel(fos)
+                .fileName("customers.xlsx")
+                .write(dtoStream);
 
             log.info("Batch export completed: {}", fileName);
             return fileName;
@@ -1313,7 +1421,9 @@ public void downloadPublicReport(HttpServletResponse response) {
     response.setHeader("Cache-Control", "public, max-age=3600");
 
     List<ReportDTO> data = reportService.getPublicData();
-    ExcelExporter.excelFromList(response, "report.xlsx", data);
+    ExcelExporter.excel(response)
+        .fileName("report.xlsx")
+        .write(data);
     // Cache-Control은 "public, max-age=3600" 유지됨
 }
 ```
@@ -1332,7 +1442,9 @@ public void downloadSecureData(HttpServletResponse response) {
     response.setHeader("X-User-Role", currentUser.getRole());
 
     List<SecureDataDTO> data = secureDataService.getData();
-    ExcelExporter.excelFromList(response, "secure-data.xlsx", data);
+    ExcelExporter.excel(response)
+        .fileName("secure-data.xlsx")
+        .write(data);
     // ✅ 모든 커스텀 헤더가 그대로 유지됨
 }
 ```
