@@ -279,6 +279,16 @@ class ColumnStyleResolverTest {
                 return Masking.NONE;
             }
 
+            @Override
+            public String mergeHeader() {
+                return "";
+            }
+
+            @Override
+            public Class<? extends CustomExcelCellStyle> mergeHeaderStyle() {
+                return DefaultHeaderStyle.class;
+            }
+
         };
     }
 

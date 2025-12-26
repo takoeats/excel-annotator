@@ -15,24 +15,24 @@ import static org.junit.jupiter.api.Assertions.*;
 class ColumnInfoTest {
 
     @Test
-    void constructor_withAllParameters_createsInstanceSuccessfully() throws NoSuchFieldException {
+    void builder_withAllParameters_createsInstanceSuccessfully() throws NoSuchFieldException {
         Field mockField = String.class.getDeclaredField("value");
         CustomExcelCellStyle headerStyle = null;
         CustomExcelCellStyle columnStyle = null;
         List<StyleRule> rules = Collections.emptyList();
 
-        ColumnInfo columnInfo = new ColumnInfo(
-                "Test Header",
-                1,
-                100,
-                "#,##0",
-                mockField,
-                headerStyle,
-                columnStyle,
-                rules,
-                "Sheet1",
-                Masking.NONE
-        );
+        ColumnInfo columnInfo = ColumnInfo.builder()
+                .header("Test Header")
+                .order(1)
+                .width(100)
+                .format("#,##0")
+                .field(mockField)
+                .headerStyle(headerStyle)
+                .columnStyle(columnStyle)
+                .conditionalStyleRules(rules)
+                .sheetName("Sheet1")
+                .masking(Masking.NONE)
+                .build();
 
         assertNotNull(columnInfo);
         assertEquals("Test Header", columnInfo.getHeader());
@@ -47,21 +47,17 @@ class ColumnInfoTest {
     }
 
     @Test
-    void constructor_withNullConditionalStyleRules_convertsToEmptyList() throws NoSuchFieldException {
+    void builder_withNullConditionalStyleRules_convertsToEmptyList() throws NoSuchFieldException {
         Field mockField = String.class.getDeclaredField("value");
 
-        ColumnInfo columnInfo = new ColumnInfo(
-                "Header",
-                0,
-                50,
-                "",
-                mockField,
-                null,
-                null,
-                null,
-                null,
-                Masking.NONE
-        );
+        ColumnInfo columnInfo = ColumnInfo.builder()
+                .header("Header")
+                .order(0)
+                .width(50)
+                .format("")
+                .field(mockField)
+                .masking(Masking.NONE)
+                .build();
 
         assertNotNull(columnInfo.getConditionalStyleRules());
         assertTrue(columnInfo.getConditionalStyleRules().isEmpty());
@@ -75,18 +71,16 @@ class ColumnInfoTest {
                 StyleRule.builder().priority(2).build()
         );
 
-        ColumnInfo columnInfo = new ColumnInfo(
-                "Amount",
-                5,
-                150,
-                "#,##0.00",
-                mockField,
-                null,
-                null,
-                rules,
-                "Data",
-                Masking.NONE
-        );
+        ColumnInfo columnInfo = ColumnInfo.builder()
+                .header("Amount")
+                .order(5)
+                .width(150)
+                .format("#,##0.00")
+                .field(mockField)
+                .conditionalStyleRules(rules)
+                .sheetName("Data")
+                .masking(Masking.NONE)
+                .build();
 
         assertEquals("Amount", columnInfo.getHeader());
         assertEquals(5, columnInfo.getOrder());

@@ -80,31 +80,31 @@ class MetadataAssemblerTest {
     private static Map<Integer, ColumnInfo> getIntegerColumnInfoMap() throws NoSuchFieldException {
         Map<Integer, ColumnInfo> mergedColumns = new LinkedHashMap<>();
 
-        ColumnInfo col1 = new ColumnInfo(
-                "Name",
-                1,
-                100,
-                "",
-                String.class.getDeclaredField("value"),
-                null,
-                null,
-                null,
-                null,
-                Masking.NONE
-        );
+        ColumnInfo col1 = ColumnInfo.builder()
+                .header("Name")
+                .order(1)
+                .width(100)
+                .format("")
+                .field(String.class.getDeclaredField("value"))
+                .headerStyle(null)
+                .columnStyle(null)
+                .conditionalStyleRules(null)
+                .sheetName(null)
+                .masking(Masking.NONE)
+                .build();
 
-        ColumnInfo col2 = new ColumnInfo(
-                "Age",
-                2,
-                50,
-                "",
-                Integer.class.getDeclaredField("value"),
-                null,
-                null,
-                null,
-                null,
-                Masking.NONE
-        );
+        ColumnInfo col2 = ColumnInfo.builder()
+                .header("Age")
+                .order(2)
+                .width(50)
+                .format("")
+                .field(Integer.class.getDeclaredField("value"))
+                .headerStyle(null)
+                .columnStyle(null)
+                .conditionalStyleRules(null)
+                .sheetName(null)
+                .masking(Masking.NONE)
+                .build();
 
         mergedColumns.put(1, col1);
         mergedColumns.put(2, col2);
@@ -115,18 +115,18 @@ class MetadataAssemblerTest {
     void assembleFromMergedColumns_generatesMapExtractors() throws NoSuchFieldException {
         Map<Integer, ColumnInfo> mergedColumns = new LinkedHashMap<>();
 
-        ColumnInfo col1 = new ColumnInfo(
-                "Data",
-                1,
-                100,
-                "",
-                String.class.getDeclaredField("value"),
-                null,
-                null,
-                null,
-                null,
-                Masking.NONE
-        );
+        ColumnInfo col1 = ColumnInfo.builder()
+                .header("Data")
+                .order(1)
+                .width(100)
+                .format("")
+                .field(String.class.getDeclaredField("value"))
+                .headerStyle(null)
+                .columnStyle(null)
+                .conditionalStyleRules(null)
+                .sheetName(null)
+                .masking(Masking.NONE)
+                .build();
 
         mergedColumns.put(1, col1);
 

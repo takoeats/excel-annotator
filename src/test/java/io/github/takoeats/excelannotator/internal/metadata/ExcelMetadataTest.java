@@ -32,31 +32,31 @@ class ExcelMetadataTest {
         Field mockField1 = String.class.getDeclaredField("value");
         Field mockField2 = String.class.getDeclaredField("hash");
 
-        ColumnInfo col1 = new ColumnInfo(
-                "Name",
-                1,
-                100,
-                "",
-                mockField1,
-                null,
-                null,
-                Collections.emptyList(),
-                "Sheet1",
-                Masking.NONE
-        );
+        ColumnInfo col1 = ColumnInfo.builder()
+                .header("Name")
+                .order(1)
+                .width(100)
+                .format("")
+                .field(mockField1)
+                .headerStyle(null)
+                .columnStyle(null)
+                .conditionalStyleRules(Collections.emptyList())
+                .sheetName("Sheet1")
+                .masking(Masking.NONE)
+                .build();
 
-        ColumnInfo col2 = new ColumnInfo(
-                "Age",
-                2,
-                50,
-                "#,##0",
-                mockField2,
-                null,
-                null,
-                Arrays.asList(StyleRule.builder().priority(1).build()),
-                "Sheet1",
-                Masking.NONE
-        );
+        ColumnInfo col2 = ColumnInfo.builder()
+                .header("Age")
+                .order(2)
+                .width(50)
+                .format("#,##0")
+                .field(mockField2)
+                .headerStyle(null)
+                .columnStyle(null)
+                .conditionalStyleRules(Arrays.asList(StyleRule.builder().priority(1).build()))
+                .sheetName("Sheet1")
+                .masking(Masking.NONE)
+                .build();
 
         testColumnInfos = Arrays.asList(col1, col2);
     }
@@ -291,18 +291,18 @@ class ExcelMetadataTest {
         Field mockField = String.class.getDeclaredField("value");
         CustomExcelCellStyle headerStyle = new TestHeaderStyle();
 
-        ColumnInfo col1 = new ColumnInfo(
-                "Name",
-                1,
-                100,
-                "",
-                mockField,
-                headerStyle,
-                null,
-                Collections.emptyList(),
-                "Sheet1",
-                Masking.NONE
-        );
+        ColumnInfo col1 = ColumnInfo.builder()
+                .header("Name")
+                .order(1)
+                .width(100)
+                .format("")
+                .field(mockField)
+                .headerStyle(headerStyle)
+                .columnStyle(null)
+                .conditionalStyleRules(Collections.emptyList())
+                .sheetName("Sheet1")
+                .masking(Masking.NONE)
+                .build();
 
         ExcelMetadata<Object> metadata = ExcelMetadata.<Object>builder()
                 .columnInfos(Collections.singletonList(col1))
@@ -319,18 +319,18 @@ class ExcelMetadataTest {
         Field mockField = String.class.getDeclaredField("value");
         CustomExcelCellStyle columnStyle = new TestColumnStyle();
 
-        ColumnInfo col1 = new ColumnInfo(
-                "Name",
-                1,
-                100,
-                "",
-                mockField,
-                null,
-                columnStyle,
-                Collections.emptyList(),
-                "Sheet1",
-                Masking.NONE
-        );
+        ColumnInfo col1 = ColumnInfo.builder()
+                .header("Name")
+                .order(1)
+                .width(100)
+                .format("")
+                .field(mockField)
+                .headerStyle(null)
+                .columnStyle(columnStyle)
+                .conditionalStyleRules(Collections.emptyList())
+                .sheetName("Sheet1")
+                .masking(Masking.NONE)
+                .build();
 
         ExcelMetadata<Object> metadata = ExcelMetadata.<Object>builder()
                 .columnInfos(Collections.singletonList(col1))
@@ -350,16 +350,30 @@ class ExcelMetadataTest {
         CustomExcelCellStyle headerStyle1 = new TestHeaderStyle();
         CustomExcelCellStyle headerStyle2 = new TestHeaderStyle2();
 
-        ColumnInfo col1 = new ColumnInfo(
-                "Name", 1, 100, "", mockField1,
-                headerStyle1, null, Collections.emptyList(), "Sheet1",
-                Masking.NONE
-        );
-        ColumnInfo col2 = new ColumnInfo(
-                "Age", 2, 50, "", mockField2,
-                headerStyle2, null, Collections.emptyList(), "Sheet1",
-                Masking.NONE
-        );
+        ColumnInfo col1 = ColumnInfo.builder()
+                .header("Name")
+                .order(1)
+                .width(100)
+                .format("")
+                .field(mockField1)
+                .headerStyle(headerStyle1)
+                .columnStyle(null)
+                .conditionalStyleRules(Collections.emptyList())
+                .sheetName("Sheet1")
+                .masking(Masking.NONE)
+                .build();
+        ColumnInfo col2 = ColumnInfo.builder()
+                .header("Age")
+                .order(2)
+                .width(50)
+                .format("")
+                .field(mockField2)
+                .headerStyle(headerStyle2)
+                .columnStyle(null)
+                .conditionalStyleRules(Collections.emptyList())
+                .sheetName("Sheet1")
+                .masking(Masking.NONE)
+                .build();
 
         ExcelMetadata<Object> metadata = ExcelMetadata.<Object>builder()
                 .columnInfos(Arrays.asList(col1, col2))
@@ -377,16 +391,30 @@ class ExcelMetadataTest {
         CustomExcelCellStyle columnStyle1 = new TestColumnStyle();
         CustomExcelCellStyle columnStyle2 = new TestColumnStyle2();
 
-        ColumnInfo col1 = new ColumnInfo(
-                "Name", 1, 100, "", mockField1,
-                null, columnStyle1, Collections.emptyList(), "Sheet1",
-                Masking.NONE
-        );
-        ColumnInfo col2 = new ColumnInfo(
-                "Age", 2, 50, "", mockField2,
-                null, columnStyle2, Collections.emptyList(), "Sheet1",
-                Masking.NONE
-        );
+        ColumnInfo col1 = ColumnInfo.builder()
+                .header("Name")
+                .order(1)
+                .width(100)
+                .format("")
+                .field(mockField1)
+                .headerStyle(null)
+                .columnStyle(columnStyle1)
+                .conditionalStyleRules(Collections.emptyList())
+                .sheetName("Sheet1")
+                .masking(Masking.NONE)
+                .build();
+        ColumnInfo col2 = ColumnInfo.builder()
+                .header("Age")
+                .order(2)
+                .width(50)
+                .format("")
+                .field(mockField2)
+                .headerStyle(null)
+                .columnStyle(columnStyle2)
+                .conditionalStyleRules(Collections.emptyList())
+                .sheetName("Sheet1")
+                .masking(Masking.NONE)
+                .build();
 
         ExcelMetadata<Object> metadata = ExcelMetadata.<Object>builder()
                 .columnInfos(Arrays.asList(col1, col2))

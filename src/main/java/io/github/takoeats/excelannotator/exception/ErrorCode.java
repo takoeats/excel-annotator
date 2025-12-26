@@ -47,6 +47,8 @@ public enum ErrorCode {
 
     NO_EXCEL_COLUMNS("E021", "@ExcelColumn 어노테이션이 적용된 필드가 없습니다."),
 
+    MERGE_HEADER_ORDER_GAP("E022", "병합 헤더 그룹 내 order 값 사이에 다른 컬럼이 존재합니다. 병합 그룹의 order는 연속적이어야 합니다."),
+
     @Deprecated
     EMPTY_SHEET_DATA("E012-deprecated", "멀티 시트 데이터가 비어있습니다. EMPTY_DATA 사용 권장"),
 

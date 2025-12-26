@@ -93,4 +93,29 @@ public final class ExcelMetadata<T> {
         }
         return Masking.NONE;
     }
+
+    public boolean hasAnyMergeHeader() {
+        if (columnInfos == null || columnInfos.isEmpty()) {
+            return false;
+        }
+        return columnInfos.stream().anyMatch(ColumnInfo::hasMergeHeader);
+    }
+
+    public String getMergeHeaderAt(int index) {
+        if (columnInfos != null && index >= 0 && index < columnInfos.size()) {
+            return columnInfos.get(index).getMergeHeader();
+        }
+        return "";
+    }
+
+    public CustomExcelCellStyle getMergeHeaderStyleAt(int index) {
+        if (columnInfos != null && index >= 0 && index < columnInfos.size()) {
+            return columnInfos.get(index).getMergeHeaderStyle();
+        }
+        return null;
+    }
+
+    public int getHeaderRowCount() {
+        return hasAnyMergeHeader() ? 2 : 1;
+    }
 }

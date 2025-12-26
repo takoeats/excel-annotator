@@ -7,6 +7,7 @@ import io.github.takoeats.excelannotator.internal.metadata.ColumnInfo;
 import io.github.takoeats.excelannotator.internal.metadata.SheetInfo;
 import io.github.takoeats.excelannotator.internal.metadata.style.ColumnStyleResolver;
 import io.github.takoeats.excelannotator.internal.metadata.style.ConditionalStyleParser;
+import io.github.takoeats.excelannotator.internal.metadata.validator.MergeHeaderValidator;
 import io.github.takoeats.excelannotator.masking.Masking;
 import io.github.takoeats.excelannotator.style.CustomExcelCellStyle;
 import io.github.takoeats.excelannotator.style.rule.StyleRule;
@@ -61,6 +62,8 @@ public final class ColumnInfoExtractor {
 
         columnInfos.sort(Comparator.comparingInt(ColumnInfo::getOrder));
 
+        MergeHeaderValidator.validateOrderContinuity(columnInfos);
+
         return columnInfos;
     }
 
@@ -68,29 +71,26 @@ public final class ColumnInfoExtractor {
         ExcelColumn excelColumn = field.getAnnotation(ExcelColumn.class);
         if (excelColumn != null && !excelColumn.exclude()) {
 
-            String format = excelColumn.format();
-
             CustomExcelCellStyle headerStyle = ColumnStyleResolver.resolveHeaderStyle(excelColumn, sheetInfo);
             CustomExcelCellStyle columnStyle = ColumnStyleResolver.resolveColumnStyle(excelColumn, field, sheetInfo);
+            CustomExcelCellStyle mergeHeaderStyle = ColumnStyleResolver.resolveMergeHeaderStyle(excelColumn, sheetInfo);
             int width = ColumnStyleResolver.calculateWidth(excelColumn, columnStyle);
-
             List<StyleRule> conditionalStyleRules = ConditionalStyleParser.parse(excelColumn.conditionalStyles());
 
-            String sheetName = excelColumn.sheetName();
-            Masking masking = excelColumn.masking();
-
-            return new ColumnInfo(
-                    excelColumn.header(),
-                    excelColumn.order(),
-                    width,
-                    format,
-                    field,
-                    headerStyle,
-                    columnStyle,
-                    conditionalStyleRules,
-                    sheetName,
-                    masking
-            );
+            return ColumnInfo.builder()
+                    .header(excelColumn.header())
+                    .order(excelColumn.order())
+                    .width(width)
+                    .format(excelColumn.format())
+                    .field(field)
+                    .headerStyle(headerStyle)
+                    .columnStyle(columnStyle)
+                    .conditionalStyleRules(conditionalStyleRules)
+                    .sheetName(excelColumn.sheetName())
+                    .masking(excelColumn.masking())
+                    .mergeHeader(excelColumn.mergeHeader())
+                    .mergeHeaderStyle(mergeHeaderStyle)
+                    .build();
         }
         return null;
     }
@@ -114,17 +114,19 @@ public final class ColumnInfoExtractor {
         CustomExcelCellStyle columnStyle = ColumnStyleResolver.resolveColumnStyleFromFieldType(field, sheetInfo);
         int width = ColumnStyleResolver.calculateWidthFromStyle(columnStyle);
 
-        return new ColumnInfo(
-                field.getName(),
-                autoOrder,
-                width,
-                "",
-                field,
-                headerStyle,
-                columnStyle,
-                Collections.emptyList(),
-                "",
-                Masking.NONE
-        );
+        return ColumnInfo.builder()
+                .header(field.getName())
+                .order(autoOrder)
+                .width(width)
+                .format("")
+                .field(field)
+                .headerStyle(headerStyle)
+                .columnStyle(columnStyle)
+                .conditionalStyleRules(Collections.emptyList())
+                .sheetName("")
+                .masking(Masking.NONE)
+                .mergeHeader("")
+                .mergeHeaderStyle(headerStyle)
+                .build();
     }
 }

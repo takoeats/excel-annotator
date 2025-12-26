@@ -125,4 +125,34 @@ public @interface ExcelColumn {
      * @return 마스킹 전략
      */
     Masking masking() default Masking.NONE;
+
+    /**
+     * 병합 헤더명 (2행 헤더 생성 시 최상단 행에 표시될 그룹 헤더)
+     * <p>같은 mergeHeader 값을 가진 컬럼들이 하나의 병합된 헤더로 표시됩니다.</p>
+     * <p>병합 그룹 내 order는 반드시 연속적이어야 합니다.</p>
+     *
+     * <h3>사용 예시</h3>
+     * <pre>{@code
+     * @ExcelColumn(header = "Name", order = 2, mergeHeader = "Customer")
+     * private String name;
+     *
+     * @ExcelColumn(header = "Email", order = 3, mergeHeader = "Customer")
+     * private String email;
+     *
+     * // 결과:
+     * // Row 0: [  Customer  ]
+     * // Row 1: [Name | Email]
+     * }</pre>
+     *
+     * @return 병합 헤더명
+     */
+    String mergeHeader() default "";
+
+    /**
+     * 병합 헤더 스타일 클래스
+     * <p>mergeHeader가 지정된 경우 최상단 행의 병합된 헤더에 적용될 스타일입니다.</p>
+     *
+     * @return 병합 헤더 스타일 클래스
+     */
+    Class<? extends CustomExcelCellStyle> mergeHeaderStyle() default DefaultHeaderStyle.class;
 }

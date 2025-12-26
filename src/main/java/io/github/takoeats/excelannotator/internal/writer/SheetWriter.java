@@ -117,7 +117,7 @@ public final class SheetWriter {
                 String baseSheetName = metadata.getSheetName();
                 SheetContext sheetContext = sheetContexts.get(baseSheetName);
 
-                int headerRows = metadata.hasHeader() ? 1 : 0;
+                int headerRows = metadata.hasHeader() ? metadata.getHeaderRowCount() : 0;
                 int maxDataRowsPerSheet = MAX_ROWS_PER_SHEET - headerRows;
 
                 if (sheetContext.currentRowInSheet >= maxDataRowsPerSheet) {
@@ -183,7 +183,7 @@ public final class SheetWriter {
         Iterator<T> dataIterator = request.getDataIterator();
 
         String baseSheetName = metadata.getSheetName();
-        int headerRows = metadata.hasHeader() ? 1 : 0;
+        int headerRows = metadata.hasHeader() ? metadata.getHeaderRowCount() : 0;
         int maxDataRowsPerSheet = MAX_ROWS_PER_SHEET - headerRows;
 
         int sheetIndex = 0;

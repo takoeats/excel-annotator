@@ -102,4 +102,19 @@ public final class ColumnStyleResolver {
 
         return 100;
     }
+
+    public static CustomExcelCellStyle resolveMergeHeaderStyle(ExcelColumn excelColumn, SheetInfo sheetInfo) {
+        Class<? extends CustomExcelCellStyle> styleClass = excelColumn.mergeHeaderStyle();
+
+        if (!styleClass.equals(DefaultHeaderStyle.class)) {
+            return StyleCache.getStyleInstance(styleClass);
+        }
+
+        if (sheetInfo.getDefaultHeaderStyle() != null &&
+                !sheetInfo.getDefaultHeaderStyle().equals(DefaultHeaderStyle.class)) {
+            return StyleCache.getStyleInstance(sheetInfo.getDefaultHeaderStyle());
+        }
+
+        return StyleCache.getStyleInstance(DefaultHeaderStyle.class);
+    }
 }
