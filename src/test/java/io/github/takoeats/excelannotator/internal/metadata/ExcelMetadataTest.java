@@ -287,6 +287,252 @@ class ExcelMetadataTest {
     }
 
     @Test
+    void getFormatAt_withNullColumnInfos_returnsNull() {
+        ExcelMetadata<Object> metadata = ExcelMetadata.<Object>builder()
+                .columnInfos(null)
+                .build();
+
+        assertNull(metadata.getFormatAt(0));
+    }
+
+    @Test
+    void getColumnStyleAt_withNullColumnInfos_returnsNull() {
+        ExcelMetadata<Object> metadata = ExcelMetadata.<Object>builder()
+                .columnInfos(null)
+                .build();
+
+        assertNull(metadata.getColumnStyleAt(0));
+    }
+
+    @Test
+    void getConditionalStyleRulesAt_withNullColumnInfos_returnsEmptyList() {
+        ExcelMetadata<Object> metadata = ExcelMetadata.<Object>builder()
+                .columnInfos(null)
+                .build();
+
+        assertTrue(metadata.getConditionalStyleRulesAt(0).isEmpty());
+    }
+
+    @Test
+    void getFieldNameAt_withNullColumnInfos_returnsNull() {
+        ExcelMetadata<Object> metadata = ExcelMetadata.<Object>builder()
+                .columnInfos(null)
+                .build();
+
+        assertNull(metadata.getFieldNameAt(0));
+    }
+
+    @Test
+    void getMaskingAt_withValidIndex_returnsMasking() {
+        ExcelMetadata<Object> metadata = ExcelMetadata.<Object>builder()
+                .columnInfos(testColumnInfos)
+                .build();
+
+        assertEquals(Masking.NONE, metadata.getMaskingAt(0));
+        assertEquals(Masking.NONE, metadata.getMaskingAt(1));
+    }
+
+    @Test
+    void getMaskingAt_withInvalidIndex_returnsMaskingNone() {
+        ExcelMetadata<Object> metadata = ExcelMetadata.<Object>builder()
+                .columnInfos(testColumnInfos)
+                .build();
+
+        assertEquals(Masking.NONE, metadata.getMaskingAt(-1));
+        assertEquals(Masking.NONE, metadata.getMaskingAt(2));
+        assertEquals(Masking.NONE, metadata.getMaskingAt(100));
+    }
+
+    @Test
+    void getMaskingAt_withNullColumnInfos_returnsMaskingNone() {
+        ExcelMetadata<Object> metadata = ExcelMetadata.<Object>builder()
+                .columnInfos(null)
+                .build();
+
+        assertEquals(Masking.NONE, metadata.getMaskingAt(0));
+    }
+
+    @Test
+    void hasAnyMergeHeader_withNoMergeHeaders_returnsFalse() {
+        ExcelMetadata<Object> metadata = ExcelMetadata.<Object>builder()
+                .columnInfos(testColumnInfos)
+                .build();
+
+        assertFalse(metadata.hasAnyMergeHeader());
+    }
+
+    @Test
+    void hasAnyMergeHeader_withMergeHeaders_returnsTrue() throws NoSuchFieldException {
+        Field mockField = String.class.getDeclaredField("value");
+
+        ColumnInfo col1 = ColumnInfo.builder()
+                .header("Name")
+                .order(1)
+                .width(100)
+                .format("")
+                .field(mockField)
+                .mergeHeader("Group1")
+                .masking(Masking.NONE)
+                .build();
+
+        ExcelMetadata<Object> metadata = ExcelMetadata.<Object>builder()
+                .columnInfos(Collections.singletonList(col1))
+                .build();
+
+        assertTrue(metadata.hasAnyMergeHeader());
+    }
+
+    @Test
+    void hasAnyMergeHeader_withNullColumnInfos_returnsFalse() {
+        ExcelMetadata<Object> metadata = ExcelMetadata.<Object>builder()
+                .columnInfos(null)
+                .build();
+
+        assertFalse(metadata.hasAnyMergeHeader());
+    }
+
+    @Test
+    void hasAnyMergeHeader_withEmptyColumnInfos_returnsFalse() {
+        ExcelMetadata<Object> metadata = ExcelMetadata.<Object>builder()
+                .columnInfos(Collections.emptyList())
+                .build();
+
+        assertFalse(metadata.hasAnyMergeHeader());
+    }
+
+    @Test
+    void getMergeHeaderAt_withValidIndex_returnsMergeHeader() throws NoSuchFieldException {
+        Field mockField = String.class.getDeclaredField("value");
+
+        ColumnInfo col1 = ColumnInfo.builder()
+                .header("Name")
+                .order(1)
+                .width(100)
+                .format("")
+                .field(mockField)
+                .mergeHeader("Group1")
+                .masking(Masking.NONE)
+                .build();
+
+        ExcelMetadata<Object> metadata = ExcelMetadata.<Object>builder()
+                .columnInfos(Collections.singletonList(col1))
+                .build();
+
+        assertEquals("Group1", metadata.getMergeHeaderAt(0));
+    }
+
+    @Test
+    void getMergeHeaderAt_withInvalidIndex_returnsEmptyString() {
+        ExcelMetadata<Object> metadata = ExcelMetadata.<Object>builder()
+                .columnInfos(testColumnInfos)
+                .build();
+
+        assertEquals("", metadata.getMergeHeaderAt(-1));
+        assertEquals("", metadata.getMergeHeaderAt(2));
+        assertEquals("", metadata.getMergeHeaderAt(100));
+    }
+
+    @Test
+    void getMergeHeaderAt_withNullColumnInfos_returnsEmptyString() {
+        ExcelMetadata<Object> metadata = ExcelMetadata.<Object>builder()
+                .columnInfos(null)
+                .build();
+
+        assertEquals("", metadata.getMergeHeaderAt(0));
+    }
+
+    @Test
+    void getMergeHeaderStyleAt_withValidIndex_returnsMergeHeaderStyle() throws NoSuchFieldException {
+        Field mockField = String.class.getDeclaredField("value");
+        CustomExcelCellStyle mergeHeaderStyle = new TestHeaderStyle();
+
+        ColumnInfo col1 = ColumnInfo.builder()
+                .header("Name")
+                .order(1)
+                .width(100)
+                .format("")
+                .field(mockField)
+                .mergeHeader("Group1")
+                .mergeHeaderStyle(mergeHeaderStyle)
+                .masking(Masking.NONE)
+                .build();
+
+        ExcelMetadata<Object> metadata = ExcelMetadata.<Object>builder()
+                .columnInfos(Collections.singletonList(col1))
+                .build();
+
+        assertSame(mergeHeaderStyle, metadata.getMergeHeaderStyleAt(0));
+    }
+
+    @Test
+    void getMergeHeaderStyleAt_withInvalidIndex_returnsNull() {
+        ExcelMetadata<Object> metadata = ExcelMetadata.<Object>builder()
+                .columnInfos(testColumnInfos)
+                .build();
+
+        assertNull(metadata.getMergeHeaderStyleAt(-1));
+        assertNull(metadata.getMergeHeaderStyleAt(2));
+        assertNull(metadata.getMergeHeaderStyleAt(100));
+    }
+
+    @Test
+    void getMergeHeaderStyleAt_withNullColumnInfos_returnsNull() {
+        ExcelMetadata<Object> metadata = ExcelMetadata.<Object>builder()
+                .columnInfos(null)
+                .build();
+
+        assertNull(metadata.getMergeHeaderStyleAt(0));
+    }
+
+    @Test
+    void getHeaderRowCount_withNoMergeHeaders_returnsOne() {
+        ExcelMetadata<Object> metadata = ExcelMetadata.<Object>builder()
+                .columnInfos(testColumnInfos)
+                .build();
+
+        assertEquals(1, metadata.getHeaderRowCount());
+    }
+
+    @Test
+    void getHeaderRowCount_withMergeHeaders_returnsTwo() throws NoSuchFieldException {
+        Field mockField = String.class.getDeclaredField("value");
+
+        ColumnInfo col1 = ColumnInfo.builder()
+                .header("Name")
+                .order(1)
+                .width(100)
+                .format("")
+                .field(mockField)
+                .mergeHeader("Group1")
+                .masking(Masking.NONE)
+                .build();
+
+        ExcelMetadata<Object> metadata = ExcelMetadata.<Object>builder()
+                .columnInfos(Collections.singletonList(col1))
+                .build();
+
+        assertEquals(2, metadata.getHeaderRowCount());
+    }
+
+    @Test
+    void getHeaderRowCount_withNullColumnInfos_returnsOne() {
+        ExcelMetadata<Object> metadata = ExcelMetadata.<Object>builder()
+                .columnInfos(null)
+                .build();
+
+        assertEquals(1, metadata.getHeaderRowCount());
+    }
+
+    @Test
+    void getHeaderRowCount_withEmptyColumnInfos_returnsOne() {
+        ExcelMetadata<Object> metadata = ExcelMetadata.<Object>builder()
+                .columnInfos(Collections.emptyList())
+                .build();
+
+        assertEquals(1, metadata.getHeaderRowCount());
+    }
+
+    @Test
     void getHeaderStyleAt_withActualStyle_returnsStyle() throws NoSuchFieldException {
         Field mockField = String.class.getDeclaredField("value");
         CustomExcelCellStyle headerStyle = new TestHeaderStyle();

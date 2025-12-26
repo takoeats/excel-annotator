@@ -20,16 +20,7 @@ public final class ColumnStyleResolver {
     public static CustomExcelCellStyle resolveHeaderStyle(ExcelColumn excelColumn, SheetInfo sheetInfo) {
         Class<? extends CustomExcelCellStyle> styleClass = excelColumn.headerStyle();
 
-        if (!styleClass.equals(DefaultHeaderStyle.class)) {
-            return StyleCache.getStyleInstance(styleClass);
-        }
-
-        if (sheetInfo.getDefaultHeaderStyle() != null &&
-                !sheetInfo.getDefaultHeaderStyle().equals(DefaultHeaderStyle.class)) {
-            return StyleCache.getStyleInstance(sheetInfo.getDefaultHeaderStyle());
-        }
-
-        return StyleCache.getStyleInstance(DefaultHeaderStyle.class);
+        return getCustomExcelCellStyle(sheetInfo, styleClass);
     }
 
     public static CustomExcelCellStyle resolveColumnStyle(ExcelColumn excelColumn, Field field, SheetInfo sheetInfo) {
@@ -39,6 +30,10 @@ public final class ColumnStyleResolver {
             return StyleCache.getStyleInstance(styleClass);
         }
 
+        return getCustomExcelCellStyle(field, sheetInfo);
+    }
+
+    private static CustomExcelCellStyle getCustomExcelCellStyle(Field field, SheetInfo sheetInfo) {
         if (sheetInfo.getDefaultColumnStyle() != null &&
                 !sheetInfo.getDefaultColumnStyle().equals(DefaultColumnStyle.class)) {
             return StyleCache.getStyleInstance(sheetInfo.getDefaultColumnStyle());
@@ -56,16 +51,7 @@ public final class ColumnStyleResolver {
             return excelColumn.width();
         }
 
-        if (columnStyle.isAutoWidth()) {
-            return -1;
-        }
-
-        int styleWidth = columnStyle.getColumnWidth();
-        if (styleWidth > 0) {
-            return styleWidth;
-        }
-
-        return 100;
+        return calculateWidthFromStyle(columnStyle);
     }
 
     public static CustomExcelCellStyle resolveHeaderStyleFromSheetInfo(SheetInfo sheetInfo) {
@@ -78,16 +64,7 @@ public final class ColumnStyleResolver {
     }
 
     public static CustomExcelCellStyle resolveColumnStyleFromFieldType(Field field, SheetInfo sheetInfo) {
-        if (sheetInfo.getDefaultColumnStyle() != null &&
-                !sheetInfo.getDefaultColumnStyle().equals(DefaultColumnStyle.class)) {
-            return StyleCache.getStyleInstance(sheetInfo.getDefaultColumnStyle());
-        }
-
-        if (FieldTypeClassifier.isNumericType(field.getType())) {
-            return StyleCache.getStyleInstance(DefaultNumberStyle.class);
-        }
-
-        return StyleCache.getStyleInstance(DefaultColumnStyle.class);
+        return getCustomExcelCellStyle(field, sheetInfo);
     }
 
     public static int calculateWidthFromStyle(CustomExcelCellStyle columnStyle) {
@@ -106,15 +83,14 @@ public final class ColumnStyleResolver {
     public static CustomExcelCellStyle resolveMergeHeaderStyle(ExcelColumn excelColumn, SheetInfo sheetInfo) {
         Class<? extends CustomExcelCellStyle> styleClass = excelColumn.mergeHeaderStyle();
 
+        return getCustomExcelCellStyle(sheetInfo, styleClass);
+    }
+
+    private static CustomExcelCellStyle getCustomExcelCellStyle(SheetInfo sheetInfo, Class<? extends CustomExcelCellStyle> styleClass) {
         if (!styleClass.equals(DefaultHeaderStyle.class)) {
             return StyleCache.getStyleInstance(styleClass);
         }
 
-        if (sheetInfo.getDefaultHeaderStyle() != null &&
-                !sheetInfo.getDefaultHeaderStyle().equals(DefaultHeaderStyle.class)) {
-            return StyleCache.getStyleInstance(sheetInfo.getDefaultHeaderStyle());
-        }
-
-        return StyleCache.getStyleInstance(DefaultHeaderStyle.class);
+        return resolveHeaderStyleFromSheetInfo(sheetInfo);
     }
 }

@@ -274,63 +274,81 @@ public class ExcelCellStyleConfigurer {
 
     /**
      * 흰색 배경 (255, 255, 255)
+     * @deprecated Use {@link #backgroundColor(int, int, int)} instead.
      */
+    @Deprecated
     public ExcelCellStyleConfigurer whiteBackground() {
         return backgroundColor(255, 255, 255);
     }
 
     /**
      * 회색 배경 (192, 192, 192)
+     * @deprecated Use {@link #backgroundColor(int, int, int)} instead.
      */
+    @Deprecated
     public ExcelCellStyleConfigurer greyBackground() {
         return backgroundColor(192, 192, 192);
     }
 
     /**
      * 라벤더 배경 (230, 230, 250)
+     * @deprecated Use {@link #backgroundColor(int, int, int)} instead.
      */
+    @Deprecated
     public ExcelCellStyleConfigurer lavenderBackground() {
         return backgroundColor(230, 230, 250);
     }
 
     /**
      * 연한 노란색 배경 (255, 255, 224)
+     * @deprecated Use {@link #backgroundColor(int, int, int)} instead.
      */
+    @Deprecated
     public ExcelCellStyleConfigurer lightYellowBackground() {
         return backgroundColor(255, 255, 224);
     }
 
     /**
      * 연한 초록색 배경 (144, 238, 144)
+     * @deprecated Use {@link #backgroundColor(int, int, int)} instead.
      */
+    @Deprecated
     public ExcelCellStyleConfigurer lightGreenBackground() {
         return backgroundColor(144, 238, 144);
     }
 
     /**
      * 분홍색 배경 (255, 192, 203)
+     * @deprecated Use {@link #backgroundColor(int, int, int)} instead.
      */
+    @Deprecated
     public ExcelCellStyleConfigurer pinkBackground() {
         return backgroundColor(255, 192, 203);
     }
 
     /**
      * 검은색 폰트 (0, 0, 0)
+     * @deprecated Use {@link #fontColor(int, int, int)} instead.
      */
+    @Deprecated
     public ExcelCellStyleConfigurer blackFont() {
         return fontColor(0, 0, 0);
     }
 
     /**
      * 흰색 폰트 (255, 255, 255)
+     * @deprecated Use {@link #fontColor(int, int, int)} instead.
      */
+    @Deprecated
     public ExcelCellStyleConfigurer whiteFont() {
         return fontColor(255, 255, 255);
     }
 
     /**
      * 빨간색 폰트 (255, 0, 0)
+     * @deprecated Use {@link #fontColor(int, int, int)} instead.
      */
+    @Deprecated
     public ExcelCellStyleConfigurer redFont() {
         return fontColor(255, 0, 0);
     }

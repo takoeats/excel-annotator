@@ -3,9 +3,14 @@ package io.github.takoeats.excelannotator.internal.writer.workbook;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.mock;
 
 import io.github.takoeats.excelannotator.annotation.ExcelColumn;
 import io.github.takoeats.excelannotator.annotation.ExcelSheet;
+import io.github.takoeats.excelannotator.exception.ErrorCode;
+import io.github.takoeats.excelannotator.exception.ExcelExporterException;
 import io.github.takoeats.excelannotator.internal.ExcelMetadataFactory;
 import io.github.takoeats.excelannotator.internal.metadata.ExcelMetadata;
 import io.github.takoeats.excelannotator.internal.writer.RowWriter;
@@ -20,6 +25,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -144,6 +150,78 @@ class SXSSFWorkbookBuilderTest {
           .metadata(metadata)
           .build();
     });
+  }
+
+  @Test
+  void createWorkbookAndWrite_whenExcelExporterExceptionThrown_rethrowsException() {
+    SheetWriter mockWriter = mock(SheetWriter.class);
+    doThrow(new ExcelExporterException(ErrorCode.EMPTY_DATA, "Test exception"))
+        .when(mockWriter).write(any(SXSSFWorkbook.class), any(SheetWriteContext.class));
+
+    SXSSFWorkbookBuilder faultyBuilder = new SXSSFWorkbookBuilder(mockWriter);
+
+    List<TestDTO> data = Collections.singletonList(new TestDTO("Test", 25));
+    ExcelMetadata<TestDTO> metadata = ExcelMetadataFactory.extractExcelMetadata(TestDTO.class);
+    SheetWriteRequest<TestDTO> request = SheetWriteRequest.<TestDTO>builder()
+        .dataIterator(data.iterator())
+        .metadata(metadata)
+        .build();
+
+    SheetWriteContext<TestDTO> context = SheetWriteContext.forRowBasedSheets(
+        Collections.singletonList(request)
+    );
+
+    ExcelExporterException exception = assertThrows(ExcelExporterException.class,
+        () -> faultyBuilder.createWorkbookAndWrite(context));
+
+    assertEquals(ErrorCode.EMPTY_DATA, exception.getErrorCode());
+  }
+
+  @Test
+  void createWorkbookAndWrite_whenOtherExceptionThrown_wrapsInWorkbookCreationFailed() {
+    SheetWriter mockWriter = mock(SheetWriter.class);
+    doThrow(new RuntimeException("Unexpected error"))
+        .when(mockWriter).write(any(SXSSFWorkbook.class), any(SheetWriteContext.class));
+
+    SXSSFWorkbookBuilder faultyBuilder = new SXSSFWorkbookBuilder(mockWriter);
+
+    List<TestDTO> data = Collections.singletonList(new TestDTO("Test", 25));
+    ExcelMetadata<TestDTO> metadata = ExcelMetadataFactory.extractExcelMetadata(TestDTO.class);
+    SheetWriteRequest<TestDTO> request = SheetWriteRequest.<TestDTO>builder()
+        .dataIterator(data.iterator())
+        .metadata(metadata)
+        .build();
+
+    SheetWriteContext<TestDTO> context = SheetWriteContext.forRowBasedSheets(
+        Collections.singletonList(request)
+    );
+
+    ExcelExporterException exception = assertThrows(ExcelExporterException.class,
+        () -> faultyBuilder.createWorkbookAndWrite(context));
+
+    assertEquals(ErrorCode.WORKBOOK_CREATION_FAILED, exception.getErrorCode());
+  }
+
+  @Test
+  void createWorkbookAndWrite_withNoException_returnsWorkbookSuccessfully() throws Exception {
+    List<TestDTO> data = Collections.singletonList(new TestDTO("Success", 30));
+
+    ExcelMetadata<TestDTO> metadata = ExcelMetadataFactory.extractExcelMetadata(TestDTO.class);
+    SheetWriteRequest<TestDTO> request = SheetWriteRequest.<TestDTO>builder()
+        .dataIterator(data.iterator())
+        .metadata(metadata)
+        .build();
+
+    SheetWriteContext<TestDTO> context = SheetWriteContext.forRowBasedSheets(
+        Collections.singletonList(request)
+    );
+
+    try (SXSSFWorkbook wb = builder.createWorkbookAndWrite(context)) {
+      assertNotNull(wb);
+      assertEquals(1, wb.getNumberOfSheets());
+      Sheet sheet = wb.getSheetAt(0);
+      assertEquals(2, sheet.getPhysicalNumberOfRows());
+    }
   }
 
   @Data

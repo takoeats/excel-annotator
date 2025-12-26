@@ -579,6 +579,20 @@ class LeafNodeTest {
         assertFalse(node.evaluate(context));
     }
 
+    @Test
+    void evaluate_unknownExpressionType_throwsNullPointerException() {
+        ExpressionParser.ParsedExpression mockExpression =
+            ExpressionParser.ParsedExpression.builder()
+                .type(null)
+                .build();
+
+        LeafNode node = new LeafNode(mockExpression);
+        CellContext context = CellContext.acquire();
+
+        context.update(100, null, 0, 0, "field");
+        assertThrows(NullPointerException.class, () -> node.evaluate(context));
+    }
+
     private LeafNode createLeafNode(String expression) {
         ExpressionNode node = ExpressionParser.parseToTree(expression);
         assertTrue(node instanceof LeafNode, "Expected LeafNode but got: " + node.getClass().getName());

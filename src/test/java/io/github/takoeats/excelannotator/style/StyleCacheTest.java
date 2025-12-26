@@ -85,6 +85,50 @@ class StyleCacheTest {
         }
     }
 
+    @Test
+    void getStyleInstance_throwsExceptionWhenConstructorThrowsException() {
+        ExcelExporterException exception = assertThrows(ExcelExporterException.class,
+                () -> StyleCache.getStyleInstance(StyleWithConstructorException.class));
+
+        assertTrue(exception.getMessage().contains("스타일 인스턴스 생성 실패"));
+        assertTrue(exception.getMessage().contains("StyleWithConstructorException"));
+    }
+
+    @Test
+    void getStyleInstance_throwsExceptionForProtectedConstructor() {
+        ExcelExporterException exception = assertThrows(ExcelExporterException.class,
+                () -> StyleCache.getStyleInstance(StyleWithProtectedConstructor.class));
+
+        assertTrue(exception.getMessage().contains("public no-arg 생성자가 필요합니다"));
+    }
+
+    @Test
+    void getStyleInstance_throwsExceptionForPackagePrivateConstructor() {
+        ExcelExporterException exception = assertThrows(ExcelExporterException.class,
+                () -> StyleCache.getStyleInstance(StyleWithPackagePrivateConstructor.class));
+
+        assertTrue(exception.getMessage().contains("public no-arg 생성자가 필요합니다"));
+    }
+
+    @Test
+    void getStyleInstance_cachesInstanceAfterSuccessfulCreation() {
+        CustomExcelCellStyle instance1 = StyleCache.getStyleInstance(DefaultColumnStyle.class);
+        CustomExcelCellStyle instance2 = StyleCache.getStyleInstance(DefaultColumnStyle.class);
+        CustomExcelCellStyle instance3 = StyleCache.getStyleInstance(DefaultColumnStyle.class);
+
+        assertSame(instance1, instance2);
+        assertSame(instance2, instance3);
+    }
+
+    @Test
+    void getStyleInstance_doesNotCacheFailedInstantiations() {
+        assertThrows(ExcelExporterException.class,
+                () -> StyleCache.getStyleInstance(StyleWithPrivateConstructor.class));
+
+        assertThrows(ExcelExporterException.class,
+                () -> StyleCache.getStyleInstance(StyleWithPrivateConstructor.class));
+    }
+
   @SuppressWarnings({"java:S1068", "java:S1186"})
     public static class StyleWithPrivateConstructor extends CustomExcelCellStyle {
         private StyleWithPrivateConstructor() {
@@ -101,6 +145,37 @@ class StyleCacheTest {
 
         public StyleWithoutNoArgConstructor(String name) {
             this.name = name;
+        }
+
+        @Override
+        protected void configure(ExcelCellStyleConfigurer configurer) {
+        }
+    }
+
+    @SuppressWarnings("java:S1186")
+    public static class StyleWithConstructorException extends CustomExcelCellStyle {
+        public StyleWithConstructorException() {
+            throw new RuntimeException("Intentional exception in constructor");
+        }
+
+        @Override
+        protected void configure(ExcelCellStyleConfigurer configurer) {
+        }
+    }
+
+    @SuppressWarnings("java:S1186")
+    public static class StyleWithProtectedConstructor extends CustomExcelCellStyle {
+        protected StyleWithProtectedConstructor() {
+        }
+
+        @Override
+        protected void configure(ExcelCellStyleConfigurer configurer) {
+        }
+    }
+
+    @SuppressWarnings("java:S1186")
+    public static class StyleWithPackagePrivateConstructor extends CustomExcelCellStyle {
+        StyleWithPackagePrivateConstructor() {
         }
 
         @Override

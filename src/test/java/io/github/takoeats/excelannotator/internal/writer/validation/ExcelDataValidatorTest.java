@@ -213,4 +213,448 @@ class ExcelDataValidatorTest {
 
     assertEquals(ErrorCode.DUPLICATE_SHEET_ORDER, exception.getErrorCode());
   }
+
+  @Test
+  void validateAndGetIterator_withIllegalStateExceptionWithNullMessage_throwsWorkbookCreationFailed() {
+    Stream<String> faultyStream = new Stream<String>() {
+      @Override
+      public Iterator<String> iterator() {
+        throw new IllegalStateException();
+      }
+
+      @Override
+      public java.util.Spliterator<String> spliterator() {
+        return null;
+      }
+
+      @Override
+      public boolean isParallel() {
+        return false;
+      }
+
+      @Override
+      public Stream<String> sequential() {
+        return null;
+      }
+
+      @Override
+      public Stream<String> parallel() {
+        return null;
+      }
+
+      @Override
+      public Stream<String> unordered() {
+        return null;
+      }
+
+      @Override
+      public Stream<String> onClose(Runnable closeHandler) {
+        return null;
+      }
+
+      @Override
+      public void close() {
+      }
+
+      @Override
+      public Stream<String> filter(java.util.function.Predicate<? super String> predicate) {
+        return null;
+      }
+
+      @Override
+      public <R> Stream<R> map(java.util.function.Function<? super String, ? extends R> mapper) {
+        return null;
+      }
+
+      @Override
+      public java.util.stream.IntStream mapToInt(
+          java.util.function.ToIntFunction<? super String> mapper) {
+        return null;
+      }
+
+      @Override
+      public java.util.stream.LongStream mapToLong(
+          java.util.function.ToLongFunction<? super String> mapper) {
+        return null;
+      }
+
+      @Override
+      public java.util.stream.DoubleStream mapToDouble(
+          java.util.function.ToDoubleFunction<? super String> mapper) {
+        return null;
+      }
+
+      @Override
+      public <R> Stream<R> flatMap(
+          java.util.function.Function<? super String, ? extends Stream<? extends R>> mapper) {
+        return null;
+      }
+
+      @Override
+      public java.util.stream.IntStream flatMapToInt(
+          java.util.function.Function<? super String, ? extends java.util.stream.IntStream> mapper) {
+        return null;
+      }
+
+      @Override
+      public java.util.stream.LongStream flatMapToLong(
+          java.util.function.Function<? super String, ? extends java.util.stream.LongStream> mapper) {
+        return null;
+      }
+
+      @Override
+      public java.util.stream.DoubleStream flatMapToDouble(
+          java.util.function.Function<? super String, ? extends java.util.stream.DoubleStream> mapper) {
+        return null;
+      }
+
+      @Override
+      public Stream<String> distinct() {
+        return null;
+      }
+
+      @Override
+      public Stream<String> sorted() {
+        return null;
+      }
+
+      @Override
+      public Stream<String> sorted(java.util.Comparator<? super String> comparator) {
+        return null;
+      }
+
+      @Override
+      public Stream<String> peek(java.util.function.Consumer<? super String> action) {
+        return null;
+      }
+
+      @Override
+      public Stream<String> limit(long maxSize) {
+        return null;
+      }
+
+      @Override
+      public Stream<String> skip(long n) {
+        return null;
+      }
+
+      @Override
+      public void forEach(java.util.function.Consumer<? super String> action) {
+      }
+
+      @Override
+      public void forEachOrdered(java.util.function.Consumer<? super String> action) {
+      }
+
+      @Override
+      public Object[] toArray() {
+        return new Object[0];
+      }
+
+      @Override
+      public <A> A[] toArray(java.util.function.IntFunction<A[]> generator) {
+        return null;
+      }
+
+      @Override
+      public String reduce(String identity,
+          java.util.function.BinaryOperator<String> accumulator) {
+        return null;
+      }
+
+      @Override
+      public java.util.Optional<String> reduce(
+          java.util.function.BinaryOperator<String> accumulator) {
+        return null;
+      }
+
+      @Override
+      public <U> U reduce(U identity,
+          java.util.function.BiFunction<U, ? super String, U> accumulator,
+          java.util.function.BinaryOperator<U> combiner) {
+        return null;
+      }
+
+      @Override
+      public <R> R collect(java.util.function.Supplier<R> supplier,
+          java.util.function.BiConsumer<R, ? super String> accumulator,
+          java.util.function.BiConsumer<R, R> combiner) {
+        return null;
+      }
+
+      @Override
+      public <R, A> R collect(java.util.stream.Collector<? super String, A, R> collector) {
+        return null;
+      }
+
+      @Override
+      public java.util.Optional<String> min(java.util.Comparator<? super String> comparator) {
+        return null;
+      }
+
+      @Override
+      public java.util.Optional<String> max(java.util.Comparator<? super String> comparator) {
+        return null;
+      }
+
+      @Override
+      public long count() {
+        return 0;
+      }
+
+      @Override
+      public boolean anyMatch(java.util.function.Predicate<? super String> predicate) {
+        return false;
+      }
+
+      @Override
+      public boolean allMatch(java.util.function.Predicate<? super String> predicate) {
+        return false;
+      }
+
+      @Override
+      public boolean noneMatch(java.util.function.Predicate<? super String> predicate) {
+        return false;
+      }
+
+      @Override
+      public java.util.Optional<String> findFirst() {
+        return null;
+      }
+
+      @Override
+      public java.util.Optional<String> findAny() {
+        return null;
+      }
+    };
+
+    ExcelExporterException exception = assertThrows(
+        ExcelExporterException.class,
+        () -> validator.validateAndGetIterator(faultyStream)
+    );
+
+    assertEquals(ErrorCode.WORKBOOK_CREATION_FAILED, exception.getErrorCode());
+  }
+
+  @Test
+  void validateAndGetIterator_withIllegalStateExceptionWithOtherMessage_throwsWorkbookCreationFailed() {
+    Stream<String> faultyStream = new Stream<String>() {
+      @Override
+      public Iterator<String> iterator() {
+        throw new IllegalStateException("Some other error message");
+      }
+
+      @Override
+      public java.util.Spliterator<String> spliterator() {
+        return null;
+      }
+
+      @Override
+      public boolean isParallel() {
+        return false;
+      }
+
+      @Override
+      public Stream<String> sequential() {
+        return null;
+      }
+
+      @Override
+      public Stream<String> parallel() {
+        return null;
+      }
+
+      @Override
+      public Stream<String> unordered() {
+        return null;
+      }
+
+      @Override
+      public Stream<String> onClose(Runnable closeHandler) {
+        return null;
+      }
+
+      @Override
+      public void close() {
+      }
+
+      @Override
+      public Stream<String> filter(java.util.function.Predicate<? super String> predicate) {
+        return null;
+      }
+
+      @Override
+      public <R> Stream<R> map(java.util.function.Function<? super String, ? extends R> mapper) {
+        return null;
+      }
+
+      @Override
+      public java.util.stream.IntStream mapToInt(
+          java.util.function.ToIntFunction<? super String> mapper) {
+        return null;
+      }
+
+      @Override
+      public java.util.stream.LongStream mapToLong(
+          java.util.function.ToLongFunction<? super String> mapper) {
+        return null;
+      }
+
+      @Override
+      public java.util.stream.DoubleStream mapToDouble(
+          java.util.function.ToDoubleFunction<? super String> mapper) {
+        return null;
+      }
+
+      @Override
+      public <R> Stream<R> flatMap(
+          java.util.function.Function<? super String, ? extends Stream<? extends R>> mapper) {
+        return null;
+      }
+
+      @Override
+      public java.util.stream.IntStream flatMapToInt(
+          java.util.function.Function<? super String, ? extends java.util.stream.IntStream> mapper) {
+        return null;
+      }
+
+      @Override
+      public java.util.stream.LongStream flatMapToLong(
+          java.util.function.Function<? super String, ? extends java.util.stream.LongStream> mapper) {
+        return null;
+      }
+
+      @Override
+      public java.util.stream.DoubleStream flatMapToDouble(
+          java.util.function.Function<? super String, ? extends java.util.stream.DoubleStream> mapper) {
+        return null;
+      }
+
+      @Override
+      public Stream<String> distinct() {
+        return null;
+      }
+
+      @Override
+      public Stream<String> sorted() {
+        return null;
+      }
+
+      @Override
+      public Stream<String> sorted(java.util.Comparator<? super String> comparator) {
+        return null;
+      }
+
+      @Override
+      public Stream<String> peek(java.util.function.Consumer<? super String> action) {
+        return null;
+      }
+
+      @Override
+      public Stream<String> limit(long maxSize) {
+        return null;
+      }
+
+      @Override
+      public Stream<String> skip(long n) {
+        return null;
+      }
+
+      @Override
+      public void forEach(java.util.function.Consumer<? super String> action) {
+      }
+
+      @Override
+      public void forEachOrdered(java.util.function.Consumer<? super String> action) {
+      }
+
+      @Override
+      public Object[] toArray() {
+        return new Object[0];
+      }
+
+      @Override
+      public <A> A[] toArray(java.util.function.IntFunction<A[]> generator) {
+        return null;
+      }
+
+      @Override
+      public String reduce(String identity,
+          java.util.function.BinaryOperator<String> accumulator) {
+        return null;
+      }
+
+      @Override
+      public java.util.Optional<String> reduce(
+          java.util.function.BinaryOperator<String> accumulator) {
+        return null;
+      }
+
+      @Override
+      public <U> U reduce(U identity,
+          java.util.function.BiFunction<U, ? super String, U> accumulator,
+          java.util.function.BinaryOperator<U> combiner) {
+        return null;
+      }
+
+      @Override
+      public <R> R collect(java.util.function.Supplier<R> supplier,
+          java.util.function.BiConsumer<R, ? super String> accumulator,
+          java.util.function.BiConsumer<R, R> combiner) {
+        return null;
+      }
+
+      @Override
+      public <R, A> R collect(java.util.stream.Collector<? super String, A, R> collector) {
+        return null;
+      }
+
+      @Override
+      public java.util.Optional<String> min(java.util.Comparator<? super String> comparator) {
+        return null;
+      }
+
+      @Override
+      public java.util.Optional<String> max(java.util.Comparator<? super String> comparator) {
+        return null;
+      }
+
+      @Override
+      public long count() {
+        return 0;
+      }
+
+      @Override
+      public boolean anyMatch(java.util.function.Predicate<? super String> predicate) {
+        return false;
+      }
+
+      @Override
+      public boolean allMatch(java.util.function.Predicate<? super String> predicate) {
+        return false;
+      }
+
+      @Override
+      public boolean noneMatch(java.util.function.Predicate<? super String> predicate) {
+        return false;
+      }
+
+      @Override
+      public java.util.Optional<String> findFirst() {
+        return null;
+      }
+
+      @Override
+      public java.util.Optional<String> findAny() {
+        return null;
+      }
+    };
+
+    ExcelExporterException exception = assertThrows(
+        ExcelExporterException.class,
+        () -> validator.validateAndGetIterator(faultyStream)
+    );
+
+    assertEquals(ErrorCode.WORKBOOK_CREATION_FAILED, exception.getErrorCode());
+  }
 }

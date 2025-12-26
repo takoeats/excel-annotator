@@ -1,5 +1,8 @@
 package io.github.takoeats.excelannotator.style;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+
 /**
  * IndexedColors를 RGB 값으로 제공하는 유틸리티 클래스
  *
@@ -12,11 +15,9 @@ package io.github.takoeats.excelannotator.style;
  *
  * @see ExcelCellStyleConfigurer
  */
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class ExcelColors {
 
-    private ExcelColors() {
-        throw new AssertionError("Utility class cannot be instantiated");
-    }
 
     // ========== 기본 색상 ==========
 
