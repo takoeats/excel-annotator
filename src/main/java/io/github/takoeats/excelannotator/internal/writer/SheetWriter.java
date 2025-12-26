@@ -13,7 +13,7 @@ import java.util.Map;
 
 public final class SheetWriter {
 
-    private static final int MAX_ROWS_PER_SHEET = 1000001;
+    private static final int MAX_DATA_ROWS_PER_SHEET = 1000000;
 
     private final RowWriter rowWriter;
 
@@ -118,7 +118,7 @@ public final class SheetWriter {
                 SheetContext sheetContext = sheetContexts.get(baseSheetName);
 
                 int headerRows = metadata.hasHeader() ? metadata.getHeaderRowCount() : 0;
-                int maxDataRowsPerSheet = MAX_ROWS_PER_SHEET - headerRows;
+                int maxDataRowsPerSheet = MAX_DATA_ROWS_PER_SHEET;
 
                 if (sheetContext.currentRowInSheet >= maxDataRowsPerSheet) {
                     createNewSheetForContext(sheetContext, baseSheetName, metadata, styleCacheManager);
@@ -184,7 +184,7 @@ public final class SheetWriter {
 
         String baseSheetName = metadata.getSheetName();
         int headerRows = metadata.hasHeader() ? metadata.getHeaderRowCount() : 0;
-        int maxDataRowsPerSheet = MAX_ROWS_PER_SHEET - headerRows;
+        int maxDataRowsPerSheet = MAX_DATA_ROWS_PER_SHEET;
 
         int sheetIndex = 0;
         SXSSFSheet currentSheet = null;

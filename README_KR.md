@@ -1135,8 +1135,7 @@ public class ReportDTO {
     @ExcelColumn(
         header = "2분기",
         order = 2,
-        mergeHeader = "2024년 매출",
-        mergeHeaderStyle = BlueHeaderStyle.class
+        mergeHeader = "2024년 매출"
     )
     private BigDecimal q2Sales;
 }

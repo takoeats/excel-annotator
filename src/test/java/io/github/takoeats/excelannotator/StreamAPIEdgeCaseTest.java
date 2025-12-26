@@ -13,6 +13,8 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
+import org.apache.poi.util.IOUtils;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayInputStream;
@@ -26,6 +28,11 @@ import java.util.stream.Stream;
 import static org.junit.jupiter.api.Assertions.*;
 
 class StreamAPIEdgeCaseTest {
+
+    @BeforeAll
+    static void setUp() {
+        IOUtils.setByteArrayMaxOverride(200_000_000);
+    }
 
     @Test
     void streamAPI_emptyStream_throwsException() {
@@ -307,6 +314,94 @@ class StreamAPIEdgeCaseTest {
         wb.close();
     }
 
+    @Test
+    void streamAPI_exactlyOneMillionRows_withMergedHeader_correctRowCount() throws Exception {
+        int totalRows = 1000000;
+        Stream<MergedHeaderTestDTO> stream = IntStream.range(0, totalRows)
+                .mapToObj(i -> new MergedHeaderTestDTO("Item" + i, "item" + i + "@test.com"));
+
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        ExcelExporter.excelFromStream(baos, "merged.xlsx", stream);
+
+        Workbook wb = WorkbookFactory.create(new ByteArrayInputStream(baos.toByteArray()));
+
+        assertEquals(1, wb.getNumberOfSheets(), "정확히 100만 건은 단일 시트");
+
+        Sheet sheet = wb.getSheetAt(0);
+        assertEquals("MergedHeaderTest", sheet.getSheetName());
+        assertEquals(1000002, sheet.getPhysicalNumberOfRows(), "병합 헤더 2행 + 데이터 100만 행 = 1000002");
+
+        wb.close();
+    }
+
+    @Test
+    void streamAPI_overOneMillionRows_withMergedHeader_splitCorrectly() throws Exception {
+        int totalRows = 1000001;
+        Stream<MergedHeaderTestDTO> stream = IntStream.range(0, totalRows)
+                .mapToObj(i -> new MergedHeaderTestDTO("Item" + i, "item" + i + "@test.com"));
+
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        ExcelExporter.excelFromStream(baos, "merged_split.xlsx", stream);
+
+        Workbook wb = WorkbookFactory.create(new ByteArrayInputStream(baos.toByteArray()));
+
+        assertEquals(2, wb.getNumberOfSheets(), "100만 건 초과 시 시트 분할");
+
+        Sheet sheet1 = wb.getSheetAt(0);
+        assertEquals("MergedHeaderTest", sheet1.getSheetName());
+        assertEquals(1000002, sheet1.getPhysicalNumberOfRows(), "첫 번째 시트: 병합 헤더 2행 + 데이터 100만 행");
+
+        Sheet sheet2 = wb.getSheetAt(1);
+        assertEquals("MergedHeaderTest2", sheet2.getSheetName());
+        assertEquals(3, sheet2.getPhysicalNumberOfRows(), "두 번째 시트: 병합 헤더 2행 + 데이터 1행");
+
+        wb.close();
+    }
+
+    @Test
+    void streamAPI_exactlyOneMillionRows_noHeader_correctRowCount() throws Exception {
+        int totalRows = 1000000;
+        Stream<NoHeaderTestDTO> stream = IntStream.range(0, totalRows)
+                .mapToObj(i -> new NoHeaderTestDTO("Item" + i));
+
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        ExcelExporter.excelFromStream(baos, "no_header.xlsx", stream);
+
+        Workbook wb = WorkbookFactory.create(new ByteArrayInputStream(baos.toByteArray()));
+
+        assertEquals(1, wb.getNumberOfSheets(), "정확히 100만 건은 단일 시트");
+
+        Sheet sheet = wb.getSheetAt(0);
+        assertEquals("NoHeaderTest", sheet.getSheetName());
+        assertEquals(1000000, sheet.getPhysicalNumberOfRows(), "헤더 없음 + 데이터 100만 행 = 1000000");
+
+        wb.close();
+    }
+
+    @Test
+    void streamAPI_overOneMillionRows_noHeader_splitCorrectly() throws Exception {
+        int totalRows = 1000001;
+        Stream<NoHeaderTestDTO> stream = IntStream.range(0, totalRows)
+                .mapToObj(i -> new NoHeaderTestDTO("Item" + i));
+
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        ExcelExporter.excelFromStream(baos, "no_header_split.xlsx", stream);
+
+        Workbook wb = WorkbookFactory.create(new ByteArrayInputStream(baos.toByteArray()));
+
+        assertEquals(2, wb.getNumberOfSheets(), "100만 건 초과 시 시트 분할");
+
+        Sheet sheet1 = wb.getSheetAt(0);
+        assertEquals("NoHeaderTest", sheet1.getSheetName());
+        assertEquals(1000000, sheet1.getPhysicalNumberOfRows(), "첫 번째 시트: 데이터 100만 행");
+
+        Sheet sheet2 = wb.getSheetAt(1);
+        assertEquals("NoHeaderTest2", sheet2.getSheetName());
+        assertEquals(1, sheet2.getPhysicalNumberOfRows(), "두 번째 시트: 데이터 1행");
+
+        wb.close();
+    }
+
     @Data
     @NoArgsConstructor
     @AllArgsConstructor
@@ -327,5 +422,26 @@ class StreamAPIEdgeCaseTest {
         public int hashCode() {
             return name != null ? name.hashCode() : 0;
         }
+    }
+
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @ExcelSheet("MergedHeaderTest")
+    public static class MergedHeaderTestDTO {
+        @ExcelColumn(header = "Name", order = 1, mergeHeader = "User Info")
+        private String name;
+
+        @ExcelColumn(header = "Email", order = 2, mergeHeader = "User Info")
+        private String email;
+    }
+
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @ExcelSheet(value = "NoHeaderTest", hasHeader = false)
+    public static class NoHeaderTestDTO {
+        @ExcelColumn(order = 1)
+        private String name;
     }
 }

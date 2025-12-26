@@ -158,28 +158,6 @@
                 </configuration>
             </plugin>
 
-            <!-- GPG 서명 플러그인 -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-gpg-plugin</artifactId>
-                <version>3.1.0</version>
-                <executions>
-                    <execution>
-                        <id>sign-artifacts</id>
-                        <phase>verify</phase>
-                        <goals>
-                            <goal>sign</goal>
-                        </goals>
-                        <configuration>
-                            <gpgArguments>
-                                <arg>--pinentry-mode</arg>
-                                <arg>loopback</arg>
-                            </gpgArguments>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-
             <!-- LICENSE와 NOTICE를 JAR에 포함 -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -244,4 +222,36 @@
             <url>https://central.sonatype.com/api/v1/publisher</url>
         </repository>
     </distributionManagement>
+
+    <profiles>
+        <!-- Maven Central 배포용 프로파일 -->
+        <profile>
+            <id>release</id>
+            <build>
+                <plugins>
+                    <!-- GPG 서명 플러그인 -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-gpg-plugin</artifactId>
+                        <version>3.1.0</version>
+                        <executions>
+                            <execution>
+                                <id>sign-artifacts</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>sign</goal>
+                                </goals>
+                                <configuration>
+                                    <gpgArguments>
+                                        <arg>--pinentry-mode</arg>
+                                        <arg>loopback</arg>
+                                    </gpgArguments>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 </project>
