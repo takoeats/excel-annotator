@@ -1,23 +1,21 @@
 package io.github.takoeats.excelannotator.internal.writer;
 
+import io.github.takoeats.excelannotator.internal.metadata.ColumnMetadata;
 import io.github.takoeats.excelannotator.internal.metadata.ExcelMetadata;
-import io.github.takoeats.excelannotator.style.CustomExcelCellStyle;
+import io.github.takoeats.excelannotator.internal.metadata.HeaderMetadata;
+import io.github.takoeats.excelannotator.internal.metadata.SheetMetadata;
 import io.github.takoeats.excelannotator.style.rule.CellContext;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.util.CellRangeAddress;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public final class RowWriter {
 
     private final CellWriter cellWriter;
+    private final MergedHeaderBuilder mergedHeaderBuilder;
 
     public RowWriter() {
         this.cellWriter = new CellWriter();
+        this.mergedHeaderBuilder = new MergedHeaderBuilder(cellWriter);
     }
 
     <T> void writeDataRow(
@@ -37,91 +35,112 @@ public final class RowWriter {
             ExcelMetadata<T> metadata,
             StyleCacheManager styleCacheManager) {
 
-        if (!metadata.hasHeader()) {
+        createHeaderRow(sheet, metadata, metadata, metadata, styleCacheManager);
+    }
+
+    private void createHeaderRow(
+            Sheet sheet,
+            SheetMetadata sheetMetadata,
+            ColumnMetadata columnMetadata,
+            HeaderMetadata headerMetadata,
+            StyleCacheManager styleCacheManager) {
+
+        if (!sheetMetadata.hasHeader()) {
             return;
         }
 
-        if (metadata.hasAnyMergeHeader()) {
-            createTwoRowHeaders(sheet, metadata, styleCacheManager);
+        if (sheetMetadata.hasAnyMergeHeader()) {
+            createTwoRowHeaders(sheet, columnMetadata, headerMetadata, styleCacheManager);
         } else {
-            createSingleRowHeader(sheet, metadata, styleCacheManager);
+            createSingleRowHeader(sheet, columnMetadata, headerMetadata, styleCacheManager);
         }
     }
 
-    private <T> void createSingleRowHeader(
+    private void createSingleRowHeader(
             Sheet sheet,
-            ExcelMetadata<T> metadata,
+            ColumnMetadata columnMetadata,
+            HeaderMetadata headerMetadata,
             StyleCacheManager styleCacheManager) {
 
         Row header = sheet.createRow(0);
-        for (int i = 0; i < metadata.getHeaders().size(); i++) {
-            cellWriter.configureHeaderCell(header, i, metadata, styleCacheManager);
+        for (int i = 0; i < columnMetadata.getHeaders().size(); i++) {
+            cellWriter.configureHeaderCell(header, i, columnMetadata, headerMetadata, styleCacheManager);
         }
     }
 
-    private <T> void createTwoRowHeaders(
+    private void createTwoRowHeaders(
             Sheet sheet,
-            ExcelMetadata<T> metadata,
+            ColumnMetadata columnMetadata,
+            HeaderMetadata headerMetadata,
             StyleCacheManager styleCacheManager) {
 
         Row mergeHeaderRow = sheet.createRow(0);
         Row normalHeaderRow = sheet.createRow(1);
 
-        List<MergeHeaderGroup> mergeGroups = buildMergeHeaderGroups(metadata);
+        List<MergeHeaderGroup> mergeGroups = buildMergeHeaderGroups(columnMetadata, headerMetadata);
 
         for (MergeHeaderGroup group : mergeGroups) {
             if (group.isMerged) {
-                Cell mergeCell = mergeHeaderRow.createCell(group.startCol);
-                mergeCell.setCellValue(group.mergeHeaderName);
-
-                CustomExcelCellStyle mergeHeaderStyle = metadata.getMergeHeaderStyleAt(group.startCol);
-                Class<? extends CustomExcelCellStyle> styleClass = mergeHeaderStyle != null
-                        ? mergeHeaderStyle.getClass()
-                        : null;
-                CellStyle poiStyle = styleCacheManager.getOrCreateStyle(styleClass, null);
-                mergeCell.setCellStyle(poiStyle);
-
-                if (group.startCol != group.endCol) {
-                    sheet.addMergedRegion(new CellRangeAddress(0, 0, group.startCol, group.endCol));
-                }
-
-                for (int col = group.startCol; col <= group.endCol; col++) {
-                    cellWriter.configureHeaderCell(normalHeaderRow, col, metadata, styleCacheManager);
-                }
+                writeMergedHeaderGroup(sheet, mergeHeaderRow, normalHeaderRow, group,
+                                      columnMetadata, headerMetadata, styleCacheManager);
             } else {
-                int col = group.startCol;
-                Cell mergeCell = mergeHeaderRow.createCell(col);
-                mergeCell.setCellValue(metadata.getHeaders().get(col));
-
-                CustomExcelCellStyle headerStyle = metadata.getHeaderStyleAt(col);
-                Class<? extends CustomExcelCellStyle> styleClass = headerStyle != null
-                        ? headerStyle.getClass()
-                        : null;
-                CellStyle poiStyle = styleCacheManager.getOrCreateStyle(styleClass, null);
-                mergeCell.setCellStyle(poiStyle);
-
-                sheet.addMergedRegion(new CellRangeAddress(0, 1, col, col));
-
-                Cell normalCell = normalHeaderRow.createCell(col);
-                normalCell.setCellValue(metadata.getHeaders().get(col));
-                normalCell.setCellStyle(poiStyle);
+                writeNonMergedHeaderGroup(sheet, mergeHeaderRow, normalHeaderRow, group.startCol,
+                                         columnMetadata, headerMetadata, styleCacheManager);
             }
         }
     }
 
-    private <T> List<MergeHeaderGroup> buildMergeHeaderGroups(ExcelMetadata<T> metadata) {
+    private void writeMergedHeaderGroup(
+            Sheet sheet,
+            Row mergeHeaderRow,
+            Row normalHeaderRow,
+            MergeHeaderGroup group,
+            ColumnMetadata columnMetadata,
+            HeaderMetadata headerMetadata,
+            StyleCacheManager styleCacheManager) {
+
+        cellWriter.configureMergeHeaderCell(mergeHeaderRow, group.startCol, group.mergeHeaderName,
+                                           headerMetadata, styleCacheManager);
+
+        if (group.startCol != group.endCol) {
+            sheet.addMergedRegion(new CellRangeAddress(0, 0, group.startCol, group.endCol));
+        }
+
+        for (int col = group.startCol; col <= group.endCol; col++) {
+            cellWriter.configureHeaderCell(normalHeaderRow, col, columnMetadata, headerMetadata, styleCacheManager);
+        }
+    }
+
+    private void writeNonMergedHeaderGroup(
+            Sheet sheet,
+            Row mergeHeaderRow,
+            Row normalHeaderRow,
+            int columnIndex,
+            ColumnMetadata columnMetadata,
+            HeaderMetadata headerMetadata,
+            StyleCacheManager styleCacheManager) {
+
+        cellWriter.configureHeaderCell(mergeHeaderRow, columnIndex, columnMetadata, headerMetadata, styleCacheManager);
+        sheet.addMergedRegion(new CellRangeAddress(0, 1, columnIndex, columnIndex));
+        cellWriter.configureHeaderCell(normalHeaderRow, columnIndex, columnMetadata, headerMetadata, styleCacheManager);
+    }
+
+    private List<MergeHeaderGroup> buildMergeHeaderGroups(
+            ColumnMetadata columnMetadata,
+            HeaderMetadata headerMetadata) {
+
         List<MergeHeaderGroup> groups = new ArrayList<>();
-        int columnCount = metadata.getColumnCount();
+        int columnCount = columnMetadata.getColumnCount();
 
         int i = 0;
         while (i < columnCount) {
-            String mergeHeader = metadata.getMergeHeaderAt(i);
+            String mergeHeader = headerMetadata.getMergeHeaderAt(i);
 
             if (mergeHeader != null && !mergeHeader.isEmpty()) {
                 int startCol = i;
                 int endCol = i;
 
-                while (endCol + 1 < columnCount && mergeHeader.equals(metadata.getMergeHeaderAt(endCol + 1))) {
+                while (endCol + 1 < columnCount && mergeHeader.equals(headerMetadata.getMergeHeaderAt(endCol + 1))) {
                     endCol++;
                 }
 

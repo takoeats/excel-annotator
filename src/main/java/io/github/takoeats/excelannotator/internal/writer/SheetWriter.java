@@ -1,6 +1,8 @@
 package io.github.takoeats.excelannotator.internal.writer;
 
+import io.github.takoeats.excelannotator.internal.metadata.ColumnMetadata;
 import io.github.takoeats.excelannotator.internal.metadata.ExcelMetadata;
+import io.github.takoeats.excelannotator.internal.metadata.SheetMetadata;
 import io.github.takoeats.excelannotator.internal.util.ColumnWidthCalculator;
 import io.github.takoeats.excelannotator.internal.util.SheetNameValidator;
 import org.apache.poi.ss.usermodel.Row;
@@ -35,10 +37,10 @@ public final class SheetWriter {
 
     private void configureAutoSizeTracking(
             SXSSFSheet sheet,
-            ExcelMetadata<?> metadata) {
+            ColumnMetadata columnMetadata) {
 
-        for (int i = 0; i < metadata.getColumnWidths().size(); i++) {
-            if (metadata.getColumnWidths().get(i) == -1) {
+        for (int i = 0; i < columnMetadata.getColumnWidths().size(); i++) {
+            if (columnMetadata.getColumnWidths().get(i) == -1) {
                 sheet.trackColumnForAutoSizing(i);
             }
         }

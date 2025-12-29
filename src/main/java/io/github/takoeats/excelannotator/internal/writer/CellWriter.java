@@ -1,6 +1,8 @@
 package io.github.takoeats.excelannotator.internal.writer;
 
+import io.github.takoeats.excelannotator.internal.metadata.ColumnMetadata;
 import io.github.takoeats.excelannotator.internal.metadata.ExcelMetadata;
+import io.github.takoeats.excelannotator.internal.metadata.HeaderMetadata;
 import io.github.takoeats.excelannotator.internal.util.CellValueConverter;
 import io.github.takoeats.excelannotator.masking.Masking;
 import io.github.takoeats.excelannotator.style.CustomExcelCellStyle;
@@ -65,12 +67,41 @@ public class CellWriter {
             ExcelMetadata<T> metadata,
             StyleCacheManager styleCacheManager) {
 
-        Cell cell = header.createCell(columnIndex);
-        cell.setCellValue(metadata.getHeaders().get(columnIndex));
+        configureHeaderCell(header, columnIndex, metadata, metadata, styleCacheManager);
+    }
 
-        CustomExcelCellStyle headerStyle = metadata.getHeaderStyleAt(columnIndex);
+    void configureHeaderCell(
+            Row header,
+            int columnIndex,
+            ColumnMetadata columnMetadata,
+            HeaderMetadata headerMetadata,
+            StyleCacheManager styleCacheManager) {
+
+        Cell cell = header.createCell(columnIndex);
+        cell.setCellValue(columnMetadata.getHeaders().get(columnIndex));
+
+        CustomExcelCellStyle headerStyle = headerMetadata.getHeaderStyleAt(columnIndex);
         Class<? extends CustomExcelCellStyle> styleClass = headerStyle != null
                 ? headerStyle.getClass()
+                : null;
+
+        CellStyle poiStyle = styleCacheManager.getOrCreateStyle(styleClass, null);
+        cell.setCellStyle(poiStyle);
+    }
+
+    void configureMergeHeaderCell(
+            Row row,
+            int columnIndex,
+            String headerText,
+            HeaderMetadata headerMetadata,
+            StyleCacheManager styleCacheManager) {
+
+        Cell cell = row.createCell(columnIndex);
+        cell.setCellValue(headerText);
+
+        CustomExcelCellStyle mergeHeaderStyle = headerMetadata.getMergeHeaderStyleAt(columnIndex);
+        Class<? extends CustomExcelCellStyle> styleClass = mergeHeaderStyle != null
+                ? mergeHeaderStyle.getClass()
                 : null;
 
         CellStyle poiStyle = styleCacheManager.getOrCreateStyle(styleClass, null);

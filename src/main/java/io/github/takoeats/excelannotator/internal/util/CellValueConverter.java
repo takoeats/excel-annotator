@@ -1,18 +1,40 @@
 package io.github.takoeats.excelannotator.internal.util;
 
+import io.github.takoeats.excelannotator.internal.util.strategy.BooleanValueStrategy;
+import io.github.takoeats.excelannotator.internal.util.strategy.CalendarValueStrategy;
+import io.github.takoeats.excelannotator.internal.util.strategy.CellValueStrategy;
+import io.github.takoeats.excelannotator.internal.util.strategy.DateValueStrategy;
+import io.github.takoeats.excelannotator.internal.util.strategy.DefaultValueStrategy;
+import io.github.takoeats.excelannotator.internal.util.strategy.LocalDateTimeValueStrategy;
+import io.github.takoeats.excelannotator.internal.util.strategy.LocalDateValueStrategy;
+import io.github.takoeats.excelannotator.internal.util.strategy.NumberValueStrategy;
+import io.github.takoeats.excelannotator.internal.util.strategy.StringValueStrategy;
 import org.apache.poi.ss.usermodel.Cell;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.regex.Pattern;
 
 public final class CellValueConverter {
 
     private static final Pattern NUMERIC_PATTERN = Pattern.compile("[-+]?\\d+(\\.\\d+)?");
     private static final int EXCEL_MAX_PRECISION_DIGITS = 15;
+
+    private static final List<CellValueStrategy> STRATEGIES = Arrays.asList(
+        new StringValueStrategy(),
+        new LocalDateValueStrategy(),
+        new LocalDateTimeValueStrategy(),
+        new DateValueStrategy(),
+        new CalendarValueStrategy(),
+        new NumberValueStrategy(),
+        new BooleanValueStrategy(),
+        new DefaultValueStrategy()
+    );
 
     private CellValueConverter() {
     }
@@ -115,27 +137,11 @@ public final class CellValueConverter {
             return;
         }
 
-        if (value instanceof String) {
-            String strValue = (String) value;
-            if (strValue.isEmpty()) {
-                cell.setBlank();
+        for (CellValueStrategy strategy : STRATEGIES) {
+            if (strategy.supports(value)) {
+                strategy.apply(cell, value);
                 return;
             }
-            cell.setCellValue(strValue);
-        } else if (value instanceof LocalDate) {
-            cell.setCellValue((LocalDate) value);
-        } else if (value instanceof LocalDateTime) {
-            cell.setCellValue((LocalDateTime) value);
-        } else if (value instanceof Date) {
-            cell.setCellValue((Date) value);
-        } else if (value instanceof Calendar) {
-            cell.setCellValue((Calendar) value);
-        } else if (value instanceof Number) {
-            cell.setCellValue(((Number) value).doubleValue());
-        } else if (value instanceof Boolean) {
-            cell.setCellValue((Boolean) value);
-        } else {
-            cell.setCellValue(value.toString());
         }
     }
 }

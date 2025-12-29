@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 
 @Getter
 @Builder
-public final class ExcelMetadata<T> {
+public final class ExcelMetadata<T> implements SheetMetadata, ColumnMetadata, HeaderMetadata, StyleMetadata, DataExtractionMetadata<T> {
     private final List<String> headers;
     private final List<Function<T, Object>> extractors;
     private final List<Integer> columnWidths;
