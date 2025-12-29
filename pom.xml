@@ -248,6 +248,11 @@
         <!-- Maven Central 배포용 프로파일 -->
         <profile>
             <id>release</id>
+            <properties>
+                <test.excludedGroups>
+<!--                    exclude performance tests-->
+                </test.excludedGroups>
+            </properties>
             <build>
                 <plugins>
                     <!-- GPG 서명 플러그인 -->
