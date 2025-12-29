@@ -70,7 +70,7 @@ public class CellWriter {
         configureHeaderCell(header, columnIndex, metadata, metadata, styleCacheManager);
     }
 
-    void configureHeaderCell(
+    public void configureHeaderCell(
             Row header,
             int columnIndex,
             ColumnMetadata columnMetadata,
@@ -83,25 +83,6 @@ public class CellWriter {
         CustomExcelCellStyle headerStyle = headerMetadata.getHeaderStyleAt(columnIndex);
         Class<? extends CustomExcelCellStyle> styleClass = headerStyle != null
                 ? headerStyle.getClass()
-                : null;
-
-        CellStyle poiStyle = styleCacheManager.getOrCreateStyle(styleClass, null);
-        cell.setCellStyle(poiStyle);
-    }
-
-    void configureMergeHeaderCell(
-            Row row,
-            int columnIndex,
-            String headerText,
-            HeaderMetadata headerMetadata,
-            StyleCacheManager styleCacheManager) {
-
-        Cell cell = row.createCell(columnIndex);
-        cell.setCellValue(headerText);
-
-        CustomExcelCellStyle mergeHeaderStyle = headerMetadata.getMergeHeaderStyleAt(columnIndex);
-        Class<? extends CustomExcelCellStyle> styleClass = mergeHeaderStyle != null
-                ? mergeHeaderStyle.getClass()
                 : null;
 
         CellStyle poiStyle = styleCacheManager.getOrCreateStyle(styleClass, null);

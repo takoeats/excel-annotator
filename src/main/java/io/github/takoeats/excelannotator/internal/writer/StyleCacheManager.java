@@ -18,7 +18,7 @@ public final class StyleCacheManager {
         this.workbook = workbook;
     }
 
-    CellStyle getOrCreateStyle(
+    public CellStyle getOrCreateStyle(
             Class<? extends CustomExcelCellStyle> styleClass,
             String format) {
 
