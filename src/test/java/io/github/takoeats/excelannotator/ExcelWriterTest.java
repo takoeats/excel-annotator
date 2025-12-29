@@ -8,6 +8,7 @@ import org.apache.poi.ss.usermodel.DataFormatter;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -138,6 +139,7 @@ class ExcelWriterTest {
     }
 
     @Test
+    @Tag("performance")
     void write_exceedsOneMillionRows_createsMultipleSheets() throws IOException {
         ExcelWriter writer = new ExcelWriter();
         int totalRows = 1_500_000;
@@ -160,6 +162,7 @@ class ExcelWriterTest {
     }
 
     @Test
+    @Tag("performance")
     void write_exactlyOneMillionRows_singleSheet() throws IOException {
         ExcelWriter writer = new ExcelWriter();
         int totalRows = 1_000_000;
@@ -177,6 +180,7 @@ class ExcelWriterTest {
     }
 
     @Test
+    @Tag("performance")
     void write_twoMillionRows_createsTwoSheets() throws IOException {
         ExcelWriter writer = new ExcelWriter();
         int totalRows = 2_000_000;
@@ -199,6 +203,7 @@ class ExcelWriterTest {
     }
 
     @Test
+    @Tag("performance")
     void write_multiSheetWithPagination_eachSheetSplitsSeparately() throws IOException {
         ExcelWriter writer = new ExcelWriter();
         int totalRows = 1_100_000;

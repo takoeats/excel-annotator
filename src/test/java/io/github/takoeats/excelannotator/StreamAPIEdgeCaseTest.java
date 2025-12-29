@@ -15,6 +15,7 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.apache.poi.util.IOUtils;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayInputStream;
@@ -263,6 +264,7 @@ class StreamAPIEdgeCaseTest {
     }
 
     @Test
+    @Tag("performance")
     void streamAPI_exceedsOneMillionRows_createsMultipleSheets() throws Exception {
         int totalRows = 1500000;
         Stream<StreamTestDTO> largeStream = IntStream.range(0, totalRows)
@@ -295,6 +297,7 @@ class StreamAPIEdgeCaseTest {
     }
 
     @Test
+    @Tag("performance")
     void streamAPI_exactlyOneMillionRows_singleSheet() throws Exception {
         int totalRows = 1000000;
         Stream<StreamTestDTO> stream = IntStream.range(0, totalRows)
@@ -315,6 +318,7 @@ class StreamAPIEdgeCaseTest {
     }
 
     @Test
+    @Tag("performance")
     void streamAPI_exactlyOneMillionRows_withMergedHeader_correctRowCount() throws Exception {
         int totalRows = 1000000;
         Stream<MergedHeaderTestDTO> stream = IntStream.range(0, totalRows)
@@ -335,6 +339,7 @@ class StreamAPIEdgeCaseTest {
     }
 
     @Test
+    @Tag("performance")
     void streamAPI_overOneMillionRows_withMergedHeader_splitCorrectly() throws Exception {
         int totalRows = 1000001;
         Stream<MergedHeaderTestDTO> stream = IntStream.range(0, totalRows)
@@ -359,6 +364,7 @@ class StreamAPIEdgeCaseTest {
     }
 
     @Test
+    @Tag("performance")
     void streamAPI_exactlyOneMillionRows_noHeader_correctRowCount() throws Exception {
         int totalRows = 1000000;
         Stream<NoHeaderTestDTO> stream = IntStream.range(0, totalRows)
@@ -379,6 +385,7 @@ class StreamAPIEdgeCaseTest {
     }
 
     @Test
+    @Tag("performance")
     void streamAPI_overOneMillionRows_noHeader_splitCorrectly() throws Exception {
         int totalRows = 1000001;
         Stream<NoHeaderTestDTO> stream = IntStream.range(0, totalRows)
