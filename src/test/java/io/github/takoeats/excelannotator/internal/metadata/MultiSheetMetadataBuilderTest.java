@@ -2,6 +2,7 @@ package io.github.takoeats.excelannotator.internal.metadata;
 
 import io.github.takoeats.excelannotator.annotation.ExcelColumn;
 import io.github.takoeats.excelannotator.annotation.ExcelSheet;
+import lombok.Getter;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -85,6 +86,7 @@ class MultiSheetMetadataBuilderTest {
         }
     }
 
+    @Getter
     @ExcelSheet(value = "DefaultSheet", hasHeader = true, order = 5)
     private static class SingleSheetDTO {
         @ExcelColumn(header = "Name", order = 1)
@@ -94,6 +96,7 @@ class MultiSheetMetadataBuilderTest {
         private Integer age;
     }
 
+    @Getter
     @ExcelSheet(value = "DefaultSheet", hasHeader = true, order = 10)
     private static class MultiSheetDTO {
         @ExcelColumn(header = "Name", order = 1, sheetName = "Sheet1")
@@ -106,6 +109,7 @@ class MultiSheetMetadataBuilderTest {
         private String email;
     }
 
+    @Getter
     @ExcelSheet("Sheet1")
     private static class OrderTestDTO {
         @ExcelColumn(header = "First", order = 2, sheetName = "Sheet1")

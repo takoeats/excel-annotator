@@ -1,7 +1,6 @@
 package io.github.takoeats.excelannotator.internal.metadata;
 
 import io.github.takoeats.excelannotator.internal.metadata.extractor.ColumnInfoExtractor;
-import io.github.takoeats.excelannotator.internal.metadata.extractor.FieldValueExtractorFactory;
 import io.github.takoeats.excelannotator.internal.metadata.extractor.SheetInfoExtractor;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -12,7 +11,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
 @Slf4j
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
@@ -26,9 +24,9 @@ public final class MetadataAssembler {
         }
 
         List<ColumnInfo> columnInfos = ColumnInfoExtractor.extractAll(clazz);
-        List<String> headers = getHeaders(columnInfos);
-        List<Function<T, Object>> extractors = getExtractors(columnInfos);
-        List<Integer> columnWidths = getColumnWidths(columnInfos);
+        List<String> headers = ColumnInfoMapper.mapToHeaders(columnInfos);
+        List<Function<T, Object>> extractors = ColumnInfoMapper.mapToExtractors(columnInfos);
+        List<Integer> columnWidths = ColumnInfoMapper.mapToColumnWidths(columnInfos);
         SheetInfo sheetInfo = SheetInfoExtractor.extract(clazz);
 
         return ExcelMetadata.<T>builder()
@@ -48,20 +46,19 @@ public final class MetadataAssembler {
         List<Integer> sortedOrders = new ArrayList<>(mergedColumns.keySet());
         Collections.sort(sortedOrders);
 
-        List<String> headers = new ArrayList<>();
-        List<Integer> columnWidths = new ArrayList<>();
-        List<Function<Map<String, Object>, Object>> extractors = new ArrayList<>();
         List<ColumnInfo> columnInfos = new ArrayList<>();
+        List<Function<Map<String, Object>, Object>> extractors = new ArrayList<>();
 
         for (int order : sortedOrders) {
             ColumnInfo colInfo = mergedColumns.get(order);
-            headers.add(colInfo.getHeader());
-            columnWidths.add(colInfo.getWidth());
             columnInfos.add(colInfo);
 
             int columnIndex = sortedOrders.indexOf(order);
             extractors.add(row -> row.get(String.valueOf(columnIndex)));
         }
+
+        List<String> headers = ColumnInfoMapper.mapToHeaders(columnInfos);
+        List<Integer> columnWidths = ColumnInfoMapper.mapToColumnWidths(columnInfos);
 
         SheetInfo sheetInfo = SheetInfo.builder()
                 .name(sheetName)
@@ -85,23 +82,5 @@ public final class MetadataAssembler {
                 .columnInfos(Collections.emptyList())
                 .sheetInfo(SheetInfo.builder().build())
                 .build();
-    }
-
-    private static List<String> getHeaders(List<ColumnInfo> columnInfos) {
-        return columnInfos.stream()
-                .map(ColumnInfo::getHeader)
-                .collect(Collectors.toList());
-    }
-
-    private static List<Integer> getColumnWidths(List<ColumnInfo> columnInfos) {
-        return columnInfos.stream()
-                .map(ColumnInfo::getWidth)
-                .collect(Collectors.toList());
-    }
-
-    private static <T> List<Function<T, Object>> getExtractors(List<ColumnInfo> columnInfos) {
-        return columnInfos.stream()
-                .map(FieldValueExtractorFactory::<T>createExtractor)
-                .collect(Collectors.toList());
     }
 }

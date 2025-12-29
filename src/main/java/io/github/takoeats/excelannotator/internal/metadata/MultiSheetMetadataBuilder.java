@@ -1,13 +1,11 @@
 package io.github.takoeats.excelannotator.internal.metadata;
 
 import io.github.takoeats.excelannotator.internal.metadata.extractor.ColumnInfoExtractor;
-import io.github.takoeats.excelannotator.internal.metadata.extractor.FieldValueExtractorFactory;
 import io.github.takoeats.excelannotator.internal.metadata.extractor.SheetInfoExtractor;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.*;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
 @Slf4j
 public final class MultiSheetMetadataBuilder {
@@ -44,9 +42,9 @@ public final class MultiSheetMetadataBuilder {
 
             sheetColumns.sort(Comparator.comparingInt(ColumnInfo::getOrder));
 
-            List<String> headers = getHeaders(sheetColumns);
-            List<Integer> columnWidths = getColumnWidths(sheetColumns);
-            List<Function<T, Object>> extractors = getExtractors(sheetColumns);
+            List<String> headers = ColumnInfoMapper.mapToHeaders(sheetColumns);
+            List<Integer> columnWidths = ColumnInfoMapper.mapToColumnWidths(sheetColumns);
+            List<Function<T, Object>> extractors = ColumnInfoMapper.mapToExtractors(sheetColumns);
             SheetInfo sheetInfo = SheetInfo.builder()
                     .name(sheetName)
                     .hasHeader(defaultSheetInfo.isHasHeader())
@@ -65,23 +63,5 @@ public final class MultiSheetMetadataBuilder {
         }
 
         return result;
-    }
-
-    private static List<String> getHeaders(List<ColumnInfo> columnInfos) {
-        return columnInfos.stream()
-                .map(ColumnInfo::getHeader)
-                .collect(Collectors.toList());
-    }
-
-    private static List<Integer> getColumnWidths(List<ColumnInfo> columnInfos) {
-        return columnInfos.stream()
-                .map(ColumnInfo::getWidth)
-                .collect(Collectors.toList());
-    }
-
-    private static <T> List<Function<T, Object>> getExtractors(List<ColumnInfo> columnInfos) {
-        return columnInfos.stream()
-                .map(FieldValueExtractorFactory::<T>createExtractor)
-                .collect(Collectors.toList());
     }
 }
