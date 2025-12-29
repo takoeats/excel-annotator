@@ -157,10 +157,8 @@ class FieldValueExtractorFactoryTest {
                 .masking(Masking.NONE)
                 .build();
 
-        Function<TestDTO, Object> extractor = FieldValueExtractorFactory.createExtractor(columnInfo);
-
-        TestDTO dto = new TestDTO();
-        assertThrows(ExcelExporterException.class, () -> extractor.apply(dto));
+        assertThrows(ExcelExporterException.class, () ->
+                FieldValueExtractorFactory.createExtractor(columnInfo));
     }
 
     @Test
@@ -194,10 +192,8 @@ class FieldValueExtractorFactoryTest {
                 .masking(Masking.NONE)
                 .build();
 
-        Function<TestDTO, Object> extractor = FieldValueExtractorFactory.createExtractor(columnInfo);
-
-        TestDTO dto = new TestDTO();
-        assertThrows(ExcelExporterException.class, () -> extractor.apply(dto));
+        assertThrows(ExcelExporterException.class, () ->
+                FieldValueExtractorFactory.createExtractor(columnInfo));
     }
 
     @Test

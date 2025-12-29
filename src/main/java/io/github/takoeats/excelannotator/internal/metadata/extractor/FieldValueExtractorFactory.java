@@ -7,7 +7,8 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-import java.lang.reflect.InvocationTargetException;
+import java.lang.invoke.MethodHandle;
+import java.lang.invoke.MethodHandles;
 import java.lang.reflect.Method;
 import java.util.function.Function;
 
@@ -15,38 +16,81 @@ import java.util.function.Function;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class FieldValueExtractorFactory {
 
-
     public static <T> Function<T, Object> createExtractor(ColumnInfo columnInfo) {
-        return obj -> {
-            try {
-                if (obj == null) {
-                    log.debug("Object parameter is null for field: {}", columnInfo.getField().getName());
-                    return null;
-                }
+        MethodHandle methodHandle = extractAndCreateMethodHandle(columnInfo);
+        String fieldName = columnInfo.getField().getName();
 
-                String fieldName = columnInfo.getField().getName();
-                String getterName = buildGetterName(fieldName);
-                Method getter = obj.getClass().getMethod(getterName);
+        if (methodHandle == null) {
+            return obj -> null;
+        }
 
-                if (!validateGetterMethod(getter, fieldName)) {
-                    return null;
-                }
+        return obj -> invokeGetter(methodHandle, obj, fieldName);
+    }
 
-                return extractFieldValue(getter, obj);
-            } catch (NoSuchMethodException e) {
-                throw new ExcelExporterException(
-                        ErrorCode.FIELD_ACCESS_FAILED,
-                        "Getter 메서드를 찾을 수 없음: " + columnInfo.getField().getName(),
-                        e
-                );
-            } catch (InvocationTargetException | IllegalAccessException e) {
-                throw new ExcelExporterException(
-                        ErrorCode.FIELD_ACCESS_FAILED,
-                        "필드 값 추출 실패: " + columnInfo.getField().getName(),
-                        e
-                );
-            }
-        };
+    private static MethodHandle extractAndCreateMethodHandle(ColumnInfo columnInfo) {
+        String fieldName = columnInfo.getField().getName();
+        String getterName = buildGetterName(fieldName);
+        Class<?> declaringClass = columnInfo.getField().getDeclaringClass();
+
+        Method getter;
+        try {
+            getter = declaringClass.getMethod(getterName);
+        } catch (NoSuchMethodException e) {
+            throw new ExcelExporterException(
+                    ErrorCode.FIELD_ACCESS_FAILED,
+                    "Getter 메서드를 찾을 수 없음: " + fieldName,
+                    e
+            );
+        }
+
+        if (!validateGetterMethod(getter, fieldName)) {
+            return null;
+        }
+
+        try {
+            getter.setAccessible(true);
+            MethodHandles.Lookup lookup = MethodHandles.lookup();
+            return lookup.unreflect(getter);
+        } catch (IllegalAccessException e) {
+            throw new ExcelExporterException(
+                    ErrorCode.FIELD_ACCESS_FAILED,
+                    "Getter 메서드 접근 실패: " + fieldName,
+                    e
+            );
+        }
+    }
+
+    private static Object invokeGetter(MethodHandle methodHandle, Object obj, String fieldName) {
+        if (obj == null) {
+            log.debug("Object parameter is null for field: {}", fieldName);
+            return null;
+        }
+
+        try {
+            return extractFieldValue(methodHandle, obj);
+        } catch (Throwable e) {
+            throw new ExcelExporterException(
+                    ErrorCode.FIELD_ACCESS_FAILED,
+                    "필드 값 추출 실패: " + fieldName,
+                    e
+            );
+        }
+    }
+
+    private static Object extractFieldValue(MethodHandle methodHandle, Object obj)
+            throws Throwable {
+        Object value = methodHandle.invoke(obj);
+        if (value == null) {
+            return null;
+        }
+
+        if (FieldTypeClassifier.isDateType(value.getClass())
+                || value instanceof Number
+                || value instanceof Boolean) {
+            return value;
+        }
+
+        return value.toString();
     }
 
     private static String buildGetterName(String fieldName) {
@@ -69,21 +113,5 @@ public final class FieldValueExtractorFactory {
         }
 
         return true;
-    }
-
-    private static Object extractFieldValue(Method getter, Object obj)
-            throws InvocationTargetException, IllegalAccessException {
-        Object value = getter.invoke(obj);
-        if (value == null) {
-            return null;
-        }
-
-        if (FieldTypeClassifier.isDateType(value.getClass())
-                || value instanceof Number
-                || value instanceof Boolean) {
-            return value;
-        }
-
-        return value.toString();
     }
 }
