@@ -1,22 +1,10 @@
 package io.github.takoeats.excelannotator.internal.util;
 
-import io.github.takoeats.excelannotator.internal.util.strategy.BooleanValueStrategy;
-import io.github.takoeats.excelannotator.internal.util.strategy.CalendarValueStrategy;
-import io.github.takoeats.excelannotator.internal.util.strategy.CellValueStrategy;
-import io.github.takoeats.excelannotator.internal.util.strategy.DateValueStrategy;
-import io.github.takoeats.excelannotator.internal.util.strategy.DefaultValueStrategy;
-import io.github.takoeats.excelannotator.internal.util.strategy.LocalDateTimeValueStrategy;
-import io.github.takoeats.excelannotator.internal.util.strategy.LocalDateValueStrategy;
-import io.github.takoeats.excelannotator.internal.util.strategy.NumberValueStrategy;
-import io.github.takoeats.excelannotator.internal.util.strategy.StringValueStrategy;
+import io.github.takoeats.excelannotator.internal.util.strategy.*;
 import org.apache.poi.ss.usermodel.Cell;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -26,14 +14,14 @@ public final class CellValueConverter {
     private static final int EXCEL_MAX_PRECISION_DIGITS = 15;
 
     private static final List<CellValueStrategy> STRATEGIES = Arrays.asList(
-        new StringValueStrategy(),
-        new LocalDateValueStrategy(),
-        new LocalDateTimeValueStrategy(),
-        new DateValueStrategy(),
-        new CalendarValueStrategy(),
-        new NumberValueStrategy(),
-        new BooleanValueStrategy(),
-        new DefaultValueStrategy()
+            new StringValueStrategy(),
+            new LocalDateValueStrategy(),
+            new LocalDateTimeValueStrategy(),
+            new DateValueStrategy(),
+            new CalendarValueStrategy(),
+            new NumberValueStrategy(),
+            new BooleanValueStrategy(),
+            new DefaultValueStrategy()
     );
 
     private CellValueConverter() {

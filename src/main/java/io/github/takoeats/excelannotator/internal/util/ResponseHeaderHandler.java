@@ -9,7 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 public final class ResponseHeaderHandler {
 
     public static void setResponseHeaders(HttpServletResponse response, String contentType,
-                                    String fallbackFileName, String encodedFileName) {
+                                          String fallbackFileName, String encodedFileName) {
         response.setContentType(contentType);
         response.setHeader("Content-Disposition",
                 "attachment; filename=\"" + fallbackFileName + "\"; filename*=UTF-8''" + encodedFileName);

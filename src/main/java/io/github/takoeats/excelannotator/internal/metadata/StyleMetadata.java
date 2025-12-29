@@ -13,6 +13,7 @@ public interface StyleMetadata {
 
     /**
      * 특정 인덱스의 컬럼 스타일 조회
+     *
      * @param index 컬럼 인덱스
      * @return 컬럼 스타일, 범위 밖이거나 없으면 null
      */
@@ -20,6 +21,7 @@ public interface StyleMetadata {
 
     /**
      * 특정 인덱스의 조건부 스타일 규칙 목록 조회
+     *
      * @param index 컬럼 인덱스
      * @return 조건부 스타일 규칙 리스트, 범위 밖이거나 없으면 빈 리스트
      */
@@ -27,6 +29,7 @@ public interface StyleMetadata {
 
     /**
      * 특정 인덱스의 셀 포맷 조회
+     *
      * @param index 컬럼 인덱스
      * @return 셀 포맷 문자열, 범위 밖이거나 없으면 null
      */

@@ -2,7 +2,6 @@ package io.github.takoeats.excelannotator.internal.writer;
 
 import io.github.takoeats.excelannotator.internal.metadata.ColumnMetadata;
 import io.github.takoeats.excelannotator.internal.metadata.ExcelMetadata;
-import io.github.takoeats.excelannotator.internal.metadata.SheetMetadata;
 import io.github.takoeats.excelannotator.internal.util.ColumnWidthCalculator;
 import io.github.takoeats.excelannotator.internal.util.SheetNameValidator;
 import org.apache.poi.ss.usermodel.Row;

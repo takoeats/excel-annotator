@@ -10,6 +10,7 @@ public interface HeaderMetadata {
 
     /**
      * 특정 인덱스의 헤더 스타일 조회
+     *
      * @param index 컬럼 인덱스
      * @return 헤더 스타일, 범위 밖이거나 없으면 null
      */
@@ -17,6 +18,7 @@ public interface HeaderMetadata {
 
     /**
      * 특정 인덱스의 병합 헤더 텍스트 조회
+     *
      * @param index 컬럼 인덱스
      * @return 병합 헤더 텍스트, 범위 밖이거나 없으면 빈 문자열
      */
@@ -24,6 +26,7 @@ public interface HeaderMetadata {
 
     /**
      * 특정 인덱스의 병합 헤더 스타일 조회
+     *
      * @param index 컬럼 인덱스
      * @return 병합 헤더 스타일, 범위 밖이거나 없으면 null
      */

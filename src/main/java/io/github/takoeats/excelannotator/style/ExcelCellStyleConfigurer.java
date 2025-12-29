@@ -274,6 +274,7 @@ public class ExcelCellStyleConfigurer {
 
     /**
      * 흰색 배경 (255, 255, 255)
+     *
      * @deprecated Use {@link #backgroundColor(int, int, int)} instead.
      */
     @Deprecated
@@ -283,6 +284,7 @@ public class ExcelCellStyleConfigurer {
 
     /**
      * 회색 배경 (192, 192, 192)
+     *
      * @deprecated Use {@link #backgroundColor(int, int, int)} instead.
      */
     @Deprecated
@@ -292,6 +294,7 @@ public class ExcelCellStyleConfigurer {
 
     /**
      * 라벤더 배경 (230, 230, 250)
+     *
      * @deprecated Use {@link #backgroundColor(int, int, int)} instead.
      */
     @Deprecated
@@ -301,6 +304,7 @@ public class ExcelCellStyleConfigurer {
 
     /**
      * 연한 노란색 배경 (255, 255, 224)
+     *
      * @deprecated Use {@link #backgroundColor(int, int, int)} instead.
      */
     @Deprecated
@@ -310,6 +314,7 @@ public class ExcelCellStyleConfigurer {
 
     /**
      * 연한 초록색 배경 (144, 238, 144)
+     *
      * @deprecated Use {@link #backgroundColor(int, int, int)} instead.
      */
     @Deprecated
@@ -319,6 +324,7 @@ public class ExcelCellStyleConfigurer {
 
     /**
      * 분홍색 배경 (255, 192, 203)
+     *
      * @deprecated Use {@link #backgroundColor(int, int, int)} instead.
      */
     @Deprecated
@@ -328,6 +334,7 @@ public class ExcelCellStyleConfigurer {
 
     /**
      * 검은색 폰트 (0, 0, 0)
+     *
      * @deprecated Use {@link #fontColor(int, int, int)} instead.
      */
     @Deprecated
@@ -337,6 +344,7 @@ public class ExcelCellStyleConfigurer {
 
     /**
      * 흰색 폰트 (255, 255, 255)
+     *
      * @deprecated Use {@link #fontColor(int, int, int)} instead.
      */
     @Deprecated
@@ -346,6 +354,7 @@ public class ExcelCellStyleConfigurer {
 
     /**
      * 빨간색 폰트 (255, 0, 0)
+     *
      * @deprecated Use {@link #fontColor(int, int, int)} instead.
      */
     @Deprecated
