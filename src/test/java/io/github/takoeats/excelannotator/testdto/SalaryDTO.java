@@ -23,7 +23,15 @@ public class SalaryDTO {
         this.bonus = bonus;
     }
 
-    public String getEmployeeName() { return employeeName; }
-    public BigDecimal getSalary() { return salary; }
-    public BigDecimal getBonus() { return bonus; }
+    public String getEmployeeName() {
+        return employeeName;
+    }
+
+    public BigDecimal getSalary() {
+        return salary;
+    }
+
+    public BigDecimal getBonus() {
+        return bonus;
+    }
 }

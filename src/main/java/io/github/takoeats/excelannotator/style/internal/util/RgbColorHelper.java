@@ -1,4 +1,4 @@
-package io.github.takoeats.excelannotator.style;
+package io.github.takoeats.excelannotator.style.internal.util;
 
 import io.github.takoeats.excelannotator.exception.ErrorCode;
 import io.github.takoeats.excelannotator.exception.ExcelExporterException;

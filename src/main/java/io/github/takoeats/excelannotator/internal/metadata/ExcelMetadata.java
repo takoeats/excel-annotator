@@ -2,7 +2,7 @@ package io.github.takoeats.excelannotator.internal.metadata;
 
 import io.github.takoeats.excelannotator.masking.Masking;
 import io.github.takoeats.excelannotator.style.CustomExcelCellStyle;
-import io.github.takoeats.excelannotator.style.rule.StyleRule;
+import io.github.takoeats.excelannotator.style.internal.rule.StyleRule;
 import lombok.Builder;
 import lombok.Getter;
 

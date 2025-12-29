@@ -1,31 +1,9 @@
 package io.github.takoeats.excelannotator;
 
-import static io.github.takoeats.excelannotator.util.ExcelAssertions.assertExcelFileValid;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-
 import io.github.takoeats.excelannotator.annotation.ExcelColumn;
 import io.github.takoeats.excelannotator.annotation.ExcelSheet;
-import io.github.takoeats.excelannotator.teststyle.AttentionStyle;
-import io.github.takoeats.excelannotator.teststyle.CriticalAlertStyle;
-import io.github.takoeats.excelannotator.teststyle.CurrencyStyle;
-import io.github.takoeats.excelannotator.teststyle.DateOnlyStyle;
-import io.github.takoeats.excelannotator.teststyle.DateTimeStyle;
-import io.github.takoeats.excelannotator.teststyle.DecimalNumberStyle;
-import io.github.takoeats.excelannotator.teststyle.HighlightStyle;
-import io.github.takoeats.excelannotator.teststyle.KoreanDateStyle;
-import io.github.takoeats.excelannotator.teststyle.PercentageStyle;
-import io.github.takoeats.excelannotator.teststyle.PurpleHeaderStyle;
-import io.github.takoeats.excelannotator.teststyle.TableHeaderStyle;
-import io.github.takoeats.excelannotator.teststyle.TableRowEvenStyle;
-import io.github.takoeats.excelannotator.teststyle.TableRowOddStyle;
-import io.github.takoeats.excelannotator.teststyle.ValidationErrorStyle;
+import io.github.takoeats.excelannotator.teststyle.*;
 import io.github.takoeats.excelannotator.util.ExcelTestHelper;
-import java.io.ByteArrayOutputStream;
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.Collections;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -37,13 +15,23 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFCellStyle;
 import org.junit.jupiter.api.Test;
 
+import java.io.ByteArrayOutputStream;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.Collections;
+
+import static io.github.takoeats.excelannotator.util.ExcelAssertions.assertExcelFileValid;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 class PreDefinedStylesTest {
 
     @Test
     void currencyStyle_appliesKoreanWonFormat() throws Exception {
         StyleTestDTO data = StyleTestDTO.builder()
-            .currencyValue(new BigDecimal("1234567.00"))
-            .build();
+                .currencyValue(new BigDecimal("1234567.00"))
+                .build();
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ExcelExporter.excelFromList(baos, "test.xlsx", Collections.singletonList(data));
@@ -65,8 +53,8 @@ class PreDefinedStylesTest {
     @Test
     void decimalNumberStyle_appliesThreeDecimals() throws Exception {
         StyleTestDTO data = StyleTestDTO.builder()
-            .decimalValue(new BigDecimal("123.456"))
-            .build();
+                .decimalValue(new BigDecimal("123.456"))
+                .build();
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ExcelExporter.excelFromList(baos, "test.xlsx", Collections.singletonList(data));
@@ -89,8 +77,8 @@ class PreDefinedStylesTest {
     @Test
     void percentageStyle_appliesPercentFormat() throws Exception {
         StyleTestDTO data = StyleTestDTO.builder()
-            .percentageValue(new BigDecimal("0.75"))
-            .build();
+                .percentageValue(new BigDecimal("0.75"))
+                .build();
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ExcelExporter.excelFromList(baos, "test.xlsx", Collections.singletonList(data));
@@ -111,8 +99,8 @@ class PreDefinedStylesTest {
     @Test
     void dateOnlyStyle_appliesDateFormat() throws Exception {
         StyleTestDTO data = StyleTestDTO.builder()
-            .dateValue(LocalDate.of(2025, 1, 15))
-            .build();
+                .dateValue(LocalDate.of(2025, 1, 15))
+                .build();
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ExcelExporter.excelFromList(baos, "test.xlsx", Collections.singletonList(data));
@@ -133,8 +121,8 @@ class PreDefinedStylesTest {
     @Test
     void dateTimeStyle_appliesDateTimeFormat() throws Exception {
         StyleTestDTO data = StyleTestDTO.builder()
-            .dateTimeValue(LocalDateTime.of(2025, 1, 15, 14, 30))
-            .build();
+                .dateTimeValue(LocalDateTime.of(2025, 1, 15, 14, 30))
+                .build();
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ExcelExporter.excelFromList(baos, "test.xlsx", Collections.singletonList(data));
@@ -155,8 +143,8 @@ class PreDefinedStylesTest {
     @Test
     void koreanDateStyle_appliesKoreanFormat() throws Exception {
         StyleTestDTO data = StyleTestDTO.builder()
-            .koreanDateValue(LocalDate.of(2025, 1, 15))
-            .build();
+                .koreanDateValue(LocalDate.of(2025, 1, 15))
+                .build();
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ExcelExporter.excelFromList(baos, "test.xlsx", Collections.singletonList(data));
@@ -177,8 +165,8 @@ class PreDefinedStylesTest {
     @Test
     void highlightStyle_appliesYellowBackground() throws Exception {
         StyleTestDTO data = StyleTestDTO.builder()
-            .highlightValue("Highlighted")
-            .build();
+                .highlightValue("Highlighted")
+                .build();
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ExcelExporter.excelFromList(baos, "test.xlsx", Collections.singletonList(data));
@@ -197,8 +185,8 @@ class PreDefinedStylesTest {
     @Test
     void attentionStyle_appliesOrangeBackground() throws Exception {
         StyleTestDTO data = StyleTestDTO.builder()
-            .attentionValue("Attention")
-            .build();
+                .attentionValue("Attention")
+                .build();
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ExcelExporter.excelFromList(baos, "test.xlsx", Collections.singletonList(data));
@@ -217,8 +205,8 @@ class PreDefinedStylesTest {
     @Test
     void criticalAlertStyle_appliesPinkBackground() throws Exception {
         StyleTestDTO data = StyleTestDTO.builder()
-            .criticalValue("Critical")
-            .build();
+                .criticalValue("Critical")
+                .build();
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ExcelExporter.excelFromList(baos, "test.xlsx", Collections.singletonList(data));
@@ -237,8 +225,8 @@ class PreDefinedStylesTest {
     @Test
     void tableHeaderStyle_appliesDarkGrayBackground() throws Exception {
         StyleTestDTO data = StyleTestDTO.builder()
-            .tableHeaderValue("Header")
-            .build();
+                .tableHeaderValue("Header")
+                .build();
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ExcelExporter.excelFromList(baos, "test.xlsx", Collections.singletonList(data));
@@ -257,8 +245,8 @@ class PreDefinedStylesTest {
     @Test
     void purpleHeaderStyle_appliesLavenderBackground() throws Exception {
         StyleTestDTO data = StyleTestDTO.builder()
-            .purpleHeaderValue("Purple")
-            .build();
+                .purpleHeaderValue("Purple")
+                .build();
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ExcelExporter.excelFromList(baos, "test.xlsx", Collections.singletonList(data));
@@ -277,8 +265,8 @@ class PreDefinedStylesTest {
     @Test
     void validationErrorStyle_appliesPinkBackground() throws Exception {
         StyleTestDTO data = StyleTestDTO.builder()
-            .validationErrorValue("Error")
-            .build();
+                .validationErrorValue("Error")
+                .build();
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ExcelExporter.excelFromList(baos, "test.xlsx", Collections.singletonList(data));
@@ -297,9 +285,9 @@ class PreDefinedStylesTest {
     @Test
     void tableRowStyles_applyAlternatingColors() throws Exception {
         StyleTestDTO data = StyleTestDTO.builder()
-            .evenRowValue("Even")
-            .oddRowValue("Odd")
-            .build();
+                .evenRowValue("Even")
+                .oddRowValue("Odd")
+                .build();
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ExcelExporter.excelFromList(baos, "test.xlsx", Collections.singletonList(data));
@@ -323,21 +311,21 @@ class PreDefinedStylesTest {
     @Test
     void allStyles_createValidExcelFile() throws Exception {
         StyleTestDTO data = StyleTestDTO.builder()
-            .currencyValue(new BigDecimal("10000"))
-            .decimalValue(new BigDecimal("123.45"))
-            .percentageValue(new BigDecimal("0.85"))
-            .dateValue(LocalDate.now())
-            .dateTimeValue(LocalDateTime.now())
-            .koreanDateValue(LocalDate.now())
-            .highlightValue("Test")
-            .attentionValue("Test")
-            .criticalValue("Test")
-            .tableHeaderValue("Test")
-            .purpleHeaderValue("Test")
-            .validationErrorValue("Test")
-            .evenRowValue("Test")
-            .oddRowValue("Test")
-            .build();
+                .currencyValue(new BigDecimal("10000"))
+                .decimalValue(new BigDecimal("123.45"))
+                .percentageValue(new BigDecimal("0.85"))
+                .dateValue(LocalDate.now())
+                .dateTimeValue(LocalDateTime.now())
+                .koreanDateValue(LocalDate.now())
+                .highlightValue("Test")
+                .attentionValue("Test")
+                .criticalValue("Test")
+                .tableHeaderValue("Test")
+                .purpleHeaderValue("Test")
+                .validationErrorValue("Test")
+                .evenRowValue("Test")
+                .oddRowValue("Test")
+                .build();
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ExcelExporter.excelFromList(baos, "all_styles.xlsx", Collections.singletonList(data));

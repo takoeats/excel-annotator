@@ -1,9 +1,10 @@
-package io.github.takoeats.excelannotator.style.rule;
+package io.github.takoeats.excelannotator.style.internal.rule;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class StyleConditionTest {
 

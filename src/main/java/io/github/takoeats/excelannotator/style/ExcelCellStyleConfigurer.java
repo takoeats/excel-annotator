@@ -2,8 +2,14 @@ package io.github.takoeats.excelannotator.style;
 
 import io.github.takoeats.excelannotator.exception.ErrorCode;
 import io.github.takoeats.excelannotator.exception.ExcelExporterException;
+import io.github.takoeats.excelannotator.style.internal.util.RgbColorHelper;
+import io.github.takoeats.excelannotator.style.internal.wrapper.CellStyleWrapper;
+import io.github.takoeats.excelannotator.style.internal.wrapper.WorkbookWrapper;
 import lombok.Getter;
-import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.DataFormat;
+import org.apache.poi.ss.usermodel.FillPatternType;
+import org.apache.poi.ss.usermodel.Font;
 import org.apache.poi.xssf.usermodel.XSSFCellStyle;
 import org.apache.poi.xssf.usermodel.XSSFColor;
 import org.apache.poi.xssf.usermodel.XSSFFont;
@@ -33,11 +39,11 @@ public class ExcelCellStyleConfigurer {
     private Integer fontColorBlue;
     private boolean hasFontColorRGB = false;
 
-    private HorizontalAlignment horizontalAlignment;
-    private VerticalAlignment verticalAlignment;
+    private HorizontalAlign horizontalAlignment;
+    private VerticalAlign verticalAlignment;
     private boolean hasAlignment = false;
 
-    private BorderStyle borderStyle;
+    private BorderType borderStyle;
     private boolean hasBorder = false;
 
     private String dataFormat;
@@ -114,29 +120,61 @@ public class ExcelCellStyleConfigurer {
         return fontColor(rgb[0], rgb[1], rgb[2]);
     }
 
-    public ExcelCellStyleConfigurer alignment(HorizontalAlignment horizontal) {
+    public ExcelCellStyleConfigurer alignment(HorizontalAlign horizontal) {
         this.horizontalAlignment = horizontal;
         this.hasAlignment = true;
         return this;
     }
 
-    public ExcelCellStyleConfigurer alignment(VerticalAlignment vertical) {
+    public ExcelCellStyleConfigurer alignment(VerticalAlign vertical) {
         this.verticalAlignment = vertical;
         this.hasAlignment = true;
         return this;
     }
 
-    public ExcelCellStyleConfigurer alignment(HorizontalAlignment horizontal, VerticalAlignment vertical) {
+    public ExcelCellStyleConfigurer alignment(HorizontalAlign horizontal, VerticalAlign vertical) {
         this.horizontalAlignment = horizontal;
         this.verticalAlignment = vertical;
         this.hasAlignment = true;
         return this;
     }
 
-    public ExcelCellStyleConfigurer border(BorderStyle style) {
+    /**
+     * @deprecated since 2.3.2, will be removed in 3.0.0. Use {@link #alignment(HorizontalAlign)} instead.
+     */
+    @Deprecated
+    public ExcelCellStyleConfigurer alignment(org.apache.poi.ss.usermodel.HorizontalAlignment horizontal) {
+        return alignment(HorizontalAlign.fromPoi(horizontal));
+    }
+
+    /**
+     * @deprecated since 2.3.2, will be removed in 3.0.0. Use {@link #alignment(VerticalAlign)} instead.
+     */
+    @Deprecated
+    public ExcelCellStyleConfigurer alignment(org.apache.poi.ss.usermodel.VerticalAlignment vertical) {
+        return alignment(VerticalAlign.fromPoi(vertical));
+    }
+
+    /**
+     * @deprecated since 2.3.2, will be removed in 3.0.0. Use {@link #alignment(HorizontalAlign, VerticalAlign)} instead.
+     */
+    @Deprecated
+    public ExcelCellStyleConfigurer alignment(org.apache.poi.ss.usermodel.HorizontalAlignment horizontal, org.apache.poi.ss.usermodel.VerticalAlignment vertical) {
+        return alignment(HorizontalAlign.fromPoi(horizontal), VerticalAlign.fromPoi(vertical));
+    }
+
+    public ExcelCellStyleConfigurer border(BorderType style) {
         this.borderStyle = style;
         this.hasBorder = true;
         return this;
+    }
+
+    /**
+     * @deprecated since 2.3.2, will be removed in 3.0.0. Use {@link #border(BorderType)} instead.
+     */
+    @Deprecated
+    public ExcelCellStyleConfigurer border(org.apache.poi.ss.usermodel.BorderStyle style) {
+        return border(BorderType.fromPoi(style));
     }
 
     public ExcelCellStyleConfigurer dataFormat(String format) {
@@ -166,7 +204,7 @@ public class ExcelCellStyleConfigurer {
     /**
      * POI CellStyle 적용
      */
-    public void configure(CellStyle cellStyle, Workbook workbook) {
+    public void configure(CellStyleWrapper cellStyle, WorkbookWrapper workbook) {
         applyBackgroundColor(cellStyle);
         applyFont(cellStyle, workbook);
         applyAlignment(cellStyle);
@@ -177,9 +215,9 @@ public class ExcelCellStyleConfigurer {
     /**
      * RGB 배경색 적용 (XSSF/SXSSF만 지원)
      */
-    private void applyBackgroundColor(CellStyle cellStyle) {
-        if (hasBackgroundColorRGB && isXSSF(cellStyle)) {
-            XSSFCellStyle xssfCellStyle = (XSSFCellStyle) cellStyle;
+    private void applyBackgroundColor(CellStyleWrapper cellStyle) {
+        if (hasBackgroundColorRGB && isXSSF(cellStyle.toPoi())) {
+            XSSFCellStyle xssfCellStyle = (XSSFCellStyle) cellStyle.toPoi();
             XSSFColor xssfColor = RgbColorHelper.createRgbColor(
                     backgroundColorRed, backgroundColorGreen, backgroundColorBlue
             );
@@ -191,7 +229,7 @@ public class ExcelCellStyleConfigurer {
     /**
      * 폰트 및 RGB 폰트 색상 적용
      */
-    private void applyFont(CellStyle cellStyle, Workbook workbook) {
+    private void applyFont(CellStyleWrapper cellStyle, WorkbookWrapper workbook) {
         if (hasFont || hasFontColorRGB) {
             Font font = workbook.createFont();
 
@@ -219,29 +257,29 @@ public class ExcelCellStyleConfigurer {
     /**
      * 정렬 설정 적용
      */
-    private void applyAlignment(CellStyle cellStyle) {
+    private void applyAlignment(CellStyleWrapper cellStyle) {
         if (hasAlignment) {
-            if (horizontalAlignment != null) cellStyle.setAlignment(horizontalAlignment);
-            if (verticalAlignment != null) cellStyle.setVerticalAlignment(verticalAlignment);
+            if (horizontalAlignment != null) cellStyle.setAlignment(horizontalAlignment.toPoi());
+            if (verticalAlignment != null) cellStyle.setVerticalAlignment(verticalAlignment.toPoi());
         }
     }
 
     /**
      * 테두리 설정 적용
      */
-    private void applyBorder(CellStyle cellStyle) {
+    private void applyBorder(CellStyleWrapper cellStyle) {
         if (hasBorder) {
-            cellStyle.setBorderTop(borderStyle);
-            cellStyle.setBorderRight(borderStyle);
-            cellStyle.setBorderBottom(borderStyle);
-            cellStyle.setBorderLeft(borderStyle);
+            cellStyle.setBorderTop(borderStyle.toPoi());
+            cellStyle.setBorderRight(borderStyle.toPoi());
+            cellStyle.setBorderBottom(borderStyle.toPoi());
+            cellStyle.setBorderLeft(borderStyle.toPoi());
         }
     }
 
     /**
      * 데이터 포맷 설정 적용
      */
-    private void applyNumberFormat(CellStyle cellStyle, Workbook workbook) {
+    private void applyNumberFormat(CellStyleWrapper cellStyle, WorkbookWrapper workbook) {
         if (hasDataFormat) {
             DataFormat format = workbook.createDataFormat();
             cellStyle.setDataFormat(format.getFormat(this.dataFormat));

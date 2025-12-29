@@ -54,17 +54,17 @@ class ConcurrencyTest {
         List<Integer> taskIds = IntStream.range(0, 20).boxed().collect(java.util.stream.Collectors.toList());
 
         List<byte[]> results = taskIds.parallelStream()
-            .map(taskId -> {
-                try {
-                    List<EmployeeDTO> employees = TestDataFactory.createEmployees(50);
-                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                    ExcelExporter.excelFromList(baos, "parallel_" + taskId + ".xlsx", employees);
-                    return baos.toByteArray();
-                } catch (Exception e) {
-                    throw new RuntimeException("Failed in parallel stream", e);
-                }
-            })
-            .collect(java.util.stream.Collectors.toList());
+                .map(taskId -> {
+                    try {
+                        List<EmployeeDTO> employees = TestDataFactory.createEmployees(50);
+                        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                        ExcelExporter.excelFromList(baos, "parallel_" + taskId + ".xlsx", employees);
+                        return baos.toByteArray();
+                    } catch (Exception e) {
+                        throw new RuntimeException("Failed in parallel stream", e);
+                    }
+                })
+                .collect(java.util.stream.Collectors.toList());
 
         assertEquals(20, results.size());
 
@@ -106,7 +106,7 @@ class ConcurrencyTest {
         executor.shutdown();
 
         assertTrue(exceptions.isEmpty(),
-            "Should have no exceptions, but got: " + exceptions.size());
+                "Should have no exceptions, but got: " + exceptions.size());
     }
 
     @Test

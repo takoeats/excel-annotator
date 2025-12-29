@@ -1,15 +1,11 @@
 package io.github.takoeats.excelannotator;
 
-import static io.github.takoeats.excelannotator.util.ExcelAssertions.assertExcelFileValid;
-import static io.github.takoeats.excelannotator.util.ExcelAssertions.assertRowCount;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import io.github.takoeats.excelannotator.testdto.AllTypesDTO;
 import io.github.takoeats.excelannotator.util.ExcelTestHelper;
 import io.github.takoeats.excelannotator.util.TestDataFactory;
+import org.apache.poi.ss.usermodel.*;
+import org.junit.jupiter.api.Test;
+
 import java.io.ByteArrayOutputStream;
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -20,13 +16,10 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.CellType;
-import org.apache.poi.ss.usermodel.DateUtil;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.junit.jupiter.api.Test;
+
+import static io.github.takoeats.excelannotator.util.ExcelAssertions.assertExcelFileValid;
+import static io.github.takoeats.excelannotator.util.ExcelAssertions.assertRowCount;
+import static org.junit.jupiter.api.Assertions.*;
 
 class DataTypeComprehensiveTest {
 
@@ -34,8 +27,8 @@ class DataTypeComprehensiveTest {
     void localDate_storesAsDateType() throws Exception {
         LocalDate testDate = LocalDate.of(2025, 1, 15);
         AllTypesDTO data = AllTypesDTO.builder()
-            .localDateValue(testDate)
-            .build();
+                .localDateValue(testDate)
+                .build();
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ExcelExporter.excelFromList(baos, "test.xlsx", Collections.singletonList(data));
@@ -58,8 +51,8 @@ class DataTypeComprehensiveTest {
     void localDateTime_storesAsDateType() throws Exception {
         LocalDateTime testDateTime = LocalDateTime.of(2025, 1, 15, 14, 30, 0);
         AllTypesDTO data = AllTypesDTO.builder()
-            .localDateTimeValue(testDateTime)
-            .build();
+                .localDateTimeValue(testDateTime)
+                .build();
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ExcelExporter.excelFromList(baos, "test.xlsx", Collections.singletonList(data));
@@ -81,8 +74,8 @@ class DataTypeComprehensiveTest {
     @Test
     void zonedDateTime_convertsCorrectly() throws Exception {
         AllTypesDTO data = AllTypesDTO.builder()
-            .zonedDateTimeValue(ZonedDateTime.now())
-            .build();
+                .zonedDateTimeValue(ZonedDateTime.now())
+                .build();
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ExcelExporter.excelFromList(baos, "test.xlsx", Collections.singletonList(data));
@@ -100,8 +93,8 @@ class DataTypeComprehensiveTest {
     void bigDecimal_preservesPrecision() throws Exception {
         BigDecimal precisValue = new BigDecimal("12345.6789");
         AllTypesDTO data = AllTypesDTO.builder()
-            .bigDecimalValue(precisValue)
-            .build();
+                .bigDecimalValue(precisValue)
+                .build();
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ExcelExporter.excelFromList(baos, "test.xlsx", Collections.singletonList(data));
@@ -121,8 +114,8 @@ class DataTypeComprehensiveTest {
     void bigInteger_largerThan15Digits_storesAsText() throws Exception {
         BigInteger largeNumber = new BigInteger("12345678901234567890");
         AllTypesDTO data = AllTypesDTO.builder()
-            .bigIntegerValue(largeNumber)
-            .build();
+                .bigIntegerValue(largeNumber)
+                .build();
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ExcelExporter.excelFromList(baos, "test.xlsx", Collections.singletonList(data));
@@ -139,8 +132,8 @@ class DataTypeComprehensiveTest {
     @Test
     void enum_convertsToString() throws Exception {
         AllTypesDTO data = AllTypesDTO.builder()
-            .enumValue(AllTypesDTO.StatusEnum.ACTIVE)
-            .build();
+                .enumValue(AllTypesDTO.StatusEnum.ACTIVE)
+                .build();
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ExcelExporter.excelFromList(baos, "test.xlsx", Collections.singletonList(data));
@@ -158,11 +151,11 @@ class DataTypeComprehensiveTest {
     @Test
     void boolean_storesAsBooleanType() throws Exception {
         AllTypesDTO data1 = AllTypesDTO.builder()
-            .booleanValue(true)
-            .build();
+                .booleanValue(true)
+                .build();
         AllTypesDTO data2 = AllTypesDTO.builder()
-            .booleanValue(false)
-            .build();
+                .booleanValue(false)
+                .build();
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ExcelExporter.excelFromList(baos, "test.xlsx", Arrays.asList(data1, data2));
@@ -185,9 +178,9 @@ class DataTypeComprehensiveTest {
     @Test
     void null_createsBlankCell() throws Exception {
         AllTypesDTO data = AllTypesDTO.builder()
-            .stringValue(null)
-            .integerValue(null)
-            .build();
+                .stringValue(null)
+                .integerValue(null)
+                .build();
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ExcelExporter.excelFromList(baos, "test.xlsx", Collections.singletonList(data));
@@ -207,8 +200,8 @@ class DataTypeComprehensiveTest {
     @Test
     void emptyString_createsBlankCell() throws Exception {
         AllTypesDTO data = AllTypesDTO.builder()
-            .stringValue("")
-            .build();
+                .stringValue("")
+                .build();
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ExcelExporter.excelFromList(baos, "test.xlsx", Collections.singletonList(data));
@@ -250,8 +243,8 @@ class DataTypeComprehensiveTest {
     void javaUtilDate_storesAsDateType() throws Exception {
         Date testDate = new Date();
         AllTypesDTO data = AllTypesDTO.builder()
-            .javaUtilDateValue(testDate)
-            .build();
+                .javaUtilDateValue(testDate)
+                .build();
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ExcelExporter.excelFromList(baos, "test.xlsx", Collections.singletonList(data));
@@ -274,8 +267,8 @@ class DataTypeComprehensiveTest {
     void javaSqlDate_storesAsDateType() throws Exception {
         java.sql.Date testDate = new java.sql.Date(System.currentTimeMillis());
         AllTypesDTO data = AllTypesDTO.builder()
-            .javaSqlDateValue(testDate)
-            .build();
+                .javaSqlDateValue(testDate)
+                .build();
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ExcelExporter.excelFromList(baos, "test.xlsx", Collections.singletonList(data));
@@ -298,8 +291,8 @@ class DataTypeComprehensiveTest {
     void javaSqlTimestamp_storesAsDateType() throws Exception {
         java.sql.Timestamp testTimestamp = new java.sql.Timestamp(System.currentTimeMillis());
         AllTypesDTO data = AllTypesDTO.builder()
-            .javaSqlTimestampValue(testTimestamp)
-            .build();
+                .javaSqlTimestampValue(testTimestamp)
+                .build();
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ExcelExporter.excelFromList(baos, "test.xlsx", Collections.singletonList(data));
@@ -322,8 +315,8 @@ class DataTypeComprehensiveTest {
     void dateWithCustomFormat_appliesFormatCorrectly() throws Exception {
         LocalDate testDate = LocalDate.of(2025, 1, 15);
         AllTypesDTO data = AllTypesDTO.builder()
-            .localDateValue(testDate)
-            .build();
+                .localDateValue(testDate)
+                .build();
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ExcelExporter.excelFromList(baos, "test.xlsx", Collections.singletonList(data));
@@ -344,9 +337,9 @@ class DataTypeComprehensiveTest {
     @Test
     void nullDate_createsBlankCell() throws Exception {
         AllTypesDTO data = AllTypesDTO.builder()
-            .localDateValue(null)
-            .javaUtilDateValue(null)
-            .build();
+                .localDateValue(null)
+                .javaUtilDateValue(null)
+                .build();
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ExcelExporter.excelFromList(baos, "test.xlsx", Collections.singletonList(data));
@@ -359,21 +352,21 @@ class DataTypeComprehensiveTest {
         Cell utilDateCell = dataRow.getCell(12);
 
         assertTrue(localDateCell == null || localDateCell.getCellType() == CellType.BLANK,
-            "Null LocalDate should create blank cell");
+                "Null LocalDate should create blank cell");
         assertTrue(utilDateCell == null || utilDateCell.getCellType() == CellType.BLANK,
-            "Null Date should create blank cell");
+                "Null Date should create blank cell");
         wb.close();
     }
 
     @Test
     void numericTypes_allConvertToNumeric() throws Exception {
         AllTypesDTO data = AllTypesDTO.builder()
-            .integerValue(100)
-            .longValue(1000L)
-            .doubleValue(123.45)
-            .floatValue(67.89f)
-            .bigDecimalValue(new BigDecimal("999.99"))
-            .build();
+                .integerValue(100)
+                .longValue(1000L)
+                .doubleValue(123.45)
+                .floatValue(67.89f)
+                .bigDecimalValue(new BigDecimal("999.99"))
+                .build();
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ExcelExporter.excelFromList(baos, "test.xlsx", Collections.singletonList(data));

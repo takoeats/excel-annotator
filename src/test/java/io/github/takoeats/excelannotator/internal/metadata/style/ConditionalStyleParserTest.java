@@ -3,7 +3,7 @@ package io.github.takoeats.excelannotator.internal.metadata.style;
 import io.github.takoeats.excelannotator.annotation.ConditionalStyle;
 import io.github.takoeats.excelannotator.style.CustomExcelCellStyle;
 import io.github.takoeats.excelannotator.style.ExcelCellStyleConfigurer;
-import io.github.takoeats.excelannotator.style.rule.StyleRule;
+import io.github.takoeats.excelannotator.style.internal.rule.StyleRule;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;

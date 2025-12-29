@@ -2,8 +2,6 @@ package io.github.takoeats.excelannotator.style;
 
 import io.github.takoeats.excelannotator.exception.ErrorCode;
 import io.github.takoeats.excelannotator.exception.ExcelExporterException;
-import org.apache.poi.ss.usermodel.HorizontalAlignment;
-import org.apache.poi.ss.usermodel.VerticalAlignment;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -15,8 +13,8 @@ class ExcelCellStyleConfigurerTest {
         ExcelCellStyleConfigurer configurer = new ExcelCellStyleConfigurer();
 
         ExcelExporterException exception = assertThrows(
-            ExcelExporterException.class,
-            () -> configurer.backgroundColor((int[]) null)
+                ExcelExporterException.class,
+                () -> configurer.backgroundColor((int[]) null)
         );
         assertEquals(ErrorCode.INVALID_RGB_ARRAY, exception.getErrorCode());
     }
@@ -26,26 +24,26 @@ class ExcelCellStyleConfigurerTest {
         ExcelCellStyleConfigurer configurer = new ExcelCellStyleConfigurer();
 
         ExcelExporterException exception1 = assertThrows(
-            ExcelExporterException.class,
-            () -> configurer.backgroundColor(new int[]{255, 255})
+                ExcelExporterException.class,
+                () -> configurer.backgroundColor(new int[]{255, 255})
         );
         assertEquals(ErrorCode.INVALID_RGB_ARRAY, exception1.getErrorCode());
 
         ExcelExporterException exception2 = assertThrows(
-            ExcelExporterException.class,
-            () -> configurer.backgroundColor(new int[]{255, 255, 255, 255})
+                ExcelExporterException.class,
+                () -> configurer.backgroundColor(new int[]{255, 255, 255, 255})
         );
         assertEquals(ErrorCode.INVALID_RGB_ARRAY, exception2.getErrorCode());
 
         ExcelExporterException exception3 = assertThrows(
-            ExcelExporterException.class,
-            () -> configurer.backgroundColor(new int[]{})
+                ExcelExporterException.class,
+                () -> configurer.backgroundColor(new int[]{})
         );
         assertEquals(ErrorCode.INVALID_RGB_ARRAY, exception3.getErrorCode());
 
         ExcelExporterException exception4 = assertThrows(
-            ExcelExporterException.class,
-            () -> configurer.backgroundColor(new int[]{255})
+                ExcelExporterException.class,
+                () -> configurer.backgroundColor(new int[]{255})
         );
         assertEquals(ErrorCode.INVALID_RGB_ARRAY, exception4.getErrorCode());
     }
@@ -55,8 +53,8 @@ class ExcelCellStyleConfigurerTest {
         ExcelCellStyleConfigurer configurer = new ExcelCellStyleConfigurer();
 
         ExcelExporterException exception = assertThrows(
-            ExcelExporterException.class,
-            () -> configurer.fontColor((int[]) null)
+                ExcelExporterException.class,
+                () -> configurer.fontColor((int[]) null)
         );
         assertEquals(ErrorCode.INVALID_RGB_ARRAY, exception.getErrorCode());
     }
@@ -66,14 +64,14 @@ class ExcelCellStyleConfigurerTest {
         ExcelCellStyleConfigurer configurer = new ExcelCellStyleConfigurer();
 
         ExcelExporterException exception1 = assertThrows(
-            ExcelExporterException.class,
-            () -> configurer.fontColor(new int[]{255, 255})
+                ExcelExporterException.class,
+                () -> configurer.fontColor(new int[]{255, 255})
         );
         assertEquals(ErrorCode.INVALID_RGB_ARRAY, exception1.getErrorCode());
 
         ExcelExporterException exception2 = assertThrows(
-            ExcelExporterException.class,
-            () -> configurer.fontColor(new int[]{255, 255, 255, 255})
+                ExcelExporterException.class,
+                () -> configurer.fontColor(new int[]{255, 255, 255, 255})
         );
         assertEquals(ErrorCode.INVALID_RGB_ARRAY, exception2.getErrorCode());
     }
@@ -91,7 +89,7 @@ class ExcelCellStyleConfigurerTest {
     void alignment_verticalOnly_configuresWithoutHorizontal() {
         ExcelCellStyleConfigurer configurer = new ExcelCellStyleConfigurer();
 
-        configurer.alignment(VerticalAlignment.CENTER);
+        configurer.alignment(VerticalAlign.CENTER);
 
         assertTrue(configurer.isAutoWidth() == false);
     }
@@ -100,7 +98,7 @@ class ExcelCellStyleConfigurerTest {
     void alignment_horizontalOnly_configuresWithoutVertical() {
         ExcelCellStyleConfigurer configurer = new ExcelCellStyleConfigurer();
 
-        configurer.alignment(HorizontalAlignment.CENTER);
+        configurer.alignment(HorizontalAlign.CENTER);
 
         assertTrue(configurer.isAutoWidth() == false);
     }

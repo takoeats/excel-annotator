@@ -142,6 +142,7 @@ String fileName = ExcelExporter.csv(outputStream)
 ```
 
 **Key Benefits:**
+
 - **Type-safe**: Compile-time guarantees for return types
 - **Unified interface**: Same pattern for Response/OutputStream, Excel/CSV
 - **Flexible data**: Supports List, Stream, Map (mixed List/Stream values)
@@ -151,48 +152,50 @@ String fileName = ExcelExporter.csv(outputStream)
 
 ### 📚 Legacy API (Deprecated ⚠️)
 
-> **⚠️ Deprecation Notice:** The legacy static methods (`excelFromList`, `excelFromStream`, etc.) are deprecated and will be removed in version **3.0.0**. Please migrate to the Fluent API above for better type safety and readability.
+> **⚠️ Deprecation Notice:** The legacy static methods (`excelFromList`, `excelFromStream`, etc.) are deprecated and
+> will be removed in version **3.0.0**. Please migrate to the Fluent API above for better type safety and readability.
 
 ExcelExporter provides **17 static methods** (deprecated) for various use cases.
 
 #### List-based API (Small datasets - max 1M rows)
 
-| Method Signature | Output | Filename | Description |
-|-----------------|--------|----------|-------------|
-| `excelFromList(response, fileName, list)` | HttpServletResponse | Required | Web download (single sheet) |
-| `excelFromList(response, fileName, map)` | HttpServletResponse | Required | Web download (multi-sheet) |
-| `excelFromList(outputStream, fileName, list)` | OutputStream | Required | File save (single sheet) |
-| `excelFromList(outputStream, list)` | OutputStream | Auto | File save (auto filename) |
-| `excelFromList(outputStream, fileName, map)` | OutputStream | Required | File save (multi-sheet) |
+| Method Signature                              | Output              | Filename | Description                 |
+|-----------------------------------------------|---------------------|----------|-----------------------------|
+| `excelFromList(response, fileName, list)`     | HttpServletResponse | Required | Web download (single sheet) |
+| `excelFromList(response, fileName, map)`      | HttpServletResponse | Required | Web download (multi-sheet)  |
+| `excelFromList(outputStream, fileName, list)` | OutputStream        | Required | File save (single sheet)    |
+| `excelFromList(outputStream, list)`           | OutputStream        | Auto     | File save (auto filename)   |
+| `excelFromList(outputStream, fileName, map)`  | OutputStream        | Required | File save (multi-sheet)     |
 
 #### Data Provider Pattern API (Separate query/transform)
 
-| Method Signature | Output | Filename | Description |
-|-----------------|--------|----------|-------------|
-| `excelFromList(response, fileName, query, provider, converter)` | HttpServletResponse | Required | Web download (query separated) |
-| `excelFromList(outputStream, fileName, query, provider, converter)` | OutputStream | Required | File save (query separated) |
-| `excelFromList(outputStream, query, provider, converter)` | OutputStream | Auto | File save (query separated, auto filename) |
+| Method Signature                                                    | Output              | Filename | Description                                |
+|---------------------------------------------------------------------|---------------------|----------|--------------------------------------------|
+| `excelFromList(response, fileName, query, provider, converter)`     | HttpServletResponse | Required | Web download (query separated)             |
+| `excelFromList(outputStream, fileName, query, provider, converter)` | OutputStream        | Required | File save (query separated)                |
+| `excelFromList(outputStream, query, provider, converter)`           | OutputStream        | Auto     | File save (query separated, auto filename) |
 
 #### Stream-based API (Large datasets - 100M+ rows supported)
 
-| Method Signature | Output | Filename | Description |
-|-----------------|--------|----------|-------------|
-| `excelFromStream(response, fileName, stream)` | HttpServletResponse | Required | Web download (single sheet streaming) |
-| `excelFromStream(response, fileName, streamMap)` | HttpServletResponse | Required | Web download (multi-sheet streaming) |
-| `excelFromStream(outputStream, fileName, stream)` | OutputStream | Required | File save (single sheet streaming) |
-| `excelFromStream(outputStream, stream)` | OutputStream | Auto | File save (auto filename) |
-| `excelFromStream(outputStream, fileName, streamMap)` | OutputStream | Required | File save (multi-sheet streaming) |
+| Method Signature                                     | Output              | Filename | Description                           |
+|------------------------------------------------------|---------------------|----------|---------------------------------------|
+| `excelFromStream(response, fileName, stream)`        | HttpServletResponse | Required | Web download (single sheet streaming) |
+| `excelFromStream(response, fileName, streamMap)`     | HttpServletResponse | Required | Web download (multi-sheet streaming)  |
+| `excelFromStream(outputStream, fileName, stream)`    | OutputStream        | Required | File save (single sheet streaming)    |
+| `excelFromStream(outputStream, stream)`              | OutputStream        | Auto     | File save (auto filename)             |
+| `excelFromStream(outputStream, fileName, streamMap)` | OutputStream        | Required | File save (multi-sheet streaming)     |
 
 #### CSV-based API (RFC 4180 Compliant)
 
-| Method Signature | Output | Filename | Description |
-|-----------------|--------|----------|-------------|
-| `csvFromList(response, fileName, list)` | HttpServletResponse | Required | CSV web download (List) |
-| `csvFromList(outputStream, fileName, list)` | OutputStream | Required | CSV file save (List) |
-| `csvFromStream(response, fileName, stream)` | HttpServletResponse | Required | CSV web download (Stream) |
-| `csvFromStream(outputStream, fileName, stream)` | OutputStream | Required | CSV file save (Stream) |
+| Method Signature                                | Output              | Filename | Description               |
+|-------------------------------------------------|---------------------|----------|---------------------------|
+| `csvFromList(response, fileName, list)`         | HttpServletResponse | Required | CSV web download (List)   |
+| `csvFromList(outputStream, fileName, list)`     | OutputStream        | Required | CSV file save (List)      |
+| `csvFromStream(response, fileName, stream)`     | HttpServletResponse | Required | CSV web download (Stream) |
+| `csvFromStream(outputStream, fileName, stream)` | OutputStream        | Required | CSV file save (Stream)    |
 
 **📄 CSV Format Features:**
+
 - ✅ RFC 4180 standard fully compliant
 - ✅ All fields quoted (safe special character handling)
 - ✅ CRLF (\r\n) line breaks
@@ -200,6 +203,7 @@ ExcelExporter provides **17 static methods** (deprecated) for various use cases.
 - ✅ Preserves newlines, commas, quotes within fields
 
 **💡 Selection Guide:**
+
 - **< 10K rows**: List API (simple, fast)
 - **10K~1M rows**: Stream API recommended (memory efficient)
 - **> 1M rows**: Stream API required (List has 1M limit)
@@ -293,6 +297,7 @@ return ResponseEntity.ok()
 Create reusable styles by extending `CustomExcelCellStyle`:
 
 **Example: Currency Style**
+
 ```java
 import io.github.takoeats.excelannotator.style.CustomExcelCellStyle;
 import io.github.takoeats.excelannotator.style.ExcelCellStyleConfigurer;
@@ -310,6 +315,7 @@ public class CurrencyStyle extends CustomExcelCellStyle {
 ```
 
 **Example: Date Style**
+
 ```java
 public class DateOnlyStyle extends CustomExcelCellStyle {
     @Override
@@ -322,6 +328,7 @@ public class DateOnlyStyle extends CustomExcelCellStyle {
 ```
 
 **Example: Percentage Style**
+
 ```java
 public class PercentageStyle extends CustomExcelCellStyle {
     @Override
@@ -334,6 +341,7 @@ public class PercentageStyle extends CustomExcelCellStyle {
 ```
 
 **Example: Alert Style**
+
 ```java
 import io.github.takoeats.excelannotator.style.FontStyle;
 
@@ -355,6 +363,7 @@ public class CriticalAlertStyle extends CustomExcelCellStyle {
 > - Percentage styles → `Double` or `BigDecimal`
 
 **Usage in DTO:**
+
 ```java
 @ExcelSheet("Sales Records")
 public class SalesDTO {
@@ -463,17 +472,17 @@ private String status;
 
 **Supported Expressions:**
 
-| Operator | Example | Description |
-|----------|---------|-------------|
-| `<` `<=` `>` `>=` | `value > 100` | Numeric comparison |
-| `==` `equals` | `value equals 100` | Equality |
-| `!=` | `value != 0` | Inequality |
-| `between` | `value between 10 and 100` | Range (10 ≤ value ≤ 100) |
-| `contains` | `value contains 'text'` | String contains |
-| `is_null` | `value is_null` | Null check |
-| `is_empty` | `value is_empty` | Empty string |
-| `is_negative` | `value is_negative` | Negative number |
-| `&&` `\|\|` `!` | `value > 0 && value < 100` | Logical operators |
+| Operator          | Example                    | Description              |
+|-------------------|----------------------------|--------------------------|
+| `<` `<=` `>` `>=` | `value > 100`              | Numeric comparison       |
+| `==` `equals`     | `value equals 100`         | Equality                 |
+| `!=`              | `value != 0`               | Inequality               |
+| `between`         | `value between 10 and 100` | Range (10 ≤ value ≤ 100) |
+| `contains`        | `value contains 'text'`    | String contains          |
+| `is_null`         | `value is_null`            | Null check               |
+| `is_empty`        | `value is_empty`           | Empty string             |
+| `is_negative`     | `value is_negative`        | Negative number          |
+| `&&` `\|\|` `!`   | `value > 0 && value < 100` | Logical operators        |
 
 ---
 
@@ -499,6 +508,7 @@ public void downloadMultiSheetReport(HttpServletResponse response) {
 ```
 
 **Result:** Excel file with 3 sheets
+
 - Sheet1: "Customers"
 - Sheet2: "Orders"
 - Sheet3: "Products"
@@ -574,6 +584,7 @@ public void downloadLargeCustomers(HttpServletResponse response) {
 ```
 
 **Benefits:**
+
 - ✅ Can handle 1M+ rows
 - ✅ Keeps only 100 rows in memory (SXSSF)
 - ✅ Doesn't load entire dataset into memory
@@ -648,11 +659,11 @@ public class CustomerService {
 
 #### When to Use Stream?
 
-| Data Size | Recommended API | Reason |
-|-----------|----------------|--------|
-| < 10K rows | `excelFromList()` | Simple, fast |
-| 10K~1M rows | `excelFromStream()` | Memory efficient |
-| > 1M rows | `excelFromStream()` required | List API has 1M limit |
+| Data Size   | Recommended API              | Reason                |
+|-------------|------------------------------|-----------------------|
+| < 10K rows  | `excelFromList()`            | Simple, fast          |
+| 10K~1M rows | `excelFromStream()`          | Memory efficient      |
+| > 1M rows   | `excelFromStream()` required | List API has 1M limit |
 
 ---
 
@@ -702,6 +713,7 @@ public void downloadLargeCustomersAsCsv(HttpServletResponse response) {
 ```
 
 **CSV Format Example:**
+
 ```csv
 "Name","Age","Salary"
 "Alice","30","123.45"
@@ -710,6 +722,7 @@ public void downloadLargeCustomersAsCsv(HttpServletResponse response) {
 ```
 
 **RFC 4180 Compliance:**
+
 - All fields enclosed in double quotes (`"`)
 - Double quotes within fields escaped as `""`
 - Record separator is CRLF (`\r\n`)
@@ -718,15 +731,15 @@ public void downloadLargeCustomersAsCsv(HttpServletResponse response) {
 
 **Excel vs CSV Selection Criteria:**
 
-| Criteria | Excel | CSV |
-|----------|-------|-----|
-| Styling needed | ✅ | ❌ |
-| Conditional formatting | ✅ | ❌ |
-| Multi-sheet | ✅ | ❌ |
-| Simple data exchange | ⚪ | ✅ |
-| File size | Large | Small |
-| Compatibility | Medium | High |
-| Processing speed | Medium | Fast |
+| Criteria               | Excel  | CSV   |
+|------------------------|--------|-------|
+| Styling needed         | ✅      | ❌     |
+| Conditional formatting | ✅      | ❌     |
+| Multi-sheet            | ✅      | ❌     |
+| Simple data exchange   | ⚪      | ✅     |
+| File size              | Large  | Small |
+| Compatibility          | Medium | High  |
+| Processing speed       | Medium | Fast  |
 
 ### 7️⃣ Data Masking
 
@@ -734,22 +747,22 @@ Mask sensitive personal information (PII) automatically with built-in presets.
 
 #### Available Masking Presets
 
-| Preset | Input Example | Output Example | Use Case |
-|--------|---------------|----------------|----------|
-| `PHONE` | 010-1234-5678 | 010-****-5678 | Phone numbers |
-| `EMAIL` | user@example.com | u***@example.com | Email addresses |
-| `SSN` | 123456-1234567 | 123456-******* | Social Security Numbers |
-| `NAME` | 홍길동 | 홍*동 | Personal names |
-| `CREDIT_CARD` | 1234-5678-9012-3456 | ****-****-****-3456 | Credit card numbers |
-| `ACCOUNT_NUMBER` | 110-123-456789 | 110-***-***789 | Bank account numbers |
-| `ADDRESS` | 서울시 강남구 테헤란로 123 | 서울시 강남구 *** | Street addresses |
-| `ZIP_CODE` | 12345 | 123** | Postal codes |
-| `IP_ADDRESS` | 192.168.1.100 | 192.168.*.* | IP addresses |
-| `PASSPORT` | M12345678 | M12***678 | Passport numbers |
-| `LICENSE_PLATE` | 12가3456 | 12가**56 | Vehicle license plates |
-| `PARTIAL_LEFT` | ABC12345 | ****2345 | Mask left, show right 4 |
-| `PARTIAL_RIGHT` | ABC12345 | ABC1**** | Mask right, show left 4 |
-| `MIDDLE` | ABC12345 | AB****45 | Mask middle, show sides |
+| Preset           | Input Example       | Output Example      | Use Case                |
+|------------------|---------------------|---------------------|-------------------------|
+| `PHONE`          | 010-1234-5678       | 010-****-5678       | Phone numbers           |
+| `EMAIL`          | user@example.com    | u***@example.com    | Email addresses         |
+| `SSN`            | 123456-1234567      | 123456-*******      | Social Security Numbers |
+| `NAME`           | 홍길동                 | 홍*동                 | Personal names          |
+| `CREDIT_CARD`    | 1234-5678-9012-3456 | ****-****-****-3456 | Credit card numbers     |
+| `ACCOUNT_NUMBER` | 110-123-456789      | 110-***-***789      | Bank account numbers    |
+| `ADDRESS`        | 서울시 강남구 테헤란로 123    | 서울시 강남구 ***         | Street addresses        |
+| `ZIP_CODE`       | 12345               | 123**               | Postal codes            |
+| `IP_ADDRESS`     | 192.168.1.100       | 192.168.*.*         | IP addresses            |
+| `PASSPORT`       | M12345678           | M12***678           | Passport numbers        |
+| `LICENSE_PLATE`  | 12가3456             | 12가**56             | Vehicle license plates  |
+| `PARTIAL_LEFT`   | ABC12345            | ****2345            | Mask left, show right 4 |
+| `PARTIAL_RIGHT`  | ABC12345            | ABC1****            | Mask right, show left 4 |
+| `MIDDLE`         | ABC12345            | AB****45            | Mask middle, show sides |
 
 #### Basic Usage
 
@@ -775,6 +788,7 @@ public class CustomerDTO {
 #### Real-world Example: GDPR Compliance
 
 ```java
+
 @ExcelSheet("User Data Export")
 public class UserExportDTO {
     @ExcelColumn(header = "User ID", order = 1)
@@ -798,8 +812,8 @@ public class UserExportDTO {
 public void exportUsers(HttpServletResponse response) {
     List<UserExportDTO> users = userService.getAllUsers();
     ExcelExporter.excel(response)
-        .fileName("user_data.xlsx")
-        .write(users);
+            .fileName("user_data.xlsx")
+            .write(users);
     // Downloaded file contains masked sensitive data
 }
 ```
@@ -807,18 +821,19 @@ public void exportUsers(HttpServletResponse response) {
 #### Combined with Conditional Styling
 
 ```java
+
 @ExcelSheet("Financial Report")
 public class TransactionDTO {
     @ExcelColumn(header = "Account Number", order = 1, masking = Masking.ACCOUNT_NUMBER)
     private String accountNumber;
 
     @ExcelColumn(
-        header = "Amount",
-        order = 2,
-        conditionalStyles = @ConditionalStyle(
-            when = "value < 0",
-            style = RedBackgroundStyle.class
-        )
+            header = "Amount",
+            order = 2,
+            conditionalStyles = @ConditionalStyle(
+                    when = "value < 0",
+                    style = RedBackgroundStyle.class
+            )
     )
     private BigDecimal amount;
 
@@ -828,6 +843,7 @@ public class TransactionDTO {
 ```
 
 **Important Notes:**
+
 - Masking only applies to **String fields**
 - Non-string types (Integer, Date, etc.) are **ignored**
 - For custom masking logic, apply masking **before** setting DTO values
@@ -846,11 +862,11 @@ Dedicated API that separates query logic and transformation logic for improved r
 ```java
 // HttpServletResponse version
 ExcelExporter.excelFromList(
-    HttpServletResponse response,
-    String fileName,
-    Q queryParams,                        // Query parameter object
-    ExcelDataProvider<Q, R> dataProvider, // Data fetch function
-    Function<R, E> converter              // Entity → DTO conversion function
+        HttpServletResponse response,
+        String fileName,
+        Q queryParams,                        // Query parameter object
+        ExcelDataProvider<Q, R> dataProvider, // Data fetch function
+        Function<R, E> converter              // Entity → DTO conversion function
 )
 ```
 
@@ -872,40 +888,41 @@ public class CustomerService {
     // Data Provider: Complex query logic
     public List<CustomerEntity> searchCustomers(CustomerSearchRequest request) {
         return customerRepository.findByDateRangeAndType(
-            request.getStartDate(),
-            request.getEndDate(),
-            request.getCustomerType()
+                request.getStartDate(),
+                request.getEndDate(),
+                request.getCustomerType()
         );
     }
 
     // Converter: Entity → DTO transformation
     public CustomerDTO toDTO(CustomerEntity entity) {
         return CustomerDTO.builder()
-            .customerId(entity.getId())
-            .customerName(entity.getName())
-            .email(entity.getEmail())
-            .build();
+                .customerId(entity.getId())
+                .customerName(entity.getName())
+                .email(entity.getEmail())
+                .build();
     }
 }
 
 // 3. Controller
 @PostMapping("/download/customers/search")
 public void downloadSearchResults(
-    @RequestBody CustomerSearchRequest request,
-    HttpServletResponse response
+        @RequestBody CustomerSearchRequest request,
+        HttpServletResponse response
 ) {
     // Separate three concerns: query, fetch, transform using Fluent API
     ExcelExporter.excel(response)
-        .fileName("search_results.xlsx")
-        .write(
-            request,                          // Q: Query params
-            customerService::searchCustomers,  // ExcelDataProvider<Q, R>
-            customerService::toDTO             // Function<R, E>
-        );  // Return value (final filename) can be ignored
+            .fileName("search_results.xlsx")
+            .write(
+                    request,                          // Q: Query params
+                    customerService::searchCustomers,  // ExcelDataProvider<Q, R>
+                    customerService::toDTO             // Function<R, E>
+            );  // Return value (final filename) can be ignored
 }
 ```
 
 **Benefits:**
+
 - ✅ Reusable query logic (can use `searchCustomers()` in other APIs)
 - ✅ Reusable transform logic (can use `toDTO()` in other APIs)
 - ✅ Testability (independently test each function)
@@ -930,6 +947,7 @@ public class CustomerDTO {
 ```
 
 **Result:**
+
 - All fields are automatically exported to Excel
 - Header names use field names
 - Column order follows field declaration order
@@ -956,6 +974,7 @@ public class UserDTO {
 #### Mixing Auto Columns with Manual Annotations
 
 ```java
+
 @ExcelSheet(value = "Products", autoColumn = true)
 public class ProductDTO {
     @ExcelColumn(header = "Full Name", order = 1)
@@ -974,6 +993,7 @@ public class ProductDTO {
 ```
 
 **Result:**
+
 - Fields with `@ExcelColumn` use the annotation settings
 - Fields without annotation are auto-generated
 - `exclude = true` fields are skipped
@@ -981,16 +1001,19 @@ public class ProductDTO {
 #### When to Use Auto Column
 
 **✅ Good for:**
+
 - Simple DTOs with many fields
 - Quick prototyping
 - Internal reports where field names are acceptable as headers
 
 **❌ Not recommended for:**
+
 - User-facing exports requiring professional headers
 - Complex styling requirements per column
 - When precise column ordering across multiple DTOs is needed
 
-**💡 Tip:** You can start with `autoColumn = true` during development, then add explicit `@ExcelColumn` annotations as your requirements become more specific.
+**💡 Tip:** You can start with `autoColumn = true` during development, then add explicit `@ExcelColumn` annotations as
+your requirements become more specific.
 
 ---
 
@@ -1006,28 +1029,29 @@ The library determines column width in the following priority order:
 4. **Default value (100 pixels)**
 
 ```java
+
 @ExcelSheet("Customers")
 public class CustomerDTO {
 
     @ExcelColumn(
-        header = "Customer Name",
-        order = 1,
-        width = 150,  // Explicitly specify 150px (always applied)
-        columnStyle = MyCustomStyle.class  // Style width is ignored
+            header = "Customer Name",
+            order = 1,
+            width = 150,  // Explicitly specify 150px (always applied)
+            columnStyle = MyCustomStyle.class  // Style width is ignored
     )
     private String customerName;
 
     @ExcelColumn(
-        header = "Email",
-        order = 2,
-        columnStyle = AutoWidthStyle.class  // Uses style's autoWidth()
+            header = "Email",
+            order = 2,
+            columnStyle = AutoWidthStyle.class  // Uses style's autoWidth()
     )
     private String email;
 
     @ExcelColumn(
-        header = "Phone",
-        order = 3
-        // No width, no style → default 100px
+            header = "Phone",
+            order = 3
+            // No width, no style → default 100px
     )
     private String phone;
 }
@@ -1037,13 +1061,14 @@ public class CustomerDTO {
 
 The library automatically applies default styles when no custom style is specified:
 
-| Field Type | Default Style | Behavior |
-|------------|---------------|----------|
-| Numeric types (Integer, Long, BigDecimal, etc.) | `DefaultNumberStyle` | Right-aligned, `#,##0` format |
-| Other types (String, Date, etc.) | `DefaultColumnStyle` | Left-aligned, no special format |
-| Headers (all columns) | `DefaultHeaderStyle` | Bold, center-aligned |
+| Field Type                                      | Default Style        | Behavior                        |
+|-------------------------------------------------|----------------------|---------------------------------|
+| Numeric types (Integer, Long, BigDecimal, etc.) | `DefaultNumberStyle` | Right-aligned, `#,##0` format   |
+| Other types (String, Date, etc.)                | `DefaultColumnStyle` | Left-aligned, no special format |
+| Headers (all columns)                           | `DefaultHeaderStyle` | Bold, center-aligned            |
 
 **Example:**
+
 ```java
 @ExcelColumn(header = "Amount", order = 1)
 private BigDecimal amount;  // Automatically uses DefaultNumberStyle
@@ -1053,6 +1078,7 @@ private String name;  // Automatically uses DefaultColumnStyle
 ```
 
 **Overriding Defaults:**
+
 ```java
 @ExcelColumn(
     header = "Amount",
@@ -1091,6 +1117,7 @@ public class SalesDTO {
 ```
 
 **Result:**
+
 ```
 Row 0: [  Customer Info  ] [      ]
 Row 1: [ Name  |  Email ] [Amount]
@@ -1120,6 +1147,7 @@ public class EmployeeDTO {
 ```
 
 **Result:**
+
 ```
 Row 0: [  Personal  ] [  Address  ] [      ]
 Row 1: [Name | Age] [St. | City] [Salary]
@@ -1132,31 +1160,32 @@ public class BlueHeaderStyle extends CustomExcelCellStyle {
     @Override
     protected void configure(ExcelCellStyleConfigurer configurer) {
         configurer
-            .backgroundColor(ExcelColors.lightBlue())
-            .fontColor(ExcelColors.darkBlue());
+                .backgroundColor(ExcelColors.lightBlue())
+                .fontColor(ExcelColors.darkBlue());
     }
 }
 
 @ExcelSheet("Report")
 public class ReportDTO {
     @ExcelColumn(
-        header = "Q1",
-        order = 1,
-        mergeHeader = "2024 Sales",
-        mergeHeaderStyle = BlueHeaderStyle.class  // Custom style for merge header
+            header = "Q1",
+            order = 1,
+            mergeHeader = "2024 Sales",
+            mergeHeaderStyle = BlueHeaderStyle.class  // Custom style for merge header
     )
     private BigDecimal q1Sales;
 
     @ExcelColumn(
-        header = "Q2",
-        order = 2,
-        mergeHeader = "2024 Sales"
+            header = "Q2",
+            order = 2,
+            mergeHeader = "2024 Sales"
     )
     private BigDecimal q2Sales;
 }
 ```
 
 **Important:**
+
 - ✅ Columns in a merge group must have **consecutive order values**
 - ❌ Gaps in order will throw `MERGE_HEADER_ORDER_GAP` exception
 - ✅ Columns without `mergeHeader` are automatically merged vertically (1 column, 2 rows)
@@ -1216,6 +1245,7 @@ public class ReferenceDTO { ... }
 ```
 
 **Sorting Rules:**
+
 1. Sheets without `order` come first (in input order)
 2. Sheets with `order` sorted in ascending order
 
@@ -1228,6 +1258,7 @@ public class ReferenceDTO { ... }
 ### Q1: When should I use List vs Stream?
 
 **A:** Choose based on data size.
+
 - **< 10K rows**: `excelFromList()` (simple, fast)
 - **> 10K rows**: `excelFromStream()` (memory efficient)
 - **> 1M rows**: `excelFromStream()` required (List has 1M limit)
@@ -1264,6 +1295,7 @@ ExcelExporter.excelFromList(response, "report_20251219_132153.xlsx", data);
 ```
 
 When value is -2000:
+
 - Both conditions match
 - priority 30 > 20 → `RedStyle` applied
 
@@ -1286,6 +1318,7 @@ public class CustomerDTO {
 **A:** No. Empty lists/streams throw `ExcelExporterException` (E001).
 
 **Solution:**
+
 ```java
 List<CustomerDTO> customers = customerService.getCustomers();
 if (customers.isEmpty()) {
@@ -1311,6 +1344,7 @@ ExcelExporter.excel(response)
 **A:** The library automatically caches and deduplicates styles.
 
 **Advice:**
+
 - Minimize conditional styles (consolidate ranges)
 - Merge similar styles
 
@@ -1334,13 +1368,13 @@ public void exportCustomers(Long userId, HttpServletResponse response) {
 
 ### Main Error Codes
 
-| Code | Message | Solution |
-|------|---------|----------|
-| E001 | Empty data collection | Check for empty data before processing |
-| E005 | No @ExcelSheet annotation | Add `@ExcelSheet` to DTO |
-| E006 | No @ExcelColumn fields | Add at least 1 `@ExcelColumn` field |
-| E016 | Exceeded maximum rows for List API | Use Stream API |
-| E017 | Stream already consumed | Create new stream |
+| Code | Message                            | Solution                               |
+|------|------------------------------------|----------------------------------------|
+| E001 | Empty data collection              | Check for empty data before processing |
+| E005 | No @ExcelSheet annotation          | Add `@ExcelSheet` to DTO               |
+| E006 | No @ExcelColumn fields             | Add at least 1 `@ExcelColumn` field    |
+| E016 | Exceeded maximum rows for List API | Use Stream API                         |
+| E017 | Stream already consumed            | Create new stream                      |
 
 ### Try-Catch Example
 
@@ -1394,13 +1428,13 @@ implementation 'io.github.takoeats:excel-annotator:2.3.1'
 
 ### Dependencies
 
-| Library | Version | Description |
-|---------|---------|-------------|
-| Apache POI | 5.4.0 | Excel file manipulation |
-| Commons Lang3 | 3.18.0 | String utilities |
-| SLF4J API | 2.0.17 | Logging API |
-| Servlet API | 3.1.0 (provided) | HttpServletResponse |
-| Lombok | 1.18.30 (provided) | Boilerplate reduction |
+| Library       | Version            | Description             |
+|---------------|--------------------|-------------------------|
+| Apache POI    | 5.4.0              | Excel file manipulation |
+| Commons Lang3 | 3.18.0             | String utilities        |
+| SLF4J API     | 2.0.17             | Logging API             |
+| Servlet API   | 3.1.0 (provided)   | HttpServletResponse     |
+| Lombok        | 1.18.30 (provided) | Boilerplate reduction   |
 
 ---
 
@@ -1526,11 +1560,13 @@ public class ExcelBatchService {
 
 ### Library's Responsibility Scope
 
-The `ExcelExporter.excelFromList(response, fileName, data)` method sets **only the minimum required headers**, respecting user control.
+The `ExcelExporter.excelFromList(response, fileName, data)` method sets **only the minimum required headers**,
+respecting user control.
 
 ### ✅ Automatically Set Headers
 
 Headers that the library **always sets** (overwrite):
+
 ```java
 Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
 Content-Disposition: attachment; filename="download.xlsx"; filename*=UTF-8''...
@@ -1539,11 +1575,13 @@ Content-Disposition: attachment; filename="download.xlsx"; filename*=UTF-8''...
 ### 🔄 Conditionally Set Headers
 
 Applied **only if user hasn't set them**:
+
 ```java
 Cache-Control: no-store, no-cache, must-revalidate, max-age=0
 ```
 
 **Example: Custom Cache-Control**
+
 ```java
 @GetMapping("/download/public-report")
 public void downloadPublicReport(HttpServletResponse response) {
@@ -1563,6 +1601,7 @@ public void downloadPublicReport(HttpServletResponse response) {
 The library **does not call `response.reset()`**, so **all user-set headers are preserved**.
 
 **Example: Maintaining Security Token Headers**
+
 ```java
 @GetMapping("/download/secure-data")
 public void downloadSecureData(HttpServletResponse response) {

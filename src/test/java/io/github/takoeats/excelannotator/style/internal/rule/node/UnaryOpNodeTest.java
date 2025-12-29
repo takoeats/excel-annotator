@@ -1,7 +1,7 @@
-package io.github.takoeats.excelannotator.style.rule.node;
+package io.github.takoeats.excelannotator.style.internal.rule.node;
 
-import io.github.takoeats.excelannotator.style.rule.CellContext;
-import io.github.takoeats.excelannotator.style.rule.ExpressionParser;
+import io.github.takoeats.excelannotator.style.internal.rule.CellContext;
+import io.github.takoeats.excelannotator.style.internal.rule.ExpressionParser;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 
@@ -159,7 +159,7 @@ class UnaryOpNodeTest {
     @Test
     void evaluate_complexNestedNot_evaluatesCorrectly() {
         ExpressionNode node = ExpressionParser.parseToTree(
-            "!((value > 0 && value < 50) || (value > 100 && value < 150))"
+                "!((value > 0 && value < 50) || (value > 100 && value < 150))"
         );
         CellContext context = CellContext.acquire();
 
@@ -211,8 +211,8 @@ class UnaryOpNodeTest {
 
         context.update(50, null, 0, 0, "field");
         IllegalStateException exception = assertThrows(
-            IllegalStateException.class,
-            () -> node.evaluate(context)
+                IllegalStateException.class,
+                () -> node.evaluate(context)
         );
         assertEquals("Unsupported unary operator: AND", exception.getMessage());
     }
@@ -225,8 +225,8 @@ class UnaryOpNodeTest {
 
         context.update(50, null, 0, 0, "field");
         IllegalStateException exception = assertThrows(
-            IllegalStateException.class,
-            () -> node.evaluate(context)
+                IllegalStateException.class,
+                () -> node.evaluate(context)
         );
         assertEquals("Unsupported unary operator: OR", exception.getMessage());
     }
@@ -239,8 +239,8 @@ class UnaryOpNodeTest {
 
         context.update(50, null, 0, 0, "field");
         IllegalStateException exception = assertThrows(
-            IllegalStateException.class,
-            () -> node.evaluate(context)
+                IllegalStateException.class,
+                () -> node.evaluate(context)
         );
         assertEquals("Unsupported unary operator: XOR", exception.getMessage());
     }

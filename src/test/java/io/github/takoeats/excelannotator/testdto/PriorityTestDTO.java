@@ -16,23 +16,23 @@ import lombok.NoArgsConstructor;
 public class PriorityTestDTO {
 
     @ExcelColumn(
-        header = "Sheet Name Priority Test",
-        order = 1,
-        sheetName = "ColumnSheetName"
+            header = "Sheet Name Priority Test",
+            order = 1,
+            sheetName = "ColumnSheetName"
     )
     private String testField;
 
     @ExcelColumn(
-        header = "Width Priority",
-        order = 2,
-        width = 200,
-        headerStyle = PurpleHeaderStyle.class
+            header = "Width Priority",
+            order = 2,
+            width = 200,
+            headerStyle = PurpleHeaderStyle.class
     )
     private String widthField;
 
     @ExcelColumn(
-        header = "Order Field",
-        order = 1
+            header = "Order Field",
+            order = 1
     )
     private String orderField;
 }

@@ -339,7 +339,7 @@ public class MaskingTest {
     @DisplayName("IP_ADDRESS - IPv6 주소 마스킹")
     void ipAddress_withIPv6_masksAfter2ndPart() {
         assertEquals("2001:0db8:****:****:****:****:****:****",
-            Masking.IP_ADDRESS.mask("2001:0db8:85a3::8a2e:0370:7334"));
+                Masking.IP_ADDRESS.mask("2001:0db8:85a3::8a2e:0370:7334"));
     }
 
     @Test

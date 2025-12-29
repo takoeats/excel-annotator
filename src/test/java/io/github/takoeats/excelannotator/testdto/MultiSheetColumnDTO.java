@@ -16,6 +16,11 @@ public class MultiSheetColumnDTO {
         this.b = b;
     }
 
-    public String getA() { return a; }
-    public String getB() { return b; }
+    public String getA() {
+        return a;
+    }
+
+    public String getB() {
+        return b;
+    }
 }

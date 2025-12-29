@@ -18,6 +18,7 @@
 ### 1. Maven Dependency 추가
 
 ```xml
+
 <dependency>
     <groupId>io.github.takoeats</groupId>
     <artifactId>excel-annotator</artifactId>
@@ -68,8 +69,8 @@ public void downloadExcel(HttpServletResponse response) {
 
     // Fluent API 사용 (권장)
     ExcelExporter.excel(response)
-        .fileName("고객목록.xlsx")
-        .write(customers);  // 반환값(최종파일명)은 무시 가능
+            .fileName("고객목록.xlsx")
+            .write(customers);  // 반환값(최종파일명)은 무시 가능
 }
 ```
 
@@ -88,25 +89,47 @@ public void downloadExcel(HttpServletResponse response) {
 ```java
 // HttpServletResponse (웹 다운로드)
 ExcelExporter.excel(response)
-    .fileName("고객목록.xlsx")
-    .write(customerList);  // 반환값(최종파일명)은 무시 가능
+    .
 
-ExcelExporter.excel(response)
-    .fileName("고객목록.xlsx")
-    .write(customerStream);  // 반환값(최종파일명)은 무시 가능
+fileName("고객목록.xlsx")
+    .
 
-ExcelExporter.excel(response)
-    .fileName("리포트.xlsx")
-    .write(multiSheetMap);  // 반환값(최종파일명)은 무시 가능
+write(customerList);  // 반환값(최종파일명)은 무시 가능
 
-ExcelExporter.excel(response)
-    .fileName("고객목록.xlsx")
-    .write(query, dataProvider, converter);  // 반환값(최종파일명)은 무시 가능
+ExcelExporter.
+
+excel(response)
+    .
+
+fileName("고객목록.xlsx")
+    .
+
+write(customerStream);  // 반환값(최종파일명)은 무시 가능
+
+ExcelExporter.
+
+excel(response)
+    .
+
+fileName("리포트.xlsx")
+    .
+
+write(multiSheetMap);  // 반환값(최종파일명)은 무시 가능
+
+ExcelExporter.
+
+excel(response)
+    .
+
+fileName("고객목록.xlsx")
+    .
+
+write(query, dataProvider, converter);  // 반환값(최종파일명)은 무시 가능
 
 // OutputStream (파일 저장)
 String fileName = ExcelExporter.excel(outputStream)
-    .fileName("고객목록.xlsx")
-    .write(customerList);  // 처리된 파일명 반환
+        .fileName("고객목록.xlsx")
+        .write(customerList);  // 처리된 파일명 반환
 ```
 
 #### CSV 내보내기
@@ -115,21 +138,32 @@ String fileName = ExcelExporter.excel(outputStream)
 // HttpServletResponse (웹 다운로드)
 // List
 ExcelExporter.csv(response)
-    .fileName("고객목록.csv")
-    .write(customerList);  // 반환값(최종파일명)은 무시 가능
+    .
+
+fileName("고객목록.csv")
+    .
+
+write(customerList);  // 반환값(최종파일명)은 무시 가능
 
 // Stream
-ExcelExporter.csv(response)
-    .fileName("고객목록.csv")
-    .write(customerStream);  // 반환값(최종파일명)은 무시 가능
+ExcelExporter.
+
+csv(response)
+    .
+
+fileName("고객목록.csv")
+    .
+
+write(customerStream);  // 반환값(최종파일명)은 무시 가능
 
 // OutputStream (파일 저장)
 String fileName = ExcelExporter.csv(outputStream)
-    .fileName("고객목록.csv")
-    .write(customerList);
+        .fileName("고객목록.csv")
+        .write(customerList);
 ```
 
 **주요 장점:**
+
 - **타입 안전성**: 컴파일 타임 타입 보장
 - **통일된 인터페이스**: Response/OutputStream, Excel/CSV 모두 동일한 패턴
 - **유연한 데이터**: List, Stream, Map (혼합 List/Stream 값) 지원
@@ -139,7 +173,8 @@ String fileName = ExcelExporter.csv(outputStream)
 
 ### 📚 Legacy API (Deprecated ⚠️)
 
-> **⚠️ Deprecation 공지:** 레거시 정적 메서드(`excelFromList`, `excelFromStream` 등)는 deprecated 되었으며 **3.0.0** 버전에서 제거됩니다. 더 나은 타입 안전성과 가독성을 위해 위의 Fluent API로 마이그레이션해주세요.
+> **⚠️ Deprecation 공지:** 레거시 정적 메서드(`excelFromList`, `excelFromStream` 등)는 deprecated 되었으며 **3.0.0** 버전에서 제거됩니다. 더 나은 타입
+> 안전성과 가독성을 위해 위의 Fluent API로 마이그레이션해주세요.
 
 ExcelExporter는 다양한 사용 사례를 위한 **17개의 정적 메서드**(deprecated)를 제공합니다.
 
@@ -147,42 +182,43 @@ ExcelExporter는 다양한 사용 사례를 위한 **17개의 정적 메서드**
 
 #### List 기반 API (소규모 데이터 - 최대 1M 행)
 
-| 메서드 시그니처 | 출력 | 파일명 | 설명 |
-|--------------|------|--------|------|
-| `excelFromList(response, fileName, list)` | HttpServletResponse | 필수 | 웹 다운로드 (단일 시트) |
-| `excelFromList(response, fileName, map)` | HttpServletResponse | 필수 | 웹 다운로드 (멀티시트) |
-| `excelFromList(outputStream, fileName, list)` | OutputStream | 필수 | 파일 저장 (단일 시트) |
-| `excelFromList(outputStream, list)` | OutputStream | 자동 | 파일 저장 (자동 파일명) |
-| `excelFromList(outputStream, fileName, map)` | OutputStream | 필수 | 파일 저장 (멀티시트) |
+| 메서드 시그니처                                      | 출력                  | 파일명 | 설명             |
+|-----------------------------------------------|---------------------|-----|----------------|
+| `excelFromList(response, fileName, list)`     | HttpServletResponse | 필수  | 웹 다운로드 (단일 시트) |
+| `excelFromList(response, fileName, map)`      | HttpServletResponse | 필수  | 웹 다운로드 (멀티시트)  |
+| `excelFromList(outputStream, fileName, list)` | OutputStream        | 필수  | 파일 저장 (단일 시트)  |
+| `excelFromList(outputStream, list)`           | OutputStream        | 자동  | 파일 저장 (자동 파일명) |
+| `excelFromList(outputStream, fileName, map)`  | OutputStream        | 필수  | 파일 저장 (멀티시트)   |
 
 #### Data Provider 패턴 API (쿼리/변환 분리)
 
-| 메서드 시그니처 | 출력 | 파일명 | 설명 |
-|--------------|------|--------|------|
-| `excelFromList(response, fileName, query, provider, converter)` | HttpServletResponse | 필수 | 웹 다운로드 (쿼리 분리) |
-| `excelFromList(outputStream, fileName, query, provider, converter)` | OutputStream | 필수 | 파일 저장 (쿼리 분리) |
-| `excelFromList(outputStream, query, provider, converter)` | OutputStream | 자동 | 파일 저장 (쿼리 분리, 자동 파일명) |
+| 메서드 시그니처                                                            | 출력                  | 파일명 | 설명                    |
+|---------------------------------------------------------------------|---------------------|-----|-----------------------|
+| `excelFromList(response, fileName, query, provider, converter)`     | HttpServletResponse | 필수  | 웹 다운로드 (쿼리 분리)        |
+| `excelFromList(outputStream, fileName, query, provider, converter)` | OutputStream        | 필수  | 파일 저장 (쿼리 분리)         |
+| `excelFromList(outputStream, query, provider, converter)`           | OutputStream        | 자동  | 파일 저장 (쿼리 분리, 자동 파일명) |
 
 #### Stream 기반 API (대용량 데이터 - 100M+ 행 지원)
 
-| 메서드 시그니처 | 출력 | 파일명 | 설명 |
-|--------------|------|--------|------|
-| `excelFromStream(response, fileName, stream)` | HttpServletResponse | 필수 | 웹 다운로드 (단일 시트 스트리밍) |
-| `excelFromStream(response, fileName, streamMap)` | HttpServletResponse | 필수 | 웹 다운로드 (멀티시트 스트리밍) |
-| `excelFromStream(outputStream, fileName, stream)` | OutputStream | 필수 | 파일 저장 (단일 시트 스트리밍) |
-| `excelFromStream(outputStream, stream)` | OutputStream | 자동 | 파일 저장 (자동 파일명) |
-| `excelFromStream(outputStream, fileName, streamMap)` | OutputStream | 필수 | 파일 저장 (멀티시트 스트리밍) |
+| 메서드 시그니처                                             | 출력                  | 파일명 | 설명                  |
+|------------------------------------------------------|---------------------|-----|---------------------|
+| `excelFromStream(response, fileName, stream)`        | HttpServletResponse | 필수  | 웹 다운로드 (단일 시트 스트리밍) |
+| `excelFromStream(response, fileName, streamMap)`     | HttpServletResponse | 필수  | 웹 다운로드 (멀티시트 스트리밍)  |
+| `excelFromStream(outputStream, fileName, stream)`    | OutputStream        | 필수  | 파일 저장 (단일 시트 스트리밍)  |
+| `excelFromStream(outputStream, stream)`              | OutputStream        | 자동  | 파일 저장 (자동 파일명)      |
+| `excelFromStream(outputStream, fileName, streamMap)` | OutputStream        | 필수  | 파일 저장 (멀티시트 스트리밍)   |
 
 #### CSV 기반 API (RFC 4180 표준 준수)
 
-| 메서드 시그니처 | 출력 | 파일명 | 설명 |
-|--------------|------|--------|------|
-| `csvFromList(response, fileName, list)` | HttpServletResponse | 필수 | CSV 웹 다운로드 (List) |
-| `csvFromList(outputStream, fileName, list)` | OutputStream | 필수 | CSV 파일 저장 (List) |
-| `csvFromStream(response, fileName, stream)` | HttpServletResponse | 필수 | CSV 웹 다운로드 (Stream) |
-| `csvFromStream(outputStream, fileName, stream)` | OutputStream | 필수 | CSV 파일 저장 (Stream) |
+| 메서드 시그니처                                        | 출력                  | 파일명 | 설명                  |
+|-------------------------------------------------|---------------------|-----|---------------------|
+| `csvFromList(response, fileName, list)`         | HttpServletResponse | 필수  | CSV 웹 다운로드 (List)   |
+| `csvFromList(outputStream, fileName, list)`     | OutputStream        | 필수  | CSV 파일 저장 (List)    |
+| `csvFromStream(response, fileName, stream)`     | HttpServletResponse | 필수  | CSV 웹 다운로드 (Stream) |
+| `csvFromStream(outputStream, fileName, stream)` | OutputStream        | 필수  | CSV 파일 저장 (Stream)  |
 
 **📄 CSV 포맷 특징:**
+
 - ✅ RFC 4180 표준 완벽 준수
 - ✅ 모든 필드를 큰따옴표로 감싸기 (특수문자 안전 처리)
 - ✅ CRLF (\r\n) 줄바꿈 사용
@@ -190,6 +226,7 @@ ExcelExporter는 다양한 사용 사례를 위한 **17개의 정적 메서드**
 - ✅ 필드 내 줄바꿈, 쉼표, 따옴표 보존
 
 **💡 선택 가이드:**
+
 - **1만 건 이하**: List API 사용 (간단하고 빠름)
 - **1만~100만 건**: Stream API 권장 (메모리 효율)
 - **100만 건 초과**: Stream API 필수 (List는 1M 행 제한)
@@ -203,7 +240,9 @@ ExcelExporter는 다양한 사용 사례를 위한 **17개의 정적 메서드**
 ### 1️⃣ 기본 Excel 생성
 
 #### 1-1. HttpServletResponse로 웹 다운로드 (가장 일반적)
+
 ```java
+
 @RestController
 public class ExcelController {
 
@@ -216,8 +255,8 @@ public class ExcelController {
 
         // 브라우저에서 즉시 다운로드 (Fluent API 사용)
         ExcelExporter.excel(response)
-            .fileName("고객목록.xlsx")
-            .write(customers);  // 반환값(최종파일명)은 무시 가능
+                .fileName("고객목록.xlsx")
+                .write(customers);  // 반환값(최종파일명)은 무시 가능
         // 실제 다운로드: 고객목록.xlsx (명시적 파일명 - 타임스탬프 없음)
 
         // 📌 라이브러리가 자동 설정하는 헤더:
@@ -229,45 +268,66 @@ public class ExcelController {
 ```
 
 #### 1-2. OutputStream으로 파일 저장
+
 ```java
 // 파일명 지정
-try (FileOutputStream fos = new FileOutputStream("output.xlsx")) {
-    List<CustomerDTO> customers = customerService.getCustomers();
-    String fileName = ExcelExporter.excel(fos)
+try(FileOutputStream fos = new FileOutputStream("output.xlsx")){
+List<CustomerDTO> customers = customerService.getCustomers();
+String fileName = ExcelExporter.excel(fos)
         .fileName("고객목록.xlsx")
         .write(customers);
-    System.out.println("생성 완료: " + fileName);
-    // 출력: 생성 완료: 고객목록.xlsx (명시적 파일명 - 타임스탬프 없음)
+    System.out.
+
+println("생성 완료: "+fileName);
+// 출력: 생성 완료: 고객목록.xlsx (명시적 파일명 - 타임스탬프 없음)
 }
 ```
 
 #### 1-3. 파일명 자동 생성
+
 ```java
 // fileName() 호출 안 하면 "download_yyyyMMdd_HHmmss.xlsx" 자동 생성
-try (FileOutputStream fos = new FileOutputStream("output.xlsx")) {
-    List<CustomerDTO> customers = customerService.getCustomers();
-    String fileName = ExcelExporter.excel(fos)
+try(FileOutputStream fos = new FileOutputStream("output.xlsx")){
+List<CustomerDTO> customers = customerService.getCustomers();
+String fileName = ExcelExporter.excel(fos)
         .write(customers);  // fileName() 호출 없음 → 자동 생성
-    System.out.println("생성 완료: " + fileName);
-    // 출력: 생성 완료: download_20250108_143025.xlsx
+    System.out.
+
+println("생성 완료: "+fileName);
+// 출력: 생성 완료: download_20250108_143025.xlsx
 }
 ```
 
 #### 1-4. ByteArrayOutputStream으로 메모리 생성 (테스트/API 응답)
+
 ```java
 // 메모리에서 생성 후 바이트 배열로 반환
 ByteArrayOutputStream baos = new ByteArrayOutputStream();
-ExcelExporter.excel(baos)
-    .fileName("customers.xlsx")
-    .write(customers);
+ExcelExporter.
+
+excel(baos)
+    .
+
+fileName("customers.xlsx")
+    .
+
+write(customers);
 
 byte[] excelBytes = baos.toByteArray();
 
 // 다른 API로 전송하거나 DB에 저장 가능
-return ResponseEntity.ok()
-    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=customers.xlsx")
-    .contentType(MediaType.APPLICATION_OCTET_STREAM)
-    .body(excelBytes);
+return ResponseEntity.
+
+ok()
+    .
+
+header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=customers.xlsx")
+    .
+
+contentType(MediaType.APPLICATION_OCTET_STREAM)
+    .
+
+body(excelBytes);
 ```
 
 ---
@@ -279,6 +339,7 @@ return ResponseEntity.ok()
 `CustomExcelCellStyle`을 확장하여 재사용 가능한 스타일을 만드세요:
 
 **예제: 통화 스타일**
+
 ```java
 import io.github.takoeats.excelannotator.style.CustomExcelCellStyle;
 import io.github.takoeats.excelannotator.style.ExcelCellStyleConfigurer;
@@ -296,6 +357,7 @@ public class CurrencyStyle extends CustomExcelCellStyle {
 ```
 
 **예제: 날짜 스타일**
+
 ```java
 public class DateOnlyStyle extends CustomExcelCellStyle {
     @Override
@@ -308,6 +370,7 @@ public class DateOnlyStyle extends CustomExcelCellStyle {
 ```
 
 **예제: 퍼센트 스타일**
+
 ```java
 public class PercentageStyle extends CustomExcelCellStyle {
     @Override
@@ -320,6 +383,7 @@ public class PercentageStyle extends CustomExcelCellStyle {
 ```
 
 **예제: 경고 스타일**
+
 ```java
 import io.github.takoeats.excelannotator.style.FontStyle;
 
@@ -341,7 +405,9 @@ public class CriticalAlertStyle extends CustomExcelCellStyle {
 > - 퍼센트 스타일 → `Double` 또는 `BigDecimal`
 
 **DTO에서 사용:**
+
 ```java
+
 @ExcelSheet("판매 내역")
 public class SalesDTO {
 
@@ -398,29 +464,30 @@ public class FinanceDTO {
 #### 복합 조건
 
 ```java
+
 @ExcelColumn(
-    header = "금액",
-    order = 2,
-    conditionalStyles = {
-        // 우선순위 높음: 음수 → 빨간색
-        @ConditionalStyle(
-            when = "value < 0",
-            style = CriticalAlertStyle.class,
-            priority = 30
-        ),
-        // 중간: 백만 초과 → 노란색 강조
-        @ConditionalStyle(
-            when = "value > 1000000",
-            style = HighlightStyle.class,
-            priority = 20
-        ),
-        // 낮음: 정상 범위 → 녹색
-        @ConditionalStyle(
-            when = "value > 0 && value <= 1000000",
-            style = SignatureStyle.class,
-            priority = 10
-        )
-    }
+        header = "금액",
+        order = 2,
+        conditionalStyles = {
+                // 우선순위 높음: 음수 → 빨간색
+                @ConditionalStyle(
+                        when = "value < 0",
+                        style = CriticalAlertStyle.class,
+                        priority = 30
+                ),
+                // 중간: 백만 초과 → 노란색 강조
+                @ConditionalStyle(
+                        when = "value > 1000000",
+                        style = HighlightStyle.class,
+                        priority = 20
+                ),
+                // 낮음: 정상 범위 → 녹색
+                @ConditionalStyle(
+                        when = "value > 0 && value <= 1000000",
+                        style = SignatureStyle.class,
+                        priority = 10
+                )
+        }
 )
 private BigDecimal amount;
 ```
@@ -428,38 +495,39 @@ private BigDecimal amount;
 #### 문자열 조건
 
 ```java
+
 @ExcelColumn(
-    header = "상태",
-    order = 3,
-    conditionalStyles = {
-        @ConditionalStyle(
-            when = "value equals '완료' || value equals '승인'",
-            style = SignatureStyle.class,
-            priority = 10
-        ),
-        @ConditionalStyle(
-            when = "value contains '진행'",
-            style = HighlightStyle.class,
-            priority = 9
-        )
-    }
+        header = "상태",
+        order = 3,
+        conditionalStyles = {
+                @ConditionalStyle(
+                        when = "value equals '완료' || value equals '승인'",
+                        style = SignatureStyle.class,
+                        priority = 10
+                ),
+                @ConditionalStyle(
+                        when = "value contains '진행'",
+                        style = HighlightStyle.class,
+                        priority = 9
+                )
+        }
 )
 private String status;
 ```
 
 **지원 표현식:**
 
-| 연산자 | 예시 | 설명 |
-|--------|------|------|
-| `<` `<=` `>` `>=` | `value > 100` | 숫자 비교 |
-| `==` `equals` | `value equals 100` | 같음 |
-| `!=` | `value != 0` | 다름 |
-| `between` | `value between 10 and 100` | 범위 (10 이상 100 이하) |
-| `contains` | `value contains 'text'` | 문자열 포함 |
-| `is_null` | `value is_null` | Null 체크 |
-| `is_empty` | `value is_empty` | 빈 문자열 |
-| `is_negative` | `value is_negative` | 음수 |
-| `&&` `\|\|` `!` | `value > 0 && value < 100` | 논리 연산자 |
+| 연산자               | 예시                         | 설명                |
+|-------------------|----------------------------|-------------------|
+| `<` `<=` `>` `>=` | `value > 100`              | 숫자 비교             |
+| `==` `equals`     | `value equals 100`         | 같음                |
+| `!=`              | `value != 0`               | 다름                |
+| `between`         | `value between 10 and 100` | 범위 (10 이상 100 이하) |
+| `contains`        | `value contains 'text'`    | 문자열 포함            |
+| `is_null`         | `value is_null`            | Null 체크           |
+| `is_empty`        | `value is_empty`           | 빈 문자열             |
+| `is_negative`     | `value is_negative`        | 음수                |
+| `&&` `\|\|` `!`   | `value > 0 && value < 100` | 논리 연산자            |
 
 ---
 
@@ -468,6 +536,7 @@ private String status;
 #### 4-1. HttpServletResponse로 멀티시트 다운로드
 
 ```java
+
 @PostMapping("/download/report")
 public void downloadMultiSheetReport(HttpServletResponse response) {
     Map<String, List<?>> sheetData = new LinkedHashMap<>();
@@ -479,12 +548,13 @@ public void downloadMultiSheetReport(HttpServletResponse response) {
 
     // Fluent API로 Map 사용
     ExcelExporter.excel(response)
-        .fileName("통합_리포트.xlsx")
-        .write(sheetData);  // 반환값(최종파일명)은 무시 가능
+            .fileName("통합_리포트.xlsx")
+            .write(sheetData);  // 반환값(최종파일명)은 무시 가능
 }
 ```
 
 **결과:** 3개의 시트를 가진 Excel 파일
+
 - Sheet1: "고객 목록"
 - Sheet2: "주문 내역"
 - Sheet3: "상품 목록"
@@ -492,16 +562,22 @@ public void downloadMultiSheetReport(HttpServletResponse response) {
 #### 4-2. OutputStream으로 멀티시트 파일 저장
 
 ```java
-try (FileOutputStream fos = new FileOutputStream("report.xlsx")) {
-    Map<String, List<?>> sheetData = new LinkedHashMap<>();
-    sheetData.put("customers", customerList);
-    sheetData.put("orders", orderList);
+try(FileOutputStream fos = new FileOutputStream("report.xlsx")){
+Map<String, List<?>> sheetData = new LinkedHashMap<>();
+    sheetData.
 
-    // Fluent API로 OutputStream + Map
-    String fileName = ExcelExporter.excel(fos)
+put("customers",customerList);
+    sheetData.
+
+put("orders",orderList);
+
+// Fluent API로 OutputStream + Map
+String fileName = ExcelExporter.excel(fos)
         .fileName("리포트.xlsx")
         .write(sheetData);
-    System.out.println("멀티시트 생성 완료: " + fileName);
+    System.out.
+
+println("멀티시트 생성 완료: "+fileName);
 }
 ```
 
@@ -530,12 +606,22 @@ public class CustomerExtraDTO {
 
 // 사용
 Map<String, List<?>> data = new LinkedHashMap<>();
-data.put("basic", customerBasicList);
-data.put("extra", customerExtraList);
+data.
 
-ExcelExporter.excel(response)
-    .fileName("고객.xlsx")
-    .write(data);  // 반환값(최종파일명)은 무시 가능
+put("basic",customerBasicList);
+data.
+
+put("extra",customerExtraList);
+
+ExcelExporter.
+
+excel(response)
+    .
+
+fileName("고객.xlsx")
+    .
+
+write(data);  // 반환값(최종파일명)은 무시 가능
 ```
 
 **결과:** 단일 시트 "고객"에 4개 컬럼 (ID, 이름, 이메일, 전화번호)
@@ -547,6 +633,7 @@ ExcelExporter.excel(response)
 #### 5-1. HttpServletResponse로 스트림 다운로드 (단일 시트)
 
 ```java
+
 @PostMapping("/download/large-customers")
 public void downloadLargeCustomers(HttpServletResponse response) {
     // JPA Repository에서 Stream 반환 (커서 기반)
@@ -554,12 +641,13 @@ public void downloadLargeCustomers(HttpServletResponse response) {
 
     // Fluent API로 Stream 사용
     ExcelExporter.excel(response)
-        .fileName("대용량_고객.xlsx")
-        .write(customerStream);  // 반환값(최종파일명)은 무시 가능
+            .fileName("대용량_고객.xlsx")
+            .write(customerStream);  // 반환값(최종파일명)은 무시 가능
 }
 ```
 
 **장점:**
+
 - ✅ 100만+ 행 처리 가능
 - ✅ 메모리에 100행만 유지 (SXSSF)
 - ✅ 전체 데이터를 메모리에 로드하지 않음
@@ -568,29 +656,35 @@ public void downloadLargeCustomers(HttpServletResponse response) {
 
 ```java
 // 파일명 지정
-try (FileOutputStream fos = new FileOutputStream("customers.xlsx");
-     Stream<CustomerDTO> stream = customerRepository.streamAll()) {
+try(FileOutputStream fos = new FileOutputStream("customers.xlsx");
+Stream<CustomerDTO> stream = customerRepository.streamAll()){
 
-    String fileName = ExcelExporter.excel(fos)
+String fileName = ExcelExporter.excel(fos)
         .fileName("고객.xlsx")
         .write(stream);
-    System.out.println("대용량 파일 생성: " + fileName);
+    System.out.
+
+println("대용량 파일 생성: "+fileName);
 }
 
 // 파일명 자동 생성
-try (FileOutputStream fos = new FileOutputStream("customers.xlsx");
-     Stream<CustomerDTO> stream = customerRepository.streamAll()) {
+        try(
+FileOutputStream fos = new FileOutputStream("customers.xlsx");
+Stream<CustomerDTO> stream = customerRepository.streamAll()){
 
-    String fileName = ExcelExporter.excel(fos)
+String fileName = ExcelExporter.excel(fos)
         .write(stream);  // fileName() 호출 없음 → 자동 생성
-    System.out.println("대용량 파일 생성: " + fileName);
-    // 출력: 대용량 파일 생성: download_20250108_143025.xlsx
+    System.out.
+
+println("대용량 파일 생성: "+fileName);
+// 출력: 대용량 파일 생성: download_20250108_143025.xlsx
 }
 ```
 
 #### 5-3. 멀티시트 스트리밍
 
 ```java
+
 @PostMapping("/download/large-report")
 public void downloadLargeReport(HttpServletResponse response) {
     Map<String, Stream<?>> sheetStreams = new LinkedHashMap<>();
@@ -601,8 +695,8 @@ public void downloadLargeReport(HttpServletResponse response) {
 
     // Fluent API로 Stream Map 사용
     ExcelExporter.excel(response)
-        .fileName("대용량_리포트.xlsx")
-        .write(sheetStreams);  // 반환값(최종파일명)은 무시 가능
+            .fileName("대용량_리포트.xlsx")
+            .write(sheetStreams);  // 반환값(최종파일명)은 무시 가능
 }
 ```
 
@@ -625,8 +719,8 @@ public class CustomerService {
         try (Stream<CustomerEntity> stream = customerRepository.streamActiveCustomers()) {
             Stream<CustomerDTO> dtoStream = stream.map(this::toDTO);
             ExcelExporter.excel(response)
-                .fileName("고객.xlsx")
-                .write(dtoStream);  // 반환값(최종파일명)은 무시 가능
+                    .fileName("고객.xlsx")
+                    .write(dtoStream);  // 반환값(최종파일명)은 무시 가능
         }
     }
 }
@@ -634,10 +728,10 @@ public class CustomerService {
 
 #### 언제 Stream을 사용할까?
 
-| 데이터 크기 | 권장 API | 이유 |
-|------------|---------|------|
-| 1만 건 이하 | `excelFromList()` | 간단, 빠름 |
-| 1만~100만 건 | `excelFromStream()` | 메모리 효율 |
+| 데이터 크기    | 권장 API                 | 이유                |
+|-----------|------------------------|-------------------|
+| 1만 건 이하   | `excelFromList()`      | 간단, 빠름            |
+| 1만~100만 건 | `excelFromStream()`    | 메모리 효율            |
 | 100만 건 초과 | `excelFromStream()` 필수 | List API는 1M 행 제한 |
 
 ---
@@ -649,14 +743,15 @@ public class CustomerService {
 #### 6-1. HttpServletResponse로 CSV 다운로드
 
 ```java
+
 @PostMapping("/download/customers-csv")
 public void downloadCustomersAsCsv(HttpServletResponse response) {
     List<CustomerDTO> customers = customerService.getAllCustomers();
 
     // Fluent API로 CSV 다운로드 (Excel과 동일한 DTO 사용)
     ExcelExporter.csv(response)
-        .fileName("고객목록.csv")
-        .write(customers);  // 반환값(최종파일명)은 무시 가능
+            .fileName("고객목록.csv")
+            .write(customers);  // 반환값(최종파일명)은 무시 가능
     // 실제 다운로드: 고객목록.csv (명시적 파일명 - 타임스탬프 없음)
 }
 ```
@@ -664,30 +759,34 @@ public void downloadCustomersAsCsv(HttpServletResponse response) {
 #### 6-2. OutputStream으로 CSV 파일 저장
 
 ```java
-try (FileOutputStream fos = new FileOutputStream("customers.csv")) {
-    List<CustomerDTO> customers = customerService.getCustomers();
-    String fileName = ExcelExporter.csv(fos)
+try(FileOutputStream fos = new FileOutputStream("customers.csv")){
+List<CustomerDTO> customers = customerService.getCustomers();
+String fileName = ExcelExporter.csv(fos)
         .fileName("고객.csv")
         .write(customers);
-    System.out.println("CSV 생성 완료: " + fileName);
+    System.out.
+
+println("CSV 생성 완료: "+fileName);
 }
 ```
 
 #### 6-3. 대용량 CSV 스트리밍
 
 ```java
+
 @PostMapping("/download/large-customers-csv")
 public void downloadLargeCustomersAsCsv(HttpServletResponse response) {
     Stream<CustomerDTO> stream = customerRepository.streamAllCustomers();
 
     // Fluent API로 대용량 CSV 스트리밍
     ExcelExporter.csv(response)
-        .fileName("대용량_고객.csv")
-        .write(stream);  // 반환값(최종파일명)은 무시 가능
+            .fileName("대용량_고객.csv")
+            .write(stream);  // 반환값(최종파일명)은 무시 가능
 }
 ```
 
 **CSV 포맷 예시:**
+
 ```csv
 "Name","Age","Salary"
 "Alice","30","123.45"
@@ -696,6 +795,7 @@ public void downloadLargeCustomersAsCsv(HttpServletResponse response) {
 ```
 
 **RFC 4180 준수 사항:**
+
 - 모든 필드를 큰따옴표(`"`)로 감싸기
 - 필드 내 큰따옴표는 `""`로 이스케이프
 - 레코드 구분자는 CRLF(`\r\n`)
@@ -704,15 +804,15 @@ public void downloadLargeCustomersAsCsv(HttpServletResponse response) {
 
 **Excel과 CSV 선택 기준:**
 
-| 기준 | Excel | CSV |
-|------|-------|-----|
-| 스타일 필요 | ✅ | ❌ |
-| 조건부 포맷 | ✅ | ❌ |
-| 멀티시트 | ✅ | ❌ |
-| 단순 데이터 교환 | ⚪ | ✅ |
-| 파일 크기 | 큼 | 작음 |
-| 범용성 | 보통 | 높음 |
-| 처리 속도 | 보통 | 빠름 |
+| 기준        | Excel | CSV |
+|-----------|-------|-----|
+| 스타일 필요    | ✅     | ❌   |
+| 조건부 포맷    | ✅     | ❌   |
+| 멀티시트      | ✅     | ❌   |
+| 단순 데이터 교환 | ⚪     | ✅   |
+| 파일 크기     | 큼     | 작음  |
+| 범용성       | 보통    | 높음  |
+| 처리 속도     | 보통    | 빠름  |
 
 ### 7️⃣ 데이터 마스킹
 
@@ -720,22 +820,22 @@ public void downloadLargeCustomersAsCsv(HttpServletResponse response) {
 
 #### 사용 가능한 마스킹 프리셋
 
-| 프리셋 | 입력 예시 | 출력 예시 | 사용 용도 |
-|--------|----------|----------|----------|
-| `PHONE` | 010-1234-5678 | 010-****-5678 | 전화번호 |
-| `EMAIL` | user@example.com | u***@example.com | 이메일 주소 |
-| `SSN` | 123456-1234567 | 123456-******* | 주민등록번호 |
-| `NAME` | 홍길동 | 홍*동 | 개인 이름 |
-| `CREDIT_CARD` | 1234-5678-9012-3456 | ****-****-****-3456 | 신용카드 번호 |
-| `ACCOUNT_NUMBER` | 110-123-456789 | 110-***-***789 | 은행 계좌번호 |
-| `ADDRESS` | 서울시 강남구 테헤란로 123 | 서울시 강남구 *** | 도로명 주소 |
-| `ZIP_CODE` | 12345 | 123** | 우편번호 |
-| `IP_ADDRESS` | 192.168.1.100 | 192.168.*.* | IP 주소 |
-| `PASSPORT` | M12345678 | M12***678 | 여권번호 |
-| `LICENSE_PLATE` | 12가3456 | 12가**56 | 차량번호 |
-| `PARTIAL_LEFT` | ABC12345 | ****2345 | 왼쪽 마스킹, 오른쪽 4자리 보존 |
-| `PARTIAL_RIGHT` | ABC12345 | ABC1**** | 오른쪽 마스킹, 왼쪽 4자리 보존 |
-| `MIDDLE` | ABC12345 | AB****45 | 중간 마스킹, 양쪽 보존 |
+| 프리셋              | 입력 예시               | 출력 예시               | 사용 용도              |
+|------------------|---------------------|---------------------|--------------------|
+| `PHONE`          | 010-1234-5678       | 010-****-5678       | 전화번호               |
+| `EMAIL`          | user@example.com    | u***@example.com    | 이메일 주소             |
+| `SSN`            | 123456-1234567      | 123456-*******      | 주민등록번호             |
+| `NAME`           | 홍길동                 | 홍*동                 | 개인 이름              |
+| `CREDIT_CARD`    | 1234-5678-9012-3456 | ****-****-****-3456 | 신용카드 번호            |
+| `ACCOUNT_NUMBER` | 110-123-456789      | 110-***-***789      | 은행 계좌번호            |
+| `ADDRESS`        | 서울시 강남구 테헤란로 123    | 서울시 강남구 ***         | 도로명 주소             |
+| `ZIP_CODE`       | 12345               | 123**               | 우편번호               |
+| `IP_ADDRESS`     | 192.168.1.100       | 192.168.*.*         | IP 주소              |
+| `PASSPORT`       | M12345678           | M12***678           | 여권번호               |
+| `LICENSE_PLATE`  | 12가3456             | 12가**56             | 차량번호               |
+| `PARTIAL_LEFT`   | ABC12345            | ****2345            | 왼쪽 마스킹, 오른쪽 4자리 보존 |
+| `PARTIAL_RIGHT`  | ABC12345            | ABC1****            | 오른쪽 마스킹, 왼쪽 4자리 보존 |
+| `MIDDLE`         | ABC12345            | AB****45            | 중간 마스킹, 양쪽 보존      |
 
 #### 기본 사용법
 
@@ -761,6 +861,7 @@ public class CustomerDTO {
 #### 실무 예시: 개인정보보호법 준수
 
 ```java
+
 @ExcelSheet("사용자 데이터 내보내기")
 public class UserExportDTO {
     @ExcelColumn(header = "사용자 ID", order = 1)
@@ -784,8 +885,8 @@ public class UserExportDTO {
 public void exportUsers(HttpServletResponse response) {
     List<UserExportDTO> users = userService.getAllUsers();
     ExcelExporter.excel(response)
-        .fileName("사용자_데이터.xlsx")
-        .write(users);
+            .fileName("사용자_데이터.xlsx")
+            .write(users);
     // 다운로드되는 파일에는 마스킹된 민감정보가 포함됩니다
 }
 ```
@@ -793,18 +894,19 @@ public void exportUsers(HttpServletResponse response) {
 #### 조건부 스타일과 함께 사용
 
 ```java
+
 @ExcelSheet("금융거래 내역")
 public class TransactionDTO {
     @ExcelColumn(header = "계좌번호", order = 1, masking = Masking.ACCOUNT_NUMBER)
     private String accountNumber;
 
     @ExcelColumn(
-        header = "금액",
-        order = 2,
-        conditionalStyles = @ConditionalStyle(
-            when = "value < 0",
-            style = RedBackgroundStyle.class
-        )
+            header = "금액",
+            order = 2,
+            conditionalStyles = @ConditionalStyle(
+                    when = "value < 0",
+                    style = RedBackgroundStyle.class
+            )
     )
     private BigDecimal amount;
 
@@ -814,6 +916,7 @@ public class TransactionDTO {
 ```
 
 **중요 사항:**
+
 - 마스킹은 **String 필드에만** 적용됩니다
 - 비문자열 타입(Integer, Date 등)은 **무시됩니다**
 - 커스텀 마스킹 로직이 필요한 경우, DTO 값을 설정하기 **전에** 마스킹을 적용하세요
@@ -828,14 +931,15 @@ public class TransactionDTO {
 쿼리 로직과 변환 로직을 분리하여 재사용성을 높이는 전용 API입니다.
 
 #### API 시그니처
+
 ```java
 // HttpServletResponse 버전
 ExcelExporter.excelFromList(
-    HttpServletResponse response,
-    String fileName,
-    Q queryParams,                        // 쿼리 파라미터 객체
-    ExcelDataProvider<Q, R> dataProvider, // 데이터 조회 함수
-    Function<R, E> converter              // Entity → DTO 변환 함수
+        HttpServletResponse response,
+        String fileName,
+        Q queryParams,                        // 쿼리 파라미터 객체
+        ExcelDataProvider<Q, R> dataProvider, // 데이터 조회 함수
+        Function<R, E> converter              // Entity → DTO 변환 함수
 )
 ```
 
@@ -857,40 +961,41 @@ public class CustomerService {
     // Data Provider: 복잡한 쿼리 로직
     public List<CustomerEntity> searchCustomers(CustomerSearchRequest request) {
         return customerRepository.findByDateRangeAndType(
-            request.getStartDate(),
-            request.getEndDate(),
-            request.getCustomerType()
+                request.getStartDate(),
+                request.getEndDate(),
+                request.getCustomerType()
         );
     }
 
     // Converter: Entity → DTO 변환
     public CustomerDTO toDTO(CustomerEntity entity) {
         return CustomerDTO.builder()
-            .customerId(entity.getId())
-            .customerName(entity.getName())
-            .email(entity.getEmail())
-            .build();
+                .customerId(entity.getId())
+                .customerName(entity.getName())
+                .email(entity.getEmail())
+                .build();
     }
 }
 
 // 3. Controller
 @PostMapping("/download/customers/search")
 public void downloadSearchResults(
-    @RequestBody CustomerSearchRequest request,
-    HttpServletResponse response
+        @RequestBody CustomerSearchRequest request,
+        HttpServletResponse response
 ) {
     // Fluent API로 세 가지 관심사 분리: 쿼리, 조회, 변환
     ExcelExporter.excel(response)
-        .fileName("검색결과.xlsx")
-        .write(
-            request,                          // Q: Query params
-            customerService::searchCustomers,  // ExcelDataProvider<Q, R>
-            customerService::toDTO             // Function<R, E>
-        );  // 반환값(최종파일명)은 무시 가능
+            .fileName("검색결과.xlsx")
+            .write(
+                    request,                          // Q: Query params
+                    customerService::searchCustomers,  // ExcelDataProvider<Q, R>
+                    customerService::toDTO             // Function<R, E>
+            );  // 반환값(최종파일명)은 무시 가능
 }
 ```
 
 **장점:**
+
 - ✅ 쿼리 로직 재사용 (다른 API에서도 `searchCustomers()` 사용 가능)
 - ✅ 변환 로직 재사용 (다른 API에서도 `toDTO()` 사용 가능)
 - ✅ 테스트 용이성 (각 함수를 독립적으로 테스트)
@@ -915,6 +1020,7 @@ public class CustomerDTO {
 ```
 
 **결과:**
+
 - 모든 필드가 자동으로 엑셀로 내보내기됨
 - 헤더명은 필드명 사용
 - 컬럼 순서는 필드 선언 순서를 따름
@@ -941,6 +1047,7 @@ public class UserDTO {
 #### 자동 컬럼과 수동 어노테이션 혼용
 
 ```java
+
 @ExcelSheet(value = "상품", autoColumn = true)
 public class ProductDTO {
     @ExcelColumn(header = "전체 이름", order = 1)
@@ -959,6 +1066,7 @@ public class ProductDTO {
 ```
 
 **결과:**
+
 - `@ExcelColumn`이 있는 필드는 어노테이션 설정 사용
 - 어노테이션이 없는 필드는 자동 생성
 - `exclude = true` 필드는 건너뜀
@@ -966,11 +1074,13 @@ public class ProductDTO {
 #### 자동 컬럼 사용 시기
 
 **✅ 적합한 경우:**
+
 - 필드가 많은 단순한 DTO
 - 빠른 프로토타이핑
 - 필드명을 헤더로 사용해도 무방한 내부 리포트
 
 **❌ 권장하지 않는 경우:**
+
 - 전문적인 헤더가 필요한 사용자 대상 내보내기
 - 컬럼별로 복잡한 스타일링이 필요한 경우
 - 여러 DTO에서 정확한 컬럼 순서 조정이 필요한 경우
@@ -991,28 +1101,29 @@ public class ProductDTO {
 4. **기본값 (100 픽셀)**
 
 ```java
+
 @ExcelSheet("고객")
 public class CustomerDTO {
 
     @ExcelColumn(
-        header = "고객명",
-        order = 1,
-        width = 150,  // 명시적으로 150px 지정 (항상 적용됨)
-        columnStyle = MyCustomStyle.class  // 스타일의 width는 무시됨
+            header = "고객명",
+            order = 1,
+            width = 150,  // 명시적으로 150px 지정 (항상 적용됨)
+            columnStyle = MyCustomStyle.class  // 스타일의 width는 무시됨
     )
     private String customerName;
 
     @ExcelColumn(
-        header = "이메일",
-        order = 2,
-        columnStyle = AutoWidthStyle.class  // 스타일의 autoWidth() 사용
+            header = "이메일",
+            order = 2,
+            columnStyle = AutoWidthStyle.class  // 스타일의 autoWidth() 사용
     )
     private String email;
 
     @ExcelColumn(
-        header = "전화번호",
-        order = 3
-        // width 없음, 스타일 없음 → 기본값 100px
+            header = "전화번호",
+            order = 3
+            // width 없음, 스타일 없음 → 기본값 100px
     )
     private String phone;
 }
@@ -1022,14 +1133,16 @@ public class CustomerDTO {
 
 라이브러리는 커스텀 스타일이 지정되지 않은 경우 자동으로 기본 스타일을 적용합니다:
 
-| 필드 타입 | 기본 스타일 | 동작 |
-|----------|-------------|------|
+| 필드 타입                             | 기본 스타일               | 동작                |
+|-----------------------------------|----------------------|-------------------|
 | 숫자형 (Integer, Long, BigDecimal 등) | `DefaultNumberStyle` | 우측 정렬, `#,##0` 포맷 |
-| 기타 타입 (String, Date 등) | `DefaultColumnStyle` | 좌측 정렬, 특별한 포맷 없음 |
-| 헤더 (모든 컬럼) | `DefaultHeaderStyle` | 굵게, 중앙 정렬 |
+| 기타 타입 (String, Date 등)            | `DefaultColumnStyle` | 좌측 정렬, 특별한 포맷 없음  |
+| 헤더 (모든 컬럼)                        | `DefaultHeaderStyle` | 굵게, 중앙 정렬         |
 
 **예시:**
+
 ```java
+
 @ExcelColumn(header = "금액", order = 1)
 private BigDecimal amount;  // 자동으로 DefaultNumberStyle 적용
 
@@ -1038,11 +1151,13 @@ private String name;  // 자동으로 DefaultColumnStyle 적용
 ```
 
 **기본 스타일 재정의:**
+
 ```java
+
 @ExcelColumn(
-    header = "금액",
-    order = 1,
-    columnStyle = CurrencyStyle.class  // DefaultNumberStyle 대신 적용
+        header = "금액",
+        order = 1,
+        columnStyle = CurrencyStyle.class  // DefaultNumberStyle 대신 적용
 )
 private BigDecimal amount;
 ```
@@ -1054,19 +1169,20 @@ private BigDecimal amount;
 #### 기본 병합 헤더
 
 ```java
+
 @ExcelSheet("판매 리포트")
 public class SalesDTO {
     @ExcelColumn(
-        header = "이름",
-        order = 1,
-        mergeHeader = "고객 정보"  // 그룹 헤더
+            header = "이름",
+            order = 1,
+            mergeHeader = "고객 정보"  // 그룹 헤더
     )
     private String customerName;
 
     @ExcelColumn(
-        header = "이메일",
-        order = 2,
-        mergeHeader = "고객 정보"  // 같은 그룹
+            header = "이메일",
+            order = 2,
+            mergeHeader = "고객 정보"  // 같은 그룹
     )
     private String email;
 
@@ -1076,6 +1192,7 @@ public class SalesDTO {
 ```
 
 **결과:**
+
 ```
 Row 0: [    고객 정보    ] [      ]
 Row 1: [ 이름  |  이메일 ] [ 금액 ]
@@ -1085,6 +1202,7 @@ Data:  [홍길동 | a@ex.com] [10만원]
 #### 여러 병합 그룹
 
 ```java
+
 @ExcelSheet("직원 리포트")
 public class EmployeeDTO {
     @ExcelColumn(header = "이름", order = 1, mergeHeader = "개인정보")
@@ -1105,6 +1223,7 @@ public class EmployeeDTO {
 ```
 
 **결과:**
+
 ```
 Row 0: [  개인정보  ] [    주소    ] [      ]
 Row 1: [이름 | 나이] [도로명|도시] [ 급여 ]
@@ -1117,31 +1236,32 @@ public class BlueHeaderStyle extends CustomExcelCellStyle {
     @Override
     protected void configure(ExcelCellStyleConfigurer configurer) {
         configurer
-            .backgroundColor(ExcelColors.lightBlue())
-            .fontColor(ExcelColors.darkBlue());
+                .backgroundColor(ExcelColors.lightBlue())
+                .fontColor(ExcelColors.darkBlue());
     }
 }
 
 @ExcelSheet("리포트")
 public class ReportDTO {
     @ExcelColumn(
-        header = "1분기",
-        order = 1,
-        mergeHeader = "2024년 매출",
-        mergeHeaderStyle = BlueHeaderStyle.class  // 병합 헤더 커스텀 스타일
+            header = "1분기",
+            order = 1,
+            mergeHeader = "2024년 매출",
+            mergeHeaderStyle = BlueHeaderStyle.class  // 병합 헤더 커스텀 스타일
     )
     private BigDecimal q1Sales;
 
     @ExcelColumn(
-        header = "2분기",
-        order = 2,
-        mergeHeader = "2024년 매출"
+            header = "2분기",
+            order = 2,
+            mergeHeader = "2024년 매출"
     )
     private BigDecimal q2Sales;
 }
 ```
 
 **중요:**
+
 - ✅ 병합 그룹 내 컬럼들은 **연속된 order 값**을 가져야 합니다
 - ❌ order에 빈 공간이 있으면 `MERGE_HEADER_ORDER_GAP` 예외 발생
 - ✅ `mergeHeader`가 없는 컬럼은 자동으로 수직 병합 (1열 2행 병합)
@@ -1163,7 +1283,9 @@ public class ReportDTO {
 ### 1️⃣1️⃣ 헤더 제어
 
 #### 헤더 없는 시트
+
 ```java
+
 @ExcelSheet(value = "데이터", hasHeader = false)  // 헤더 행 생략
 public class DataDTO {
     @ExcelColumn(header = "ID", order = 1)  // header는 필수지만 출력되지 않음
@@ -1175,12 +1297,14 @@ public class DataDTO {
 ```
 
 #### 커스텀 헤더 스타일
+
 ```java
+
 @ExcelColumn(
-    header = "총액",
-    order = 1,
-    headerStyle = MyCustomHeaderStyle.class,  // 헤더 셀 스타일
-    columnStyle = CurrencyStyle.class         // 데이터 셀 스타일
+        header = "총액",
+        order = 1,
+        headerStyle = MyCustomHeaderStyle.class,  // 헤더 셀 스타일
+        columnStyle = CurrencyStyle.class         // 데이터 셀 스타일
 )
 private BigDecimal totalAmount;
 ```
@@ -1188,17 +1312,22 @@ private BigDecimal totalAmount;
 ### 1️⃣2️⃣ 시트 순서 지정
 
 ```java
+
 @ExcelSheet(value = "요약", order = 1)  // 첫 번째 시트
-public class SummaryDTO { ... }
+public class SummaryDTO { ...
+}
 
 @ExcelSheet(value = "상세", order = 2)  // 두 번째 시트
-public class DetailDTO { ... }
+public class DetailDTO { ...
+}
 
 @ExcelSheet(value = "참고")  // order 없음 → 가장 앞쪽 배치
-public class ReferenceDTO { ... }
+public class ReferenceDTO { ...
+}
 ```
 
 **정렬 규칙:**
+
 1. `order` 없는 시트 먼저 (입력 순서대로)
 2. `order` 있는 시트는 오름차순 정렬
 
@@ -1211,6 +1340,7 @@ public class ReferenceDTO { ... }
 ### Q1: List와 Stream은 언제 사용하나요?
 
 **A:** 데이터 크기에 따라 선택하세요.
+
 - **1만 건 이하**: `excelFromList()` (간단, 빠름)
 - **1만 건 초과**: `excelFromStream()` (메모리 효율)
 - **100만 건 초과**: `excelFromStream()` 필수 (List는 1M 제한)
@@ -1221,15 +1351,19 @@ public class ReferenceDTO { ... }
 
 ```java
 // 명시적 파일명 → 타임스탬프 없음
-ExcelExporter.excelFromList(response, "report.xlsx", data);
+ExcelExporter.excelFromList(response, "report.xlsx",data);
 // 실제 다운로드: report.xlsx
 
 // 기본 파일명 → 타임스탬프 추가
-ExcelExporter.excelFromList(outputStream, data);  // 또는 "download"
+ExcelExporter.
+
+excelFromList(outputStream, data);  // 또는 "download"
 // 결과: download_20250119_143025.xlsx
 
 // 이미 타임스탬프 패턴 존재 → 중복 추가 안 함
-ExcelExporter.excelFromList(response, "report_20251219_132153.xlsx", data);
+ExcelExporter.
+
+excelFromList(response, "report_20251219_132153.xlsx",data);
 // 실제 다운로드: report_20251219_132153.xlsx
 ```
 
@@ -1239,14 +1373,15 @@ ExcelExporter.excelFromList(response, "report_20251219_132153.xlsx", data);
 
 ```java
 @ExcelColumn(
-    conditionalStyles = {
-        @ConditionalStyle(when = "value < 0", style = RedStyle.class, priority = 30),
-        @ConditionalStyle(when = "value < -1000", style = DarkRedStyle.class, priority = 20)
-    }
+        conditionalStyles = {
+                @ConditionalStyle(when = "value < 0", style = RedStyle.class, priority = 30),
+                @ConditionalStyle(when = "value < -1000", style = DarkRedStyle.class, priority = 20)
+        }
 )
 ```
 
 값이 -2000일 때:
+
 - 두 조건 모두 만족
 - priority 30 > 20 → `RedStyle` 적용
 
@@ -1255,6 +1390,7 @@ ExcelExporter.excelFromList(response, "report_20251219_132153.xlsx", data);
 **A:** `@ExcelColumn`이 없는 필드는 Excel에 포함되지 않습니다.
 
 ```java
+
 @ExcelSheet("고객")
 public class CustomerDTO {
     @ExcelColumn(header = "ID", order = 1)
@@ -1269,14 +1405,25 @@ public class CustomerDTO {
 **A:** 아니요. 빈 리스트/스트림은 `ExcelExporterException` (E001)을 발생시킵니다.
 
 **해결:**
+
 ```java
 List<CustomerDTO> customers = customerService.getCustomers();
-if (customers.isEmpty()) {
-    throw new CustomException("No customers found");
+if(customers.
+
+isEmpty()){
+        throw new
+
+CustomException("No customers found");
 }
-ExcelExporter.excel(response)
-    .fileName("customers.xlsx")
-    .write(customers);
+        ExcelExporter.
+
+excel(response)
+    .
+
+fileName("customers.xlsx")
+    .
+
+write(customers);
 ```
 
 ### Q6: 멀티시트 병합 규칙은?
@@ -1294,6 +1441,7 @@ ExcelExporter.excel(response)
 **A:** 라이브러리가 자동으로 스타일을 캐싱하여 중복을 제거합니다.
 
 **조언:**
+
 - 조건부 스타일을 최소화하세요 (범위로 통합)
 - 유사한 스타일은 하나로 병합하세요
 
@@ -1302,12 +1450,13 @@ ExcelExporter.excel(response)
 **A:** 네, 스레드 안전합니다.
 
 ```java
+
 @Async
 public void exportCustomers(Long userId, HttpServletResponse response) {
     List<CustomerDTO> customers = customerService.getCustomersByUser(userId);
     ExcelExporter.excel(response)
-        .fileName("customers.xlsx")
-        .write(customers);
+            .fileName("customers.xlsx")
+            .write(customers);
 }
 ```
 
@@ -1317,24 +1466,25 @@ public void exportCustomers(Long userId, HttpServletResponse response) {
 
 ### 주요 에러 코드
 
-| 코드 | 메시지 | 해결 방법 |
-|------|--------|----------|
-| E001 | Empty data collection | 빈 데이터 체크 후 처리 |
-| E005 | No @ExcelSheet annotation | DTO에 `@ExcelSheet` 추가 |
-| E006 | No @ExcelColumn fields | 최소 1개 `@ExcelColumn` 필드 추가 |
-| E016 | Exceeded maximum rows for List API | Stream API 사용 |
-| E017 | Stream already consumed | 새 스트림 생성 |
+| 코드   | 메시지                                | 해결 방법                      |
+|------|------------------------------------|----------------------------|
+| E001 | Empty data collection              | 빈 데이터 체크 후 처리              |
+| E005 | No @ExcelSheet annotation          | DTO에 `@ExcelSheet` 추가      |
+| E006 | No @ExcelColumn fields             | 최소 1개 `@ExcelColumn` 필드 추가 |
+| E016 | Exceeded maximum rows for List API | Stream API 사용              |
+| E017 | Stream already consumed            | 새 스트림 생성                   |
 
 ### Try-Catch 예제
 
 ```java
+
 @PostMapping("/download/customers")
 public ResponseEntity<?> downloadCustomers(HttpServletResponse response) {
     try {
         List<CustomerDTO> customers = customerService.getCustomers();
         ExcelExporter.excel(response)
-            .fileName("고객목록.xlsx")
-            .write(customers);
+                .fileName("고객목록.xlsx")
+                .write(customers);
         return ResponseEntity.ok().build();
 
     } catch (ExcelExporterException ex) {
@@ -1343,13 +1493,13 @@ public ResponseEntity<?> downloadCustomers(HttpServletResponse response) {
         switch (ex.getCode()) {
             case "E001":
                 return ResponseEntity.badRequest()
-                    .body("데이터가 없습니다.");
+                        .body("데이터가 없습니다.");
             case "E016":
                 return ResponseEntity.badRequest()
-                    .body("데이터가 너무 많습니다. 기간을 줄여주세요.");
+                        .body("데이터가 너무 많습니다. 기간을 줄여주세요.");
             default:
                 return ResponseEntity.internalServerError()
-                    .body("Excel 생성 오류: " + ex.getMessage());
+                        .body("Excel 생성 오류: " + ex.getMessage());
         }
     }
 }
@@ -1362,6 +1512,7 @@ public ResponseEntity<?> downloadCustomers(HttpServletResponse response) {
 ### Maven
 
 ```xml
+
 <dependency>
     <groupId>io.github.takoeats</groupId>
     <artifactId>excel-annotator</artifactId>
@@ -1377,13 +1528,13 @@ implementation 'io.github.takoeats:excel-annotator:2.3.1'
 
 ### 필요 의존성
 
-| 라이브러리 | 버전 | 설명 |
-|-----------|------|------|
-| Apache POI | 5.4.0 | Excel 파일 조작 |
-| Commons Lang3 | 3.18.0 | 문자열 유틸리티 |
-| SLF4J API | 2.0.17 | 로깅 API |
-| Servlet API | 3.1.0 (provided) | HttpServletResponse |
-| Lombok | 1.18.30 (provided) | 보일러플레이트 제거 |
+| 라이브러리         | 버전                 | 설명                  |
+|---------------|--------------------|---------------------|
+| Apache POI    | 5.4.0              | Excel 파일 조작         |
+| Commons Lang3 | 3.18.0             | 문자열 유틸리티            |
+| SLF4J API     | 2.0.17             | 로깅 API              |
+| Servlet API   | 3.1.0 (provided)   | HttpServletResponse |
+| Lombok        | 1.18.30 (provided) | 보일러플레이트 제거          |
 
 ---
 
@@ -1392,6 +1543,7 @@ implementation 'io.github.takoeats:excel-annotator:2.3.1'
 ### 1. Spring Boot 컨트롤러
 
 ```java
+
 @RestController
 @RequestMapping("/api/excel")
 @RequiredArgsConstructor
@@ -1403,15 +1555,15 @@ public class ExcelController {
     public void downloadCustomers(HttpServletResponse response) {
         List<CustomerDTO> customers = customerService.getAllCustomers();
         ExcelExporter.excel(response)
-            .fileName("고객목록.xlsx")
-            .write(customers);
+                .fileName("고객목록.xlsx")
+                .write(customers);
     }
 
     @GetMapping("/monthly-report")
     public void downloadMonthlyReport(
-        @RequestParam int year,
-        @RequestParam int month,
-        HttpServletResponse response
+            @RequestParam int year,
+            @RequestParam int month,
+            HttpServletResponse response
     ) {
         Map<String, List<?>> report = new LinkedHashMap<>();
         report.put("customers", customerService.getCustomersByMonth(year, month));
@@ -1419,8 +1571,8 @@ public class ExcelController {
 
         String fileName = String.format("월간리포트_%d년%d월.xlsx", year, month);
         ExcelExporter.excel(response)
-            .fileName(fileName)
-            .write(report);
+                .fileName(fileName)
+                .write(report);
     }
 }
 ```
@@ -1428,6 +1580,7 @@ public class ExcelController {
 ### 2. 조건부 스타일이 적용된 재무 리포트
 
 ```java
+
 @Data
 @ExcelSheet("재무 요약")
 public class FinancialSummaryDTO {
@@ -1436,40 +1589,40 @@ public class FinancialSummaryDTO {
     private String category;
 
     @ExcelColumn(
-        header = "금액",
-        order = 2,
-        columnStyle = CurrencyStyle.class,
-        conditionalStyles = {
-            @ConditionalStyle(
-                when = "value < 0",
-                style = CriticalAlertStyle.class,
-                priority = 30
-            ),
-            @ConditionalStyle(
-                when = "value > 10000000",
-                style = HighlightStyle.class,
-                priority = 20
-            )
-        }
+            header = "금액",
+            order = 2,
+            columnStyle = CurrencyStyle.class,
+            conditionalStyles = {
+                    @ConditionalStyle(
+                            when = "value < 0",
+                            style = CriticalAlertStyle.class,
+                            priority = 30
+                    ),
+                    @ConditionalStyle(
+                            when = "value > 10000000",
+                            style = HighlightStyle.class,
+                            priority = 20
+                    )
+            }
     )
     private BigDecimal amount;
 
     @ExcelColumn(
-        header = "증감율",
-        order = 3,
-        columnStyle = PercentageStyle.class,
-        conditionalStyles = {
-            @ConditionalStyle(
-                when = "value < -0.1",  // -10% 이하
-                style = CriticalAlertStyle.class,
-                priority = 20
-            ),
-            @ConditionalStyle(
-                when = "value > 0.2",   // +20% 이상
-                style = SignatureStyle.class,
-                priority = 10
-            )
-        }
+            header = "증감율",
+            order = 3,
+            columnStyle = PercentageStyle.class,
+            conditionalStyles = {
+                    @ConditionalStyle(
+                            when = "value < -0.1",  // -10% 이하
+                            style = CriticalAlertStyle.class,
+                            priority = 20
+                    ),
+                    @ConditionalStyle(
+                            when = "value > 0.2",   // +20% 이상
+                            style = SignatureStyle.class,
+                            priority = 10
+                    )
+            }
     )
     private Double changeRate;
 }
@@ -1478,6 +1631,7 @@ public class FinancialSummaryDTO {
 ### 3. 대용량 배치 처리
 
 ```java
+
 @Service
 @RequiredArgsConstructor
 public class ExcelBatchService {
@@ -1493,8 +1647,8 @@ public class ExcelBatchService {
 
             Stream<CustomerDTO> dtoStream = stream.map(this::toDTO);
             String fileName = ExcelExporter.excel(fos)
-                .fileName("customers.xlsx")
-                .write(dtoStream);
+                    .fileName("customers.xlsx")
+                    .write(dtoStream);
 
             log.info("Batch export completed: {}", fileName);
             return fileName;
@@ -1514,20 +1668,24 @@ public class ExcelBatchService {
 ### ✅ 자동 설정되는 헤더
 
 라이브러리가 **무조건 설정**하는 헤더 (덮어쓰기):
+
 ```java
-Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
-Content-Disposition: attachment; filename="download.xlsx"; filename*=UTF-8''...
+Content-Type:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
+Content-Disposition:attachment;filename="download.xlsx";filename*=UTF-8''...
 ```
 
 ### 🔄 조건부 설정 헤더
 
 사용자가 **미리 설정하지 않은 경우에만** 기본값 적용:
+
 ```java
-Cache-Control: no-store, no-cache, must-revalidate, max-age=0
+Cache-Control:no-store,no-cache,must-revalidate,max-age=0
 ```
 
 **예시: 커스텀 Cache-Control 적용**
+
 ```java
+
 @GetMapping("/download/public-report")
 public void downloadPublicReport(HttpServletResponse response) {
     // 캐싱 허용하고 싶은 경우
@@ -1535,8 +1693,8 @@ public void downloadPublicReport(HttpServletResponse response) {
 
     List<ReportDTO> data = reportService.getPublicData();
     ExcelExporter.excel(response)
-        .fileName("report.xlsx")
-        .write(data);
+            .fileName("report.xlsx")
+            .write(data);
     // Cache-Control은 "public, max-age=3600" 유지됨
 }
 ```
@@ -1546,7 +1704,9 @@ public void downloadPublicReport(HttpServletResponse response) {
 라이브러리는 `response.reset()`을 호출하지 않으므로, **사용자가 설정한 모든 헤더가 보존**됩니다.
 
 **예시: 보안 토큰 헤더 유지**
+
 ```java
+
 @GetMapping("/download/secure-data")
 public void downloadSecureData(HttpServletResponse response) {
     // 인증/보안 관련 커스텀 헤더
@@ -1556,8 +1716,8 @@ public void downloadSecureData(HttpServletResponse response) {
 
     List<SecureDataDTO> data = secureDataService.getData();
     ExcelExporter.excel(response)
-        .fileName("secure-data.xlsx")
-        .write(data);
+            .fileName("secure-data.xlsx")
+            .write(data);
     // ✅ 모든 커스텀 헤더가 그대로 유지됨
 }
 ```

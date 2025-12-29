@@ -20,7 +20,15 @@ public class PersonDTO {
         this.salary = salary;
     }
 
-    public String getName() { return name; }
-    public Integer getAge() { return age; }
-    public java.math.BigDecimal getSalary() { return salary; }
+    public String getName() {
+        return name;
+    }
+
+    public Integer getAge() {
+        return age;
+    }
+
+    public java.math.BigDecimal getSalary() {
+        return salary;
+    }
 }

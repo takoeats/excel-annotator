@@ -24,16 +24,16 @@ class ExcelDataProviderPatternTest {
     @Test
     void queryParamsToServiceToExcel_fullFlow() throws Exception {
         QueryParams params = QueryParams.builder()
-            .status("ACTIVE")
-            .page(1)
-            .size(20)
-            .build();
+                .status("ACTIVE")
+                .page(1)
+                .size(20)
+                .build();
 
         List<UserEntity> entities = mockUserService(params);
 
         List<UserExcelDTO> excelData = entities.stream()
-            .map(UserExcelDTO::fromEntity)
-            .collect(Collectors.toList());
+                .map(UserExcelDTO::fromEntity)
+                .collect(Collectors.toList());
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ExcelExporter.excelFromList(baos, "users.xlsx", excelData);
@@ -54,25 +54,25 @@ class ExcelDataProviderPatternTest {
     @Test
     void pagination_differentPages_correctData() throws Exception {
         QueryParams page1Params = QueryParams.builder()
-            .page(1)
-            .size(10)
-            .build();
+                .page(1)
+                .size(10)
+                .build();
 
         QueryParams page2Params = QueryParams.builder()
-            .page(2)
-            .size(10)
-            .build();
+                .page(2)
+                .size(10)
+                .build();
 
         List<UserEntity> page1Entities = mockUserService(page1Params);
         List<UserEntity> page2Entities = mockUserService(page2Params);
 
         List<UserExcelDTO> page1Data = page1Entities.stream()
-            .map(UserExcelDTO::fromEntity)
-            .collect(Collectors.toList());
+                .map(UserExcelDTO::fromEntity)
+                .collect(Collectors.toList());
 
         List<UserExcelDTO> page2Data = page2Entities.stream()
-            .map(UserExcelDTO::fromEntity)
-            .collect(Collectors.toList());
+                .map(UserExcelDTO::fromEntity)
+                .collect(Collectors.toList());
 
         ByteArrayOutputStream baos1 = new ByteArrayOutputStream();
         ExcelExporter.excelFromList(baos1, "page1.xlsx", page1Data);
@@ -98,13 +98,13 @@ class ExcelDataProviderPatternTest {
     @Test
     void entityToDtoConversion_preservesAllFields() throws Exception {
         UserEntity entity = UserEntity.builder()
-            .id(123L)
-            .username("testuser")
-            .email("test@example.com")
-            .status("ACTIVE")
-            .createdAt(LocalDateTime.of(2025, 1, 1, 10, 0))
-            .lastLoginAt(LocalDateTime.of(2025, 1, 27, 15, 30))
-            .build();
+                .id(123L)
+                .username("testuser")
+                .email("test@example.com")
+                .status("ACTIVE")
+                .createdAt(LocalDateTime.of(2025, 1, 1, 10, 0))
+                .lastLoginAt(LocalDateTime.of(2025, 1, 27, 15, 30))
+                .build();
 
         UserExcelDTO dto = UserExcelDTO.fromEntity(entity);
 
@@ -117,7 +117,7 @@ class ExcelDataProviderPatternTest {
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ExcelExporter.excelFromList(baos, "single_user.xlsx",
-            java.util.Collections.singletonList(dto));
+                java.util.Collections.singletonList(dto));
 
         Workbook wb = ExcelTestHelper.workbookFromBytes(baos.toByteArray());
         Sheet sheet = wb.getSheetAt(0);
@@ -135,19 +135,19 @@ class ExcelDataProviderPatternTest {
         Function<UserEntity, UserExcelDTO> basicConverter = UserExcelDTO::fromEntity;
 
         Function<UserExcelDTO, UserExcelDTO> statusNormalizer = dto ->
-            UserExcelDTO.builder()
-                .id(dto.getId())
-                .username(dto.getUsername())
-                .email(dto.getEmail())
-                .status(dto.getStatus().toUpperCase())
-                .createdAt(dto.getCreatedAt())
-                .lastLoginAt(dto.getLastLoginAt())
-                .build();
+                UserExcelDTO.builder()
+                        .id(dto.getId())
+                        .username(dto.getUsername())
+                        .email(dto.getEmail())
+                        .status(dto.getStatus().toUpperCase())
+                        .createdAt(dto.getCreatedAt())
+                        .lastLoginAt(dto.getLastLoginAt())
+                        .build();
 
         List<UserExcelDTO> processedData = entities.stream()
-            .map(basicConverter)
-            .map(statusNormalizer)
-            .collect(Collectors.toList());
+                .map(basicConverter)
+                .map(statusNormalizer)
+                .collect(Collectors.toList());
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ExcelExporter.excelFromList(baos, "transformed.xlsx", processedData);
@@ -167,8 +167,8 @@ class ExcelDataProviderPatternTest {
         List<UserEntity> entities = mockUserService(nullParams);
 
         List<UserExcelDTO> excelData = entities.stream()
-            .map(UserExcelDTO::fromEntity)
-            .collect(Collectors.toList());
+                .map(UserExcelDTO::fromEntity)
+                .collect(Collectors.toList());
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ExcelExporter.excelFromList(baos, "default_params.xlsx", excelData);
@@ -191,13 +191,13 @@ class ExcelDataProviderPatternTest {
         List<UserEntity> result = new ArrayList<>();
         for (int i = startId; i <= endId; i++) {
             result.add(UserEntity.builder()
-                .id((long) i)
-                .username("user" + i)
-                .email("user" + i + "@example.com")
-                .status(status)
-                .createdAt(LocalDateTime.now().minusDays(i))
-                .lastLoginAt(LocalDateTime.now().minusHours(i))
-                .build());
+                    .id((long) i)
+                    .username("user" + i)
+                    .email("user" + i + "@example.com")
+                    .status(status)
+                    .createdAt(LocalDateTime.now().minusDays(i))
+                    .lastLoginAt(LocalDateTime.now().minusHours(i))
+                    .build());
         }
 
         return result;
@@ -207,13 +207,13 @@ class ExcelDataProviderPatternTest {
         List<UserEntity> result = new ArrayList<>();
         for (int i = 1; i <= count; i++) {
             result.add(UserEntity.builder()
-                .id((long) i)
-                .username("user" + i)
-                .email("user" + i + "@example.com")
-                .status(i % 2 == 0 ? "active" : "inactive")
-                .createdAt(LocalDateTime.now().minusDays(i))
-                .lastLoginAt(LocalDateTime.now().minusHours(i))
-                .build());
+                    .id((long) i)
+                    .username("user" + i)
+                    .email("user" + i + "@example.com")
+                    .status(i % 2 == 0 ? "active" : "inactive")
+                    .createdAt(LocalDateTime.now().minusDays(i))
+                    .lastLoginAt(LocalDateTime.now().minusHours(i))
+                    .build());
         }
         return result;
     }

@@ -1,6 +1,6 @@
-package io.github.takoeats.excelannotator.style.rule.node;
+package io.github.takoeats.excelannotator.style.internal.rule.node;
 
-import io.github.takoeats.excelannotator.style.rule.CellContext;
+import io.github.takoeats.excelannotator.style.internal.rule.CellContext;
 
 /**
  * 표현식 트리의 노드

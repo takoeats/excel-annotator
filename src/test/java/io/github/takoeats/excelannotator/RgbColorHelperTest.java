@@ -1,7 +1,7 @@
 package io.github.takoeats.excelannotator;
 
 import io.github.takoeats.excelannotator.exception.ExcelExporterException;
-import io.github.takoeats.excelannotator.style.RgbColorHelper;
+import io.github.takoeats.excelannotator.style.internal.util.RgbColorHelper;
 import org.apache.poi.xssf.usermodel.XSSFColor;
 import org.junit.jupiter.api.Test;
 
@@ -22,20 +22,20 @@ class RgbColorHelperTest {
     @Test
     void validateRgb_invalidRedValue_throwsException() {
         ExcelExporterException exception1 = assertThrows(
-            ExcelExporterException.class,
-            () -> RgbColorHelper.validateRgb(-1, 0, 0)
+                ExcelExporterException.class,
+                () -> RgbColorHelper.validateRgb(-1, 0, 0)
         );
         assertTrue(exception1.getMessage().contains("Red"));
 
         ExcelExporterException exception2 = assertThrows(
-            ExcelExporterException.class,
-            () -> RgbColorHelper.validateRgb(256, 0, 0)
+                ExcelExporterException.class,
+                () -> RgbColorHelper.validateRgb(256, 0, 0)
         );
         assertTrue(exception2.getMessage().contains("Red"));
 
         ExcelExporterException exception3 = assertThrows(
-            ExcelExporterException.class,
-            () -> RgbColorHelper.validateRgb(1000, 0, 0)
+                ExcelExporterException.class,
+                () -> RgbColorHelper.validateRgb(1000, 0, 0)
         );
         assertTrue(exception3.getMessage().contains("Red"));
     }
@@ -43,14 +43,14 @@ class RgbColorHelperTest {
     @Test
     void validateRgb_invalidGreenValue_throwsException() {
         ExcelExporterException exception1 = assertThrows(
-            ExcelExporterException.class,
-            () -> RgbColorHelper.validateRgb(0, -1, 0)
+                ExcelExporterException.class,
+                () -> RgbColorHelper.validateRgb(0, -1, 0)
         );
         assertTrue(exception1.getMessage().contains("Green"));
 
         ExcelExporterException exception2 = assertThrows(
-            ExcelExporterException.class,
-            () -> RgbColorHelper.validateRgb(0, 256, 0)
+                ExcelExporterException.class,
+                () -> RgbColorHelper.validateRgb(0, 256, 0)
         );
         assertTrue(exception2.getMessage().contains("Green"));
     }
@@ -58,14 +58,14 @@ class RgbColorHelperTest {
     @Test
     void validateRgb_invalidBlueValue_throwsException() {
         ExcelExporterException exception1 = assertThrows(
-            ExcelExporterException.class,
-            () -> RgbColorHelper.validateRgb(0, 0, -1)
+                ExcelExporterException.class,
+                () -> RgbColorHelper.validateRgb(0, 0, -1)
         );
         assertTrue(exception1.getMessage().contains("Blue"));
 
         ExcelExporterException exception2 = assertThrows(
-            ExcelExporterException.class,
-            () -> RgbColorHelper.validateRgb(0, 0, 256)
+                ExcelExporterException.class,
+                () -> RgbColorHelper.validateRgb(0, 0, 256)
         );
         assertTrue(exception2.getMessage().contains("Blue"));
     }
@@ -100,25 +100,25 @@ class RgbColorHelperTest {
     @Test
     void createRgbColor_invalidValues_throwsException() {
         assertThrows(ExcelExporterException.class,
-            () -> RgbColorHelper.createRgbColor(-1, 0, 0));
+                () -> RgbColorHelper.createRgbColor(-1, 0, 0));
 
         assertThrows(ExcelExporterException.class,
-            () -> RgbColorHelper.createRgbColor(0, -1, 0));
+                () -> RgbColorHelper.createRgbColor(0, -1, 0));
 
         assertThrows(ExcelExporterException.class,
-            () -> RgbColorHelper.createRgbColor(0, 0, -1));
+                () -> RgbColorHelper.createRgbColor(0, 0, -1));
 
         assertThrows(ExcelExporterException.class,
-            () -> RgbColorHelper.createRgbColor(256, 0, 0));
+                () -> RgbColorHelper.createRgbColor(256, 0, 0));
 
         assertThrows(ExcelExporterException.class,
-            () -> RgbColorHelper.createRgbColor(0, 256, 0));
+                () -> RgbColorHelper.createRgbColor(0, 256, 0));
 
         assertThrows(ExcelExporterException.class,
-            () -> RgbColorHelper.createRgbColor(0, 0, 256));
+                () -> RgbColorHelper.createRgbColor(0, 0, 256));
 
         assertThrows(ExcelExporterException.class,
-            () -> RgbColorHelper.createRgbColor(300, 300, 300));
+                () -> RgbColorHelper.createRgbColor(300, 300, 300));
     }
 
     @Test
@@ -137,7 +137,7 @@ class RgbColorHelperTest {
     void utilityClass_cannotBeInstantiated() {
         try {
             java.lang.reflect.Constructor<RgbColorHelper> constructor =
-                RgbColorHelper.class.getDeclaredConstructor();
+                    RgbColorHelper.class.getDeclaredConstructor();
             constructor.setAccessible(true);
             constructor.newInstance();
             fail("Should have thrown AssertionError");

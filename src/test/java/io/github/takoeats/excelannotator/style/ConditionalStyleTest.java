@@ -2,7 +2,6 @@ package io.github.takoeats.excelannotator.style;
 
 import io.github.takoeats.excelannotator.ExcelExporter;
 import io.github.takoeats.excelannotator.testdto.ConditionalStyleTestDTO.*;
-import java.util.Collections;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFCellStyle;
 import org.apache.poi.xssf.usermodel.XSSFColor;
@@ -12,6 +11,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.math.BigDecimal;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -62,7 +62,7 @@ class ConditionalStyleTest {
     @Test
     void conditionalStyle_numericComparison_greaterThan() throws Exception {
         List<NumericConditionDTO> data = Collections.singletonList(
-            new NumericConditionDTO("Item1", new BigDecimal("2000000"))
+                new NumericConditionDTO("Item1", new BigDecimal("2000000"))
         );
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -246,7 +246,7 @@ class ConditionalStyleTest {
     @Test
     void conditionalStyle_priorityOrdering_highestPriorityWins() throws Exception {
         List<PriorityTestDTO> data = Collections.singletonList(
-            new PriorityTestDTO("Priority1", new BigDecimal("-500"))
+                new PriorityTestDTO("Priority1", new BigDecimal("-500"))
         );
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();

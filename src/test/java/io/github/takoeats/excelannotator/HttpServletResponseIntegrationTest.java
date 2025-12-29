@@ -1,24 +1,6 @@
 package io.github.takoeats.excelannotator;
 
-import static io.github.takoeats.excelannotator.util.ExcelAssertions.assertExcelFileValid;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
 import io.github.takoeats.excelannotator.testdto.PersonDTO;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.math.BigDecimal;
-import java.util.Arrays;
-import java.util.List;
-import javax.servlet.ServletOutputStream;
-import javax.servlet.WriteListener;
-import javax.servlet.http.HttpServletResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -26,11 +8,27 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import javax.servlet.ServletOutputStream;
+import javax.servlet.WriteListener;
+import javax.servlet.http.HttpServletResponse;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.util.Arrays;
+import java.util.List;
+
+import static io.github.takoeats.excelannotator.util.ExcelAssertions.assertExcelFileValid;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.*;
+
 @ExtendWith(MockitoExtension.class)
 class HttpServletResponseIntegrationTest {
 
     private static final String EXCEL_CONTENT_TYPE =
-        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
 
     @Mock
     private HttpServletResponse response;
@@ -62,8 +60,8 @@ class HttpServletResponseIntegrationTest {
     @Test
     void downloadExcel_setsCorrectContentType() throws IOException {
         List<PersonDTO> data = Arrays.asList(
-            new PersonDTO("Alice", 30, new BigDecimal("1000.00")),
-            new PersonDTO("Bob", 40, new BigDecimal("2000.00"))
+                new PersonDTO("Alice", 30, new BigDecimal("1000.00")),
+                new PersonDTO("Bob", 40, new BigDecimal("2000.00"))
         );
 
         ExcelExporter.excelFromList(response, "test.xlsx", data);
@@ -74,7 +72,7 @@ class HttpServletResponseIntegrationTest {
     @Test
     void downloadExcel_setsContentDispositionHeader() throws IOException {
         List<PersonDTO> data = Arrays.asList(
-            new PersonDTO("Test", 25, new BigDecimal("500.00"))
+                new PersonDTO("Test", 25, new BigDecimal("500.00"))
         );
 
         ExcelExporter.excelFromList(response, "report.xlsx", data);
@@ -91,7 +89,7 @@ class HttpServletResponseIntegrationTest {
     @Test
     void downloadExcel_encodesKoreanFileName() throws IOException {
         List<PersonDTO> data = Arrays.asList(
-            new PersonDTO("테스트", 30, new BigDecimal("1000.00"))
+                new PersonDTO("테스트", 30, new BigDecimal("1000.00"))
         );
 
         ExcelExporter.excelFromList(response, "한글파일명.xlsx", data);
@@ -107,7 +105,7 @@ class HttpServletResponseIntegrationTest {
     @Test
     void downloadExcel_setCacheControlHeader() throws IOException {
         List<PersonDTO> data = Arrays.asList(
-            new PersonDTO("Test", 30, new BigDecimal("1000.00"))
+                new PersonDTO("Test", 30, new BigDecimal("1000.00"))
         );
 
         ExcelExporter.excelFromList(response, "test.xlsx", data);
@@ -124,8 +122,8 @@ class HttpServletResponseIntegrationTest {
     @Test
     void downloadExcel_writesExcelToOutputStream() throws IOException {
         List<PersonDTO> data = Arrays.asList(
-            new PersonDTO("Alice", 30, new BigDecimal("1000.00")),
-            new PersonDTO("Bob", 40, new BigDecimal("2000.00"))
+                new PersonDTO("Alice", 30, new BigDecimal("1000.00")),
+                new PersonDTO("Bob", 40, new BigDecimal("2000.00"))
         );
 
         ExcelExporter.excelFromList(response, "test.xlsx", data);
@@ -140,7 +138,7 @@ class HttpServletResponseIntegrationTest {
     void downloadExcel_respectsUserSetCacheControl() throws IOException {
         when(response.getHeader("Cache-Control")).thenReturn("public, max-age=3600");
         List<PersonDTO> data = Arrays.asList(
-            new PersonDTO("Test", 30, new BigDecimal("1000.00"))
+                new PersonDTO("Test", 30, new BigDecimal("1000.00"))
         );
 
         ExcelExporter.excelFromList(response, "test.xlsx", data);

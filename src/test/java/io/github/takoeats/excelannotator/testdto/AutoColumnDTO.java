@@ -16,8 +16,19 @@ public class AutoColumnDTO {
         this.salary = salary;
     }
 
-    public String getName() { return name; }
-    public Integer getAge() { return age; }
-    public String getEmail() { return email; }
-    public Double getSalary() { return salary; }
+    public String getName() {
+        return name;
+    }
+
+    public Integer getAge() {
+        return age;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public Double getSalary() {
+        return salary;
+    }
 }

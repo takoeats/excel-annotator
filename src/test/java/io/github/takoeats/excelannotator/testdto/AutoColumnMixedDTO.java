@@ -26,9 +26,23 @@ public class AutoColumnMixedDTO {
         this.internalId = internalId;
     }
 
-    public String getName() { return name; }
-    public Integer getAge() { return age; }
-    public String getEmail() { return email; }
-    public String getPhone() { return phone; }
-    public String getInternalId() { return internalId; }
+    public String getName() {
+        return name;
+    }
+
+    public Integer getAge() {
+        return age;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public String getInternalId() {
+        return internalId;
+    }
 }

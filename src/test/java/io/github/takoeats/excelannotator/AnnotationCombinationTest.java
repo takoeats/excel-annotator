@@ -1,13 +1,12 @@
 package io.github.takoeats.excelannotator;
 
-import io.github.takoeats.excelannotator.testdto.ExcludeTestDTO;
-import io.github.takoeats.excelannotator.testdto.OrderDuplicateDTO;
-import io.github.takoeats.excelannotator.testdto.OrderSkipDTO;
-import io.github.takoeats.excelannotator.testdto.PriorityTestDTO;
-import io.github.takoeats.excelannotator.testdto.StylePriorityDTO;
+import io.github.takoeats.excelannotator.testdto.*;
 import io.github.takoeats.excelannotator.util.ExcelAssertions;
 import io.github.takoeats.excelannotator.util.ExcelTestHelper;
-import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayOutputStream;
@@ -22,10 +21,10 @@ class AnnotationCombinationTest {
     @Test
     void sheetName_columnAnnotationCreates_separateSheet() throws Exception {
         PriorityTestDTO data = PriorityTestDTO.builder()
-                                              .testField("value1")
-                                              .widthField("value2")
-                                              .orderField("value3")
-                                              .build();
+                .testField("value1")
+                .widthField("value2")
+                .orderField("value3")
+                .build();
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ExcelExporter.excelFromList(baos, "priority_test.xlsx", Collections.singletonList(data));
@@ -44,8 +43,8 @@ class AnnotationCombinationTest {
     @Test
     void columnWidth_explicitWidthValue_appliesCorrectly() throws Exception {
         PriorityTestDTO data = PriorityTestDTO.builder()
-            .widthField("test width")
-            .build();
+                .widthField("test width")
+                .build();
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ExcelExporter.excelFromList(baos, "width_test.xlsx", Collections.singletonList(data));
@@ -60,11 +59,11 @@ class AnnotationCombinationTest {
     @Test
     void excludeField_whenTrue_fieldNotPresentInExcel() throws Exception {
         ExcludeTestDTO data = ExcludeTestDTO.builder()
-                                            .includedField1("included1")
-                                            .excludedField("SHOULD_NOT_APPEAR")
-                                            .includedField2("included2")
-                                            .defaultExcludeField("default")
-                                            .build();
+                .includedField1("included1")
+                .excludedField("SHOULD_NOT_APPEAR")
+                .includedField2("included2")
+                .defaultExcludeField("default")
+                .build();
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ExcelExporter.excelFromList(baos, "exclude_test.xlsx", Collections.singletonList(data));
@@ -88,8 +87,8 @@ class AnnotationCombinationTest {
     @Test
     void excludeField_whenFalse_fieldPresentInExcel() throws Exception {
         ExcludeTestDTO data = ExcludeTestDTO.builder()
-            .defaultExcludeField("should appear")
-            .build();
+                .defaultExcludeField("should appear")
+                .build();
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ExcelExporter.excelFromList(baos, "exclude_false_test.xlsx", Collections.singletonList(data));
@@ -106,11 +105,11 @@ class AnnotationCombinationTest {
     @Test
     void headerStyle_appliesIndependently_fromColumnStyle() throws Exception {
         StylePriorityDTO data = StylePriorityDTO.builder()
-                                                .headerStyleOnly("header only value")
-                                                .columnStyleOnly("column only value")
-                                                .bothStyles("both styles value")
-                                                .noStyle("no style value")
-                                                .build();
+                .headerStyleOnly("header only value")
+                .columnStyleOnly("column only value")
+                .bothStyles("both styles value")
+                .noStyle("no style value")
+                .build();
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ExcelExporter.excelFromList(baos, "style_priority_test.xlsx", Collections.singletonList(data));
@@ -130,8 +129,8 @@ class AnnotationCombinationTest {
     @Test
     void columnStyle_appliesIndependently_fromHeaderStyle() throws Exception {
         StylePriorityDTO data = StylePriorityDTO.builder()
-            .columnStyleOnly("column only")
-            .build();
+                .columnStyleOnly("column only")
+                .build();
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ExcelExporter.excelFromList(baos, "column_style_test.xlsx", Collections.singletonList(data));
@@ -147,8 +146,8 @@ class AnnotationCombinationTest {
     @Test
     void bothStyles_headerAndColumn_applyToRespectiveCells() throws Exception {
         StylePriorityDTO data = StylePriorityDTO.builder()
-            .bothStyles("both value")
-            .build();
+                .bothStyles("both value")
+                .build();
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ExcelExporter.excelFromList(baos, "both_styles_test.xlsx", Collections.singletonList(data));
@@ -168,11 +167,11 @@ class AnnotationCombinationTest {
     @Test
     void orderSkipping_gapsInOrderValues_columnsAppearInCorrectSequence() throws Exception {
         OrderSkipDTO data = OrderSkipDTO.builder()
-                                        .field1("first")
-                                        .field3("second")
-                                        .field5("third")
-                                        .field7("fourth")
-                                        .build();
+                .field1("first")
+                .field3("second")
+                .field5("third")
+                .field7("fourth")
+                .build();
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ExcelExporter.excelFromList(baos, "order_skip_test.xlsx", Collections.singletonList(data));
@@ -198,10 +197,10 @@ class AnnotationCombinationTest {
     @Test
     void orderDuplicate_sameOrderValues_throwsExceptionOrDeterministicBehavior() {
         OrderDuplicateDTO data = OrderDuplicateDTO.builder()
-                                                  .fieldA("A")
-                                                  .fieldB("B")
-                                                  .fieldC("C")
-                                                  .build();
+                .fieldA("A")
+                .fieldB("B")
+                .fieldC("C")
+                .build();
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
@@ -219,16 +218,16 @@ class AnnotationCombinationTest {
     @Test
     void multipleAnnotations_complexCombination_allAttributesApplyCorrectly() throws Exception {
         PriorityTestDTO data1 = PriorityTestDTO.builder()
-            .testField("test1")
-            .widthField("width1")
-            .orderField("order1")
-            .build();
+                .testField("test1")
+                .widthField("width1")
+                .orderField("order1")
+                .build();
 
         PriorityTestDTO data2 = PriorityTestDTO.builder()
-            .testField("test2")
-            .widthField("width2")
-            .orderField("order2")
-            .build();
+                .testField("test2")
+                .widthField("width2")
+                .orderField("order2")
+                .build();
 
         List<PriorityTestDTO> dataList = Arrays.asList(data1, data2);
 

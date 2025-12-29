@@ -3,7 +3,8 @@ package io.github.takoeats.excelannotator.masking;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 @DisplayName("MaskingUtil 단위 테스트")
 public class MaskingUtilTest {

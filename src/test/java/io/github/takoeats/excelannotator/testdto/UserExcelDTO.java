@@ -38,12 +38,12 @@ public class UserExcelDTO {
 
     public static UserExcelDTO fromEntity(UserEntity entity) {
         return UserExcelDTO.builder()
-            .id(entity.getId())
-            .username(entity.getUsername())
-            .email(entity.getEmail())
-            .status(entity.getStatus())
-            .createdAt(entity.getCreatedAt())
-            .lastLoginAt(entity.getLastLoginAt())
-            .build();
+                .id(entity.getId())
+                .username(entity.getUsername())
+                .email(entity.getEmail())
+                .status(entity.getStatus())
+                .createdAt(entity.getCreatedAt())
+                .lastLoginAt(entity.getLastLoginAt())
+                .build();
     }
 }

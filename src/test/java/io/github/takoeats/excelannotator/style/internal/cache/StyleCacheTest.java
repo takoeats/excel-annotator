@@ -1,6 +1,8 @@
-package io.github.takoeats.excelannotator.style;
+package io.github.takoeats.excelannotator.style.internal.cache;
 
 import io.github.takoeats.excelannotator.exception.ExcelExporterException;
+import io.github.takoeats.excelannotator.style.CustomExcelCellStyle;
+import io.github.takoeats.excelannotator.style.ExcelCellStyleConfigurer;
 import io.github.takoeats.excelannotator.style.defaultstyle.DefaultColumnStyle;
 import io.github.takoeats.excelannotator.style.defaultstyle.DefaultHeaderStyle;
 import org.apache.poi.ss.usermodel.CellStyle;
@@ -129,7 +131,7 @@ class StyleCacheTest {
                 () -> StyleCache.getStyleInstance(StyleWithPrivateConstructor.class));
     }
 
-  @SuppressWarnings({"java:S1068", "java:S1186"})
+    @SuppressWarnings({"java:S1068", "java:S1186"})
     public static class StyleWithPrivateConstructor extends CustomExcelCellStyle {
         private StyleWithPrivateConstructor() {
         }
@@ -139,7 +141,7 @@ class StyleCacheTest {
         }
     }
 
-  @SuppressWarnings({"java:S1068", "java:S1186"})
+    @SuppressWarnings({"java:S1068", "java:S1186"})
     public static class StyleWithoutNoArgConstructor extends CustomExcelCellStyle {
         private final String name;
 

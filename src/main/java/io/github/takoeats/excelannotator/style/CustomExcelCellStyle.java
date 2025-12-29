@@ -1,7 +1,7 @@
 package io.github.takoeats.excelannotator.style;
 
-import org.apache.poi.ss.usermodel.CellStyle;
-import org.apache.poi.ss.usermodel.Workbook;
+import io.github.takoeats.excelannotator.style.internal.wrapper.CellStyleWrapper;
+import io.github.takoeats.excelannotator.style.internal.wrapper.WorkbookWrapper;
 
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -21,7 +21,7 @@ public abstract class CustomExcelCellStyle {
     /**
      * Workbook을 전달받는 apply 메서드
      */
-    public void apply(CellStyle cellStyle, Workbook workbook) {
+    public void apply(CellStyleWrapper cellStyle, WorkbookWrapper workbook) {
         ExcelCellStyleConfigurer configurer = getOrCreateConfigurer();
         configurer.configure(cellStyle, workbook);
     }

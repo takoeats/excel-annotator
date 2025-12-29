@@ -1,7 +1,7 @@
 package io.github.takoeats.excelannotator.internal.writer;
 
 import io.github.takoeats.excelannotator.style.CustomExcelCellStyle;
-import io.github.takoeats.excelannotator.style.StyleCache;
+import io.github.takoeats.excelannotator.style.internal.cache.StyleCache;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Workbook;
 

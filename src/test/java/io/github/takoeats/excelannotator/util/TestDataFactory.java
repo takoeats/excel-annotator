@@ -1,12 +1,7 @@
 package io.github.takoeats.excelannotator.util;
 
-import io.github.takoeats.excelannotator.testdto.AllTypesDTO;
-import io.github.takoeats.excelannotator.testdto.CustomerDTO;
-import io.github.takoeats.excelannotator.testdto.DepartmentDTO;
-import io.github.takoeats.excelannotator.testdto.EmployeeDTO;
-import io.github.takoeats.excelannotator.testdto.FinancialDTO;
-import io.github.takoeats.excelannotator.testdto.OrderDTO;
-import io.github.takoeats.excelannotator.testdto.SalesReportDTO;
+import io.github.takoeats.excelannotator.testdto.*;
+
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
@@ -85,14 +80,14 @@ public final class TestDataFactory {
 
     public static EmployeeDTO createEmployee(int index) {
         return EmployeeDTO
-            .builder()
-            .employeeId(generateEmployeeId(index))
-            .name("Employee-" + index)
-            .department(randomDepartment())
-            .position(randomPosition())
-            .salary(randomBigDecimal(30000000, 100000000))
-            .hireDate(randomLocalDate())
-            .build();
+                .builder()
+                .employeeId(generateEmployeeId(index))
+                .name("Employee-" + index)
+                .department(randomDepartment())
+                .position(randomPosition())
+                .salary(randomBigDecimal(30000000, 100000000))
+                .hireDate(randomLocalDate())
+                .build();
     }
 
     public static List<EmployeeDTO> createEmployees(int count) {
@@ -105,13 +100,13 @@ public final class TestDataFactory {
 
     public static DepartmentDTO createDepartment(int index) {
         return DepartmentDTO
-            .builder()
-            .departmentCode("DEPT-" + String.format("%03d", index))
-            .departmentName(randomDepartment())
-            .location("Floor-" + randomInt(1, 10))
-            .employeeCount(randomInt(5, 50))
-            .manager("Manager-" + index)
-            .build();
+                .builder()
+                .departmentCode("DEPT-" + String.format("%03d", index))
+                .departmentName(randomDepartment())
+                .location("Floor-" + randomInt(1, 10))
+                .employeeCount(randomInt(5, 50))
+                .manager("Manager-" + index)
+                .build();
     }
 
     public static List<DepartmentDTO> createDepartments(int count) {
@@ -128,13 +123,13 @@ public final class TestDataFactory {
         BigDecimal achievement = randomBigDecimal(0, 2);
 
         return SalesReportDTO
-            .builder()
-            .productName("Product-" + index)
-            .quantity(quantity)
-            .revenue(revenue)
-            .achievementRate(achievement)
-            .salesPerson("Salesperson-" + randomInt(1, 10))
-            .build();
+                .builder()
+                .productName("Product-" + index)
+                .quantity(quantity)
+                .revenue(revenue)
+                .achievementRate(achievement)
+                .salesPerson("Salesperson-" + randomInt(1, 10))
+                .build();
     }
 
     public static List<SalesReportDTO> createSalesReports(int count) {
@@ -147,20 +142,20 @@ public final class TestDataFactory {
 
     public static Stream<SalesReportDTO> createSalesReportStream(int count) {
         return Stream.iterate(1, n -> n + 1)
-            .limit(count)
-            .map(TestDataFactory::createSalesReport);
+                .limit(count)
+                .map(TestDataFactory::createSalesReport);
     }
 
     public static CustomerDTO createCustomer(int index) {
         return CustomerDTO
-            .builder()
-            .customerId(generateCustomerId(index))
-            .customerName("Customer-" + index)
-            .email("customer" + index + "@example.com")
-            .phone("010-" + String.format("%04d", randomInt(1000, 9999)) + "-" + String.format("%04d", randomInt(1000, 9999)))
-            .joinDate(randomLocalDate())
-            .vip(randomInt(1, 10) > 8)
-            .build();
+                .builder()
+                .customerId(generateCustomerId(index))
+                .customerName("Customer-" + index)
+                .email("customer" + index + "@example.com")
+                .phone("010-" + String.format("%04d", randomInt(1000, 9999)) + "-" + String.format("%04d", randomInt(1000, 9999)))
+                .joinDate(randomLocalDate())
+                .vip(randomInt(1, 10) > 8)
+                .build();
     }
 
     public static List<CustomerDTO> createCustomers(int count) {
@@ -173,20 +168,20 @@ public final class TestDataFactory {
 
     public static Stream<CustomerDTO> createCustomerStream(int count) {
         return Stream.generate(() -> createCustomer(randomInt(1, 1000000)))
-            .limit(count);
+                .limit(count);
     }
 
     public static OrderDTO createOrder(int index) {
         return OrderDTO
-            .builder()
-            .orderId(generateOrderId(index))
-            .customerName("Customer-" + randomInt(1, 100))
-            .productName("Product-" + randomInt(1, 50))
-            .quantity(randomInt(1, 100))
-            .orderAmount(randomBigDecimal(10000, 5000000))
-            .orderDateTime(randomLocalDateTime())
-            .deliveryStatus(new String[]{"주문접수", "배송준비", "배송중", "배송완료"}[randomInt(0, 3)])
-            .build();
+                .builder()
+                .orderId(generateOrderId(index))
+                .customerName("Customer-" + randomInt(1, 100))
+                .productName("Product-" + randomInt(1, 50))
+                .quantity(randomInt(1, 100))
+                .orderAmount(randomBigDecimal(10000, 5000000))
+                .orderDateTime(randomLocalDateTime())
+                .deliveryStatus(new String[]{"주문접수", "배송준비", "배송중", "배송완료"}[randomInt(0, 3)])
+                .build();
     }
 
     public static List<OrderDTO> createOrders(int count) {
@@ -204,14 +199,14 @@ public final class TestDataFactory {
         BigDecimal margin = profit.divide(revenue, 4, RoundingMode.HALF_UP);
 
         return FinancialDTO
-            .builder()
-            .accountName("Account-" + index)
-            .revenue(revenue)
-            .expense(expense)
-            .operatingProfit(profit)
-            .profitMargin(margin)
-            .settlementDate(randomLocalDate())
-            .build();
+                .builder()
+                .accountName("Account-" + index)
+                .revenue(revenue)
+                .expense(expense)
+                .operatingProfit(profit)
+                .profitMargin(margin)
+                .settlementDate(randomLocalDate())
+                .build();
     }
 
     public static List<FinancialDTO> createFinancials(int count) {
@@ -224,20 +219,20 @@ public final class TestDataFactory {
 
     public static AllTypesDTO createAllTypes(int index) {
         return AllTypesDTO
-            .builder()
-            .stringValue("String-" + index)
-            .integerValue(index)
-            .longValue((long) index * 1000)
-            .doubleValue(index * 1.5)
-            .floatValue(index * 2.5f)
-            .booleanValue(index % 2 == 0)
-            .bigDecimalValue(randomBigDecimal(1000, 10000))
-            .bigIntegerValue(java.math.BigInteger.valueOf(index).multiply(java.math.BigInteger.valueOf(1000000)))
-            .localDateValue(randomLocalDate())
-            .localDateTimeValue(randomLocalDateTime())
-            .zonedDateTimeValue(java.time.ZonedDateTime.now().minusDays(index))
-            .enumValue(AllTypesDTO.StatusEnum.values()[index % 5])
-            .build();
+                .builder()
+                .stringValue("String-" + index)
+                .integerValue(index)
+                .longValue((long) index * 1000)
+                .doubleValue(index * 1.5)
+                .floatValue(index * 2.5f)
+                .booleanValue(index % 2 == 0)
+                .bigDecimalValue(randomBigDecimal(1000, 10000))
+                .bigIntegerValue(java.math.BigInteger.valueOf(index).multiply(java.math.BigInteger.valueOf(1000000)))
+                .localDateValue(randomLocalDate())
+                .localDateTimeValue(randomLocalDateTime())
+                .zonedDateTimeValue(java.time.ZonedDateTime.now().minusDays(index))
+                .enumValue(AllTypesDTO.StatusEnum.values()[index % 5])
+                .build();
     }
 
     public static List<AllTypesDTO> createAllTypesList(int count) {

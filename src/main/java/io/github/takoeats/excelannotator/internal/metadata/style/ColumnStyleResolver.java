@@ -4,10 +4,10 @@ import io.github.takoeats.excelannotator.annotation.ExcelColumn;
 import io.github.takoeats.excelannotator.internal.metadata.SheetInfo;
 import io.github.takoeats.excelannotator.internal.metadata.extractor.FieldTypeClassifier;
 import io.github.takoeats.excelannotator.style.CustomExcelCellStyle;
-import io.github.takoeats.excelannotator.style.StyleCache;
 import io.github.takoeats.excelannotator.style.defaultstyle.DefaultColumnStyle;
 import io.github.takoeats.excelannotator.style.defaultstyle.DefaultHeaderStyle;
 import io.github.takoeats.excelannotator.style.defaultstyle.DefaultNumberStyle;
+import io.github.takoeats.excelannotator.style.internal.cache.StyleCache;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 

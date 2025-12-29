@@ -16,6 +16,11 @@ public class CustomerPartADTO {
         this.customerName = customerName;
     }
 
-    public String getCustomerId() { return customerId; }
-    public String getCustomerName() { return customerName; }
+    public String getCustomerId() {
+        return customerId;
+    }
+
+    public String getCustomerName() {
+        return customerName;
+    }
 }

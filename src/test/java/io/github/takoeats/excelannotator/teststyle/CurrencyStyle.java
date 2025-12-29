@@ -1,11 +1,6 @@
 package io.github.takoeats.excelannotator.teststyle;
 
-import io.github.takoeats.excelannotator.style.CustomExcelCellStyle;
-import io.github.takoeats.excelannotator.style.ExcelCellStyleConfigurer;
-import io.github.takoeats.excelannotator.style.FontStyle;
-import org.apache.poi.ss.usermodel.BorderStyle;
-import org.apache.poi.ss.usermodel.HorizontalAlignment;
-import org.apache.poi.ss.usermodel.VerticalAlignment;
+import io.github.takoeats.excelannotator.style.*;
 
 public class CurrencyStyle extends CustomExcelCellStyle {
 
@@ -15,8 +10,8 @@ public class CurrencyStyle extends CustomExcelCellStyle {
                 .backgroundColor(144, 238, 144)
                 .font("맑은 고딕", 11, FontStyle.BOLD)
                 .fontColor(0, 0, 0)
-                .alignment(HorizontalAlignment.RIGHT, VerticalAlignment.CENTER)
-                .border(BorderStyle.THIN)
+                .alignment(HorizontalAlign.RIGHT, VerticalAlign.CENTER)
+                .border(BorderType.THIN)
                 .dataFormat("₩#,##0")
                 .width(120);
     }

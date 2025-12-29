@@ -1,7 +1,7 @@
-package io.github.takoeats.excelannotator.style.rule.node;
+package io.github.takoeats.excelannotator.style.internal.rule.node;
 
-import io.github.takoeats.excelannotator.style.rule.CellContext;
-import io.github.takoeats.excelannotator.style.rule.ExpressionParser;
+import io.github.takoeats.excelannotator.style.internal.rule.CellContext;
+import io.github.takoeats.excelannotator.style.internal.rule.ExpressionParser;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 
@@ -129,7 +129,7 @@ class BinaryOpNodeTest {
     @Test
     void evaluate_complexNested_evaluatesCorrectly() {
         ExpressionNode node = ExpressionParser.parseToTree(
-            "(value > 0 && value < 50) || (value > 100 && value < 150)"
+                "(value > 0 && value < 50) || (value > 100 && value < 150)"
         );
         CellContext context = CellContext.acquire();
 
@@ -152,7 +152,7 @@ class BinaryOpNodeTest {
     @Test
     void evaluate_multipleAnd_evaluatesCorrectly() {
         ExpressionNode node = ExpressionParser.parseToTree(
-            "value > 0 && value < 100 && value != 50"
+                "value > 0 && value < 100 && value != 50"
         );
         CellContext context = CellContext.acquire();
 
@@ -169,7 +169,7 @@ class BinaryOpNodeTest {
     @Test
     void evaluate_multipleOr_evaluatesCorrectly() {
         ExpressionNode node = ExpressionParser.parseToTree(
-            "value < 0 || value > 100 || value == 50"
+                "value < 0 || value > 100 || value == 50"
         );
         CellContext context = CellContext.acquire();
 
@@ -189,7 +189,7 @@ class BinaryOpNodeTest {
     @Test
     void evaluate_mixedOperators_evaluatesCorrectly() {
         ExpressionNode node = ExpressionParser.parseToTree(
-            "(value > 0 && value < 50) || value > 100"
+                "(value > 0 && value < 50) || value > 100"
         );
         CellContext context = CellContext.acquire();
 
@@ -206,7 +206,7 @@ class BinaryOpNodeTest {
     @Test
     void evaluate_stringConditionsWithAnd_evaluatesCorrectly() {
         ExpressionNode node = ExpressionParser.parseToTree(
-            "value contains '\uc9c4\ud589' && value is_not_empty"
+                "value contains '\uc9c4\ud589' && value is_not_empty"
         );
         CellContext context = CellContext.acquire();
 
@@ -223,7 +223,7 @@ class BinaryOpNodeTest {
     @Test
     void evaluate_stringConditionsWithOr_evaluatesCorrectly() {
         ExpressionNode node = ExpressionParser.parseToTree(
-            "value equals '\uc644\ub8cc' || value equals '\uc9c4\ud589\uc911'"
+                "value equals '\uc644\ub8cc' || value equals '\uc9c4\ud589\uc911'"
         );
         CellContext context = CellContext.acquire();
 
@@ -240,7 +240,7 @@ class BinaryOpNodeTest {
     @Test
     void evaluate_nullValueWithAnd_handlesSafely() {
         ExpressionNode node = ExpressionParser.parseToTree(
-            "value is_null && value is_empty"
+                "value is_null && value is_empty"
         );
         CellContext context = CellContext.acquire();
 
@@ -254,7 +254,7 @@ class BinaryOpNodeTest {
     @Test
     void evaluate_betweenWithAnd_evaluatesCorrectly() {
         ExpressionNode node = ExpressionParser.parseToTree(
-            "value between 10 and 100 && value != 50"
+                "value between 10 and 100 && value != 50"
         );
         CellContext context = CellContext.acquire();
 
@@ -277,8 +277,8 @@ class BinaryOpNodeTest {
 
         context.update(50, null, 0, 0, "field");
         IllegalStateException exception = assertThrows(
-            IllegalStateException.class,
-            () -> node.evaluate(context)
+                IllegalStateException.class,
+                () -> node.evaluate(context)
         );
         assertEquals("Unsupported binary operator: NOT", exception.getMessage());
     }

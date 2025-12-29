@@ -1,7 +1,7 @@
-package io.github.takoeats.excelannotator.style.rule.node;
+package io.github.takoeats.excelannotator.style.internal.rule.node;
 
-import io.github.takoeats.excelannotator.style.rule.CellContext;
-import io.github.takoeats.excelannotator.style.rule.ExpressionParser;
+import io.github.takoeats.excelannotator.style.internal.rule.CellContext;
+import io.github.takoeats.excelannotator.style.internal.rule.ExpressionParser;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 
@@ -582,9 +582,9 @@ class LeafNodeTest {
     @Test
     void evaluate_unknownExpressionType_throwsNullPointerException() {
         ExpressionParser.ParsedExpression mockExpression =
-            ExpressionParser.ParsedExpression.builder()
-                .type(null)
-                .build();
+                ExpressionParser.ParsedExpression.builder()
+                        .type(null)
+                        .build();
 
         LeafNode node = new LeafNode(mockExpression);
         CellContext context = CellContext.acquire();

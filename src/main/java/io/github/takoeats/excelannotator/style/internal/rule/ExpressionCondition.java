@@ -1,6 +1,6 @@
-package io.github.takoeats.excelannotator.style.rule;
+package io.github.takoeats.excelannotator.style.internal.rule;
 
-import io.github.takoeats.excelannotator.style.rule.node.ExpressionNode;
+import io.github.takoeats.excelannotator.style.internal.rule.node.ExpressionNode;
 import lombok.extern.slf4j.Slf4j;
 
 /**

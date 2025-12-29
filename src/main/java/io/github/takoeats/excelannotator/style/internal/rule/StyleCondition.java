@@ -1,4 +1,4 @@
-package io.github.takoeats.excelannotator.style.rule;
+package io.github.takoeats.excelannotator.style.internal.rule;
 
 /**
  * 스타일 적용 조건을 평가하는 함수형 인터페이스

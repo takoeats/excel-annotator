@@ -5,12 +5,13 @@ import io.github.takoeats.excelannotator.annotation.ExcelSheet;
 import io.github.takoeats.excelannotator.teststyle.CurrencyStyle;
 import io.github.takoeats.excelannotator.teststyle.DateTimeStyle;
 import io.github.takoeats.excelannotator.teststyle.PurpleHeaderStyle;
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 @Getter
 @Builder
@@ -32,13 +33,13 @@ public class OrderDTO {
     private Integer quantity;
 
     @ExcelColumn(header = "주문금액", order = 5, width = 150,
-        headerStyle = PurpleHeaderStyle.class,
-        columnStyle = CurrencyStyle.class)
+            headerStyle = PurpleHeaderStyle.class,
+            columnStyle = CurrencyStyle.class)
     private BigDecimal orderAmount;
 
     @ExcelColumn(header = "주문일시", order = 6, width = 180,
-        headerStyle = PurpleHeaderStyle.class,
-        columnStyle = DateTimeStyle.class)
+            headerStyle = PurpleHeaderStyle.class,
+            columnStyle = DateTimeStyle.class)
     private LocalDateTime orderDateTime;
 
     @ExcelColumn(header = "배송상태", order = 7, width = 100, headerStyle = PurpleHeaderStyle.class)

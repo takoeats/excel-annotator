@@ -1,4 +1,4 @@
-package io.github.takoeats.excelannotator.style.rule;
+package io.github.takoeats.excelannotator.style.internal.rule;
 
 import io.github.takoeats.excelannotator.style.CustomExcelCellStyle;
 import io.github.takoeats.excelannotator.style.ExcelCellStyleConfigurer;
@@ -22,9 +22,9 @@ class StyleRuleTest {
     @Test
     void builder_minimalFields_createsInstance() {
         StyleRule rule = StyleRule.builder()
-            .condition(context -> true)
-            .styleClass(TestStyle.class)
-            .build();
+                .condition(context -> true)
+                .styleClass(TestStyle.class)
+                .build();
 
         assertNotNull(rule);
         assertNotNull(rule.getCondition());
@@ -36,10 +36,10 @@ class StyleRuleTest {
         StyleCondition condition = context -> context.getCellValue() != null;
 
         StyleRule rule = StyleRule.builder()
-            .condition(condition)
-            .styleClass(TestStyle.class)
-            .priority(10)
-            .build();
+                .condition(condition)
+                .styleClass(TestStyle.class)
+                .priority(10)
+                .build();
 
         assertNotNull(rule);
         assertEquals(condition, rule.getCondition());
@@ -50,9 +50,9 @@ class StyleRuleTest {
     @Test
     void builder_defaultPriority_isZero() {
         StyleRule rule = StyleRule.builder()
-            .condition(context -> true)
-            .styleClass(TestStyle.class)
-            .build();
+                .condition(context -> true)
+                .styleClass(TestStyle.class)
+                .build();
 
         assertEquals(0, rule.getPriority());
     }
@@ -65,9 +65,9 @@ class StyleRuleTest {
         };
 
         StyleRule rule = StyleRule.builder()
-            .condition(condition)
-            .styleClass(TestStyle.class)
-            .build();
+                .condition(condition)
+                .styleClass(TestStyle.class)
+                .build();
 
         CellContext context = CellContext.acquire();
         context.update(100, null, 0, 0, "field");
@@ -83,9 +83,9 @@ class StyleRuleTest {
         };
 
         StyleRule rule = StyleRule.builder()
-            .condition(condition)
-            .styleClass(TestStyle.class)
-            .build();
+                .condition(condition)
+                .styleClass(TestStyle.class)
+                .build();
 
         CellContext context = CellContext.acquire();
         context.update(30, null, 0, 0, "field");
@@ -96,9 +96,9 @@ class StyleRuleTest {
     @Test
     void evaluate_nullCondition_returnsFalse() {
         StyleRule rule = StyleRule.builder()
-            .condition(null)
-            .styleClass(TestStyle.class)
-            .build();
+                .condition(null)
+                .styleClass(TestStyle.class)
+                .build();
 
         CellContext context = CellContext.acquire();
         context.update(100, null, 0, 0, "field");
@@ -109,9 +109,9 @@ class StyleRuleTest {
     @Test
     void evaluate_nullContext_returnsFalse() {
         StyleRule rule = StyleRule.builder()
-            .condition(context -> true)
-            .styleClass(TestStyle.class)
-            .build();
+                .condition(context -> true)
+                .styleClass(TestStyle.class)
+                .build();
 
         assertFalse(rule.evaluate(null));
     }
@@ -119,9 +119,9 @@ class StyleRuleTest {
     @Test
     void evaluate_nullBoth_returnsFalse() {
         StyleRule rule = StyleRule.builder()
-            .condition(null)
-            .styleClass(TestStyle.class)
-            .build();
+                .condition(null)
+                .styleClass(TestStyle.class)
+                .build();
 
         assertFalse(rule.evaluate(null));
     }
@@ -129,16 +129,16 @@ class StyleRuleTest {
     @Test
     void compareTo_higherPriority_comesFirst() {
         StyleRule highPriority = StyleRule.builder()
-            .condition(context -> true)
-            .styleClass(TestStyle.class)
-            .priority(10)
-            .build();
+                .condition(context -> true)
+                .styleClass(TestStyle.class)
+                .priority(10)
+                .build();
 
         StyleRule lowPriority = StyleRule.builder()
-            .condition(context -> true)
-            .styleClass(TestStyle.class)
-            .priority(5)
-            .build();
+                .condition(context -> true)
+                .styleClass(TestStyle.class)
+                .priority(5)
+                .build();
 
         assertTrue(highPriority.compareTo(lowPriority) < 0);
     }
@@ -146,16 +146,16 @@ class StyleRuleTest {
     @Test
     void compareTo_lowerPriority_comesSecond() {
         StyleRule highPriority = StyleRule.builder()
-            .condition(context -> true)
-            .styleClass(TestStyle.class)
-            .priority(10)
-            .build();
+                .condition(context -> true)
+                .styleClass(TestStyle.class)
+                .priority(10)
+                .build();
 
         StyleRule lowPriority = StyleRule.builder()
-            .condition(context -> true)
-            .styleClass(TestStyle.class)
-            .priority(5)
-            .build();
+                .condition(context -> true)
+                .styleClass(TestStyle.class)
+                .priority(5)
+                .build();
 
         assertTrue(lowPriority.compareTo(highPriority) > 0);
     }
@@ -163,16 +163,16 @@ class StyleRuleTest {
     @Test
     void compareTo_samePriority_returnsZero() {
         StyleRule rule1 = StyleRule.builder()
-            .condition(context -> true)
-            .styleClass(TestStyle.class)
-            .priority(10)
-            .build();
+                .condition(context -> true)
+                .styleClass(TestStyle.class)
+                .priority(10)
+                .build();
 
         StyleRule rule2 = StyleRule.builder()
-            .condition(context -> false)
-            .styleClass(AnotherTestStyle.class)
-            .priority(10)
-            .build();
+                .condition(context -> false)
+                .styleClass(AnotherTestStyle.class)
+                .priority(10)
+                .build();
 
         assertEquals(0, rule1.compareTo(rule2));
     }
@@ -180,16 +180,16 @@ class StyleRuleTest {
     @Test
     void compareTo_negativeVsPositive_ordersCorrectly() {
         StyleRule positive = StyleRule.builder()
-            .condition(context -> true)
-            .styleClass(TestStyle.class)
-            .priority(10)
-            .build();
+                .condition(context -> true)
+                .styleClass(TestStyle.class)
+                .priority(10)
+                .build();
 
         StyleRule negative = StyleRule.builder()
-            .condition(context -> true)
-            .styleClass(TestStyle.class)
-            .priority(-5)
-            .build();
+                .condition(context -> true)
+                .styleClass(TestStyle.class)
+                .priority(-5)
+                .build();
 
         assertTrue(positive.compareTo(negative) < 0);
         assertTrue(negative.compareTo(positive) > 0);
@@ -198,28 +198,28 @@ class StyleRuleTest {
     @Test
     void compareTo_multipleRules_sortsCorrectly() {
         StyleRule priority20 = StyleRule.builder()
-            .condition(context -> true)
-            .styleClass(TestStyle.class)
-            .priority(20)
-            .build();
+                .condition(context -> true)
+                .styleClass(TestStyle.class)
+                .priority(20)
+                .build();
 
         StyleRule priority10 = StyleRule.builder()
-            .condition(context -> true)
-            .styleClass(TestStyle.class)
-            .priority(10)
-            .build();
+                .condition(context -> true)
+                .styleClass(TestStyle.class)
+                .priority(10)
+                .build();
 
         StyleRule priority5 = StyleRule.builder()
-            .condition(context -> true)
-            .styleClass(TestStyle.class)
-            .priority(5)
-            .build();
+                .condition(context -> true)
+                .styleClass(TestStyle.class)
+                .priority(5)
+                .build();
 
         StyleRule priority0 = StyleRule.builder()
-            .condition(context -> true)
-            .styleClass(TestStyle.class)
-            .priority(0)
-            .build();
+                .condition(context -> true)
+                .styleClass(TestStyle.class)
+                .priority(0)
+                .build();
 
         List<StyleRule> rules = new ArrayList<>();
         rules.add(priority5);
@@ -240,10 +240,10 @@ class StyleRuleTest {
         StyleCondition condition = context -> true;
 
         StyleRule rule = StyleRule.builder()
-            .condition(condition)
-            .styleClass(TestStyle.class)
-            .priority(15)
-            .build();
+                .condition(condition)
+                .styleClass(TestStyle.class)
+                .priority(15)
+                .build();
 
         assertEquals(condition, rule.getCondition());
         assertEquals(TestStyle.class, rule.getStyleClass());
@@ -262,10 +262,10 @@ class StyleRuleTest {
         };
 
         StyleRule rule = StyleRule.builder()
-            .condition(complexCondition)
-            .styleClass(TestStyle.class)
-            .priority(10)
-            .build();
+                .condition(complexCondition)
+                .styleClass(TestStyle.class)
+                .priority(10)
+                .build();
 
         CellContext context = CellContext.acquire();
 

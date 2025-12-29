@@ -1,15 +1,10 @@
 package io.github.takoeats.excelannotator.util;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import org.apache.poi.ss.usermodel.*;
 
 import java.io.ByteArrayInputStream;
-import org.apache.poi.ss.usermodel.DataFormatter;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.ss.usermodel.WorkbookFactory;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public final class ExcelAssertions {
 
@@ -40,7 +35,7 @@ public final class ExcelAssertions {
     public static void assertSheetName(Workbook wb, int sheetIndex, String expectedName) {
         assertNotNull(wb, "Workbook should not be null");
         assertTrue(sheetIndex < wb.getNumberOfSheets(),
-            "Sheet index out of bounds");
+                "Sheet index out of bounds");
         Sheet sheet = wb.getSheetAt(sheetIndex);
         assertEquals(expectedName, sheet.getSheetName(), "Sheet name mismatch");
     }
@@ -51,7 +46,7 @@ public final class ExcelAssertions {
         assertNotNull(headerRow, "Header row should not be null");
         String actual = FORMATTER.formatCellValue(headerRow.getCell(colIndex));
         assertEquals(expected, actual,
-            String.format("Header mismatch at column %d", colIndex));
+                String.format("Header mismatch at column %d", colIndex));
     }
 
     public static void assertRowCount(Sheet sheet, int expected) {
@@ -59,7 +54,7 @@ public final class ExcelAssertions {
         int lastRowNum = sheet.getLastRowNum();
         int actualRows = lastRowNum + 1;
         assertEquals(expected, actualRows,
-            "Row count mismatch (including header row)");
+                "Row count mismatch (including header row)");
     }
 
     public static void assertCellValueAt(Sheet sheet, int rowIndex, int colIndex, String expected) {
@@ -68,6 +63,6 @@ public final class ExcelAssertions {
         assertNotNull(row, String.format("Row %d should not be null", rowIndex));
         String actual = FORMATTER.formatCellValue(row.getCell(colIndex));
         assertEquals(expected, actual,
-            String.format("Cell value mismatch at row %d, col %d", rowIndex, colIndex));
+                String.format("Cell value mismatch at row %d, col %d", rowIndex, colIndex));
     }
 }

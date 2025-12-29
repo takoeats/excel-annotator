@@ -16,6 +16,11 @@ public class OrderConflictDTO1 {
         this.fieldA2 = fieldA2;
     }
 
-    public String getFieldA1() { return fieldA1; }
-    public String getFieldA2() { return fieldA2; }
+    public String getFieldA1() {
+        return fieldA1;
+    }
+
+    public String getFieldA2() {
+        return fieldA2;
+    }
 }

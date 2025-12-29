@@ -1,22 +1,11 @@
 package io.github.takoeats.excelannotator;
-import io.github.takoeats.excelannotator.internal.metadata.SheetInfo;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import io.github.takoeats.excelannotator.annotation.ExcelColumn;
 import io.github.takoeats.excelannotator.annotation.ExcelSheet;
 import io.github.takoeats.excelannotator.exception.ErrorCode;
 import io.github.takoeats.excelannotator.exception.ExcelExporterException;
 import io.github.takoeats.excelannotator.internal.ExcelMetadataFactory;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-
+import io.github.takoeats.excelannotator.internal.metadata.SheetInfo;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -25,6 +14,15 @@ import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 class SheetOrderTest {
 
@@ -82,7 +80,7 @@ class SheetOrderTest {
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
             ExcelExporterException exception = assertThrows(ExcelExporterException.class,
-                () -> ExcelExporter.excelFromList(baos, "test.xlsx", sheetData));
+                    () -> ExcelExporter.excelFromList(baos, "test.xlsx", sheetData));
 
             assertEquals(ErrorCode.DUPLICATE_SHEET_ORDER, exception.getErrorCode());
             assertTrue(exception.getMessage().contains("중복된 시트 order"));

@@ -1,11 +1,11 @@
 package io.github.takoeats.excelannotator.internal.metadata;
 
+import io.github.takoeats.excelannotator.masking.Masking;
 import io.github.takoeats.excelannotator.style.CustomExcelCellStyle;
 import io.github.takoeats.excelannotator.style.ExcelCellStyleConfigurer;
-import io.github.takoeats.excelannotator.style.rule.StyleRule;
+import io.github.takoeats.excelannotator.style.internal.rule.StyleRule;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import io.github.takoeats.excelannotator.masking.Masking;
 
 import java.lang.reflect.Field;
 import java.util.Arrays;

@@ -18,30 +18,30 @@ import lombok.NoArgsConstructor;
 public class StylePriorityDTO {
 
     @ExcelColumn(
-        header = "Header Style Only",
-        order = 1,
-        headerStyle = PurpleHeaderStyle.class
+            header = "Header Style Only",
+            order = 1,
+            headerStyle = PurpleHeaderStyle.class
     )
     private String headerStyleOnly;
 
     @ExcelColumn(
-        header = "Column Style Only",
-        order = 2,
-        columnStyle = HighlightStyle.class
+            header = "Column Style Only",
+            order = 2,
+            columnStyle = HighlightStyle.class
     )
     private String columnStyleOnly;
 
     @ExcelColumn(
-        header = "Both Styles",
-        order = 3,
-        headerStyle = TableHeaderStyle.class,
-        columnStyle = HighlightStyle.class
+            header = "Both Styles",
+            order = 3,
+            headerStyle = TableHeaderStyle.class,
+            columnStyle = HighlightStyle.class
     )
     private String bothStyles;
 
     @ExcelColumn(
-        header = "No Style",
-        order = 4
+            header = "No Style",
+            order = 4
     )
     private String noStyle;
 }

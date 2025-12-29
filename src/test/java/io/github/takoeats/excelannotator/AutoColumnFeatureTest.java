@@ -1,17 +1,9 @@
 package io.github.takoeats.excelannotator;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import io.github.takoeats.excelannotator.testdto.AutoColumnDTO;
 import io.github.takoeats.excelannotator.testdto.AutoColumnMixedDTO;
 import io.github.takoeats.excelannotator.testdto.AutoColumnWithExcludeDTO;
-import org.apache.poi.ss.usermodel.DataFormatter;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.ss.usermodel.WorkbookFactory;
+import org.apache.poi.ss.usermodel.*;
 import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayInputStream;
@@ -19,13 +11,15 @@ import java.io.ByteArrayOutputStream;
 import java.util.Arrays;
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 class AutoColumnFeatureTest {
 
     @Test
     void autoColumn_withAllFields_shouldExportAllFieldsInDeclarationOrder() throws Exception {
         List<AutoColumnDTO> list = Arrays.asList(
-            new AutoColumnDTO("Alice", 30, "alice@example.com", 50000.0),
-            new AutoColumnDTO("Bob", 40, "bob@example.com", 60000.0)
+                new AutoColumnDTO("Alice", 30, "alice@example.com", 50000.0),
+                new AutoColumnDTO("Bob", 40, "bob@example.com", 60000.0)
         );
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -64,8 +58,8 @@ class AutoColumnFeatureTest {
     @Test
     void autoColumn_withExcludedField_shouldSkipExcludedField() throws Exception {
         List<AutoColumnWithExcludeDTO> list = Arrays.asList(
-            new AutoColumnWithExcludeDTO("user1", "secret123", "user1@example.com", 25),
-            new AutoColumnWithExcludeDTO("user2", "secret456", "user2@example.com", 30)
+                new AutoColumnWithExcludeDTO("user1", "secret123", "user1@example.com", 25),
+                new AutoColumnWithExcludeDTO("user2", "secret456", "user2@example.com", 30)
         );
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -93,8 +87,8 @@ class AutoColumnFeatureTest {
     @Test
     void autoColumn_withMixedAnnotations_shouldRespectExplicitAnnotations() throws Exception {
         List<AutoColumnMixedDTO> list = Arrays.asList(
-            new AutoColumnMixedDTO("Alice Smith", 30, "alice@example.com", "123-456-7890", "ID001"),
-            new AutoColumnMixedDTO("Bob Jones", 40, "bob@example.com", "987-654-3210", "ID002")
+                new AutoColumnMixedDTO("Alice Smith", 30, "alice@example.com", "123-456-7890", "ID001"),
+                new AutoColumnMixedDTO("Bob Jones", 40, "bob@example.com", "987-654-3210", "ID002")
         );
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();

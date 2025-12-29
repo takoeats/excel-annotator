@@ -1,8 +1,8 @@
 package io.github.takoeats.excelannotator.internal.metadata.style;
 
 import io.github.takoeats.excelannotator.annotation.ConditionalStyle;
-import io.github.takoeats.excelannotator.style.rule.ExpressionCondition;
-import io.github.takoeats.excelannotator.style.rule.StyleRule;
+import io.github.takoeats.excelannotator.style.internal.rule.ExpressionCondition;
+import io.github.takoeats.excelannotator.style.internal.rule.StyleRule;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 

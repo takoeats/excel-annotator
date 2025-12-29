@@ -1,7 +1,10 @@
-package io.github.takoeats.excelannotator.style;
+package io.github.takoeats.excelannotator.style.internal.cache;
 
 import io.github.takoeats.excelannotator.exception.ErrorCode;
 import io.github.takoeats.excelannotator.exception.ExcelExporterException;
+import io.github.takoeats.excelannotator.style.CustomExcelCellStyle;
+import io.github.takoeats.excelannotator.style.internal.wrapper.CellStyleWrapper;
+import io.github.takoeats.excelannotator.style.internal.wrapper.WorkbookWrapper;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -66,7 +69,7 @@ public final class StyleCache {
                                            Class<? extends CustomExcelCellStyle> styleClass) {
         CellStyle poiStyle = workbook.createCellStyle();
         CustomExcelCellStyle customStyle = getStyleInstance(styleClass);
-        customStyle.apply(poiStyle, workbook);
+        customStyle.apply(CellStyleWrapper.wrap(poiStyle), WorkbookWrapper.wrap(workbook));
         return poiStyle;
     }
 }

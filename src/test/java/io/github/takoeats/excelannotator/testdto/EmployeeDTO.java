@@ -5,12 +5,13 @@ import io.github.takoeats.excelannotator.annotation.ExcelSheet;
 import io.github.takoeats.excelannotator.teststyle.CurrencyStyle;
 import io.github.takoeats.excelannotator.teststyle.DateOnlyStyle;
 import io.github.takoeats.excelannotator.teststyle.PurpleHeaderStyle;
-import java.math.BigDecimal;
-import java.time.LocalDate;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.math.BigDecimal;
+import java.time.LocalDate;
 
 @Getter
 @Builder
@@ -32,12 +33,12 @@ public class EmployeeDTO {
     private String position;
 
     @ExcelColumn(header = "급여", order = 5, width = 150,
-        headerStyle = PurpleHeaderStyle.class,
-        columnStyle = CurrencyStyle.class)
+            headerStyle = PurpleHeaderStyle.class,
+            columnStyle = CurrencyStyle.class)
     private BigDecimal salary;
 
     @ExcelColumn(header = "입사일", order = 6, width = 120,
-        headerStyle = PurpleHeaderStyle.class,
-        columnStyle = DateOnlyStyle.class)
+            headerStyle = PurpleHeaderStyle.class,
+            columnStyle = DateOnlyStyle.class)
     private LocalDate hireDate;
 }

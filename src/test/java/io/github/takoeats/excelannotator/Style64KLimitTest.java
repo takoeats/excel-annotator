@@ -1,12 +1,15 @@
 package io.github.takoeats.excelannotator;
 
 import io.github.takoeats.excelannotator.style.CustomExcelCellStyle;
-import io.github.takoeats.excelannotator.style.StyleCache;
+import io.github.takoeats.excelannotator.style.internal.cache.StyleCache;
 import io.github.takoeats.excelannotator.testdto.LargeDataDTO;
+import io.github.takoeats.excelannotator.teststyle.CurrencyStyle;
 import io.github.takoeats.excelannotator.util.ExcelAssertions;
 import io.github.takoeats.excelannotator.util.ExcelTestHelper;
-import io.github.takoeats.excelannotator.teststyle.CurrencyStyle;
-import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.junit.jupiter.api.Test;
 
@@ -95,12 +98,12 @@ class Style64KLimitTest {
     @Test
     void applicationLevelCache_singletonStyleInstances() {
         CustomExcelCellStyle instance1 =
-            StyleCache.getStyleInstance(
-                CurrencyStyle.class);
+                StyleCache.getStyleInstance(
+                        CurrencyStyle.class);
 
         CustomExcelCellStyle instance2 =
-            StyleCache.getStyleInstance(
-                CurrencyStyle.class);
+                StyleCache.getStyleInstance(
+                        CurrencyStyle.class);
 
         assertSame(instance1, instance2);
     }
@@ -144,28 +147,28 @@ class Style64KLimitTest {
 
         int styleCount = wb.getNumCellStyles();
         assertTrue(styleCount < 64000,
-            "Style count should be well below 64K limit, actual: " + styleCount);
+                "Style count should be well below 64K limit, actual: " + styleCount);
 
         assertTrue(styleCount < 50,
-            "Style count should be minimal due to reuse, actual: " + styleCount);
+                "Style count should be minimal due to reuse, actual: " + styleCount);
 
         wb.close();
     }
 
     private List<LargeDataDTO> createLargeDataList(int count) {
         return IntStream.range(0, count)
-            .mapToObj(i -> LargeDataDTO.builder()
-                .id((long) i)
-                .name("Name" + i)
-                .amount(BigDecimal.valueOf(1000 + i))
-                .date(LocalDate.now().plusDays(i % 365))
-                .status(i % 2 == 0 ? "Active" : "Inactive")
-                .category("Category" + (i % 10))
-                .score(50 + (i % 50))
-                .note("Note" + i)
-                .region("Region" + (i % 5))
-                .type("Type" + (i % 3))
-                .build())
-            .collect(Collectors.toList());
+                .mapToObj(i -> LargeDataDTO.builder()
+                        .id((long) i)
+                        .name("Name" + i)
+                        .amount(BigDecimal.valueOf(1000 + i))
+                        .date(LocalDate.now().plusDays(i % 365))
+                        .status(i % 2 == 0 ? "Active" : "Inactive")
+                        .category("Category" + (i % 10))
+                        .score(50 + (i % 50))
+                        .note("Note" + i)
+                        .region("Region" + (i % 5))
+                        .type("Type" + (i % 3))
+                        .build())
+                .collect(Collectors.toList());
     }
 }

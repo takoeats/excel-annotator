@@ -1,8 +1,8 @@
-package io.github.takoeats.excelannotator.style.rule.node;
+package io.github.takoeats.excelannotator.style.internal.rule.node;
 
-import io.github.takoeats.excelannotator.style.rule.CellContext;
-import io.github.takoeats.excelannotator.style.rule.ConditionEvaluator;
-import io.github.takoeats.excelannotator.style.rule.ExpressionParser;
+import io.github.takoeats.excelannotator.style.internal.rule.CellContext;
+import io.github.takoeats.excelannotator.style.internal.rule.ConditionEvaluator;
+import io.github.takoeats.excelannotator.style.internal.rule.ExpressionParser;
 import lombok.Getter;
 
 /**

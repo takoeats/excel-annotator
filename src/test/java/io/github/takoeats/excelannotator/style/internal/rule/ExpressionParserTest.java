@@ -1,8 +1,8 @@
-package io.github.takoeats.excelannotator.style.rule;
+package io.github.takoeats.excelannotator.style.internal.rule;
 
 import io.github.takoeats.excelannotator.exception.ErrorCode;
 import io.github.takoeats.excelannotator.exception.ExcelExporterException;
-import io.github.takoeats.excelannotator.style.rule.node.ExpressionNode;
+import io.github.takoeats.excelannotator.style.internal.rule.node.ExpressionNode;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -77,8 +77,8 @@ class ExpressionParserTest {
     @Test
     void parseToTree_nullExpression_throwsException() {
         ExcelExporterException exception = assertThrows(
-            ExcelExporterException.class,
-            () -> ExpressionParser.parseToTree(null)
+                ExcelExporterException.class,
+                () -> ExpressionParser.parseToTree(null)
         );
         assertEquals(ErrorCode.EXPRESSION_PARSE_FAILED, exception.getErrorCode());
         assertTrue(exception.getMessage().contains("null이거나 빈 문자열일 수 없습니다"));
@@ -87,41 +87,41 @@ class ExpressionParserTest {
     @Test
     void parseToTree_unknownOperator_throwsException() {
         ExcelExporterException exception = assertThrows(
-            ExcelExporterException.class,
-            () -> ExpressionParser.parseToTree("value <> 100")
+                ExcelExporterException.class,
+                () -> ExpressionParser.parseToTree("value <> 100")
         );
         assertEquals(ErrorCode.EXPRESSION_PARSE_FAILED, exception.getErrorCode());
         assertTrue(exception.getMessage().contains("알 수 없는 연산자") ||
-                   exception.getMessage().contains("잘못된 조건 형식"));
+                exception.getMessage().contains("잘못된 조건 형식"));
     }
 
     @Test
     void parseToTree_unknownStringOperation_throwsException() {
         ExcelExporterException exception = assertThrows(
-            ExcelExporterException.class,
-            () -> ExpressionParser.parseToTree("value matches 'pattern'")
+                ExcelExporterException.class,
+                () -> ExpressionParser.parseToTree("value matches 'pattern'")
         );
         assertEquals(ErrorCode.EXPRESSION_PARSE_FAILED, exception.getErrorCode());
         assertTrue(exception.getMessage().contains("알 수 없는 문자열 연산") ||
-                   exception.getMessage().contains("잘못된 조건 형식"));
+                exception.getMessage().contains("잘못된 조건 형식"));
     }
 
     @Test
     void parseToTree_unknownSpecialCondition_throwsException() {
         ExcelExporterException exception = assertThrows(
-            ExcelExporterException.class,
-            () -> ExpressionParser.parseToTree("value is_invalid")
+                ExcelExporterException.class,
+                () -> ExpressionParser.parseToTree("value is_invalid")
         );
         assertEquals(ErrorCode.EXPRESSION_PARSE_FAILED, exception.getErrorCode());
         assertTrue(exception.getMessage().contains("알 수 없는 특수 조건") ||
-                   exception.getMessage().contains("잘못된 조건 형식"));
+                exception.getMessage().contains("잘못된 조건 형식"));
     }
 
     @Test
     void parseToTree_invalidConditionFormat_throwsException() {
         ExcelExporterException exception = assertThrows(
-            ExcelExporterException.class,
-            () -> ExpressionParser.parseToTree("invalid expression")
+                ExcelExporterException.class,
+                () -> ExpressionParser.parseToTree("invalid expression")
         );
         assertEquals(ErrorCode.EXPRESSION_PARSE_FAILED, exception.getErrorCode());
         assertTrue(exception.getMessage().contains("잘못된 조건 형식"));
@@ -130,8 +130,8 @@ class ExpressionParserTest {
     @Test
     void parseToTree_missingClosingParenthesis_throwsException() {
         ExcelExporterException exception = assertThrows(
-            ExcelExporterException.class,
-            () -> ExpressionParser.parseToTree("(value > 0 && value < 100")
+                ExcelExporterException.class,
+                () -> ExpressionParser.parseToTree("(value > 0 && value < 100")
         );
         assertEquals(ErrorCode.EXPRESSION_PARSE_FAILED, exception.getErrorCode());
     }
@@ -139,8 +139,8 @@ class ExpressionParserTest {
     @Test
     void parseToTree_incompleteBetween_throwsException() {
         ExcelExporterException exception = assertThrows(
-            ExcelExporterException.class,
-            () -> ExpressionParser.parseToTree("value between 10")
+                ExcelExporterException.class,
+                () -> ExpressionParser.parseToTree("value between 10")
         );
         assertEquals(ErrorCode.EXPRESSION_PARSE_FAILED, exception.getErrorCode());
     }
@@ -148,8 +148,8 @@ class ExpressionParserTest {
     @Test
     void parseToTree_stringWithoutQuotes_throwsException() {
         ExcelExporterException exception = assertThrows(
-            ExcelExporterException.class,
-            () -> ExpressionParser.parseToTree("value equals 완료")
+                ExcelExporterException.class,
+                () -> ExpressionParser.parseToTree("value equals 완료")
         );
         assertEquals(ErrorCode.EXPRESSION_PARSE_FAILED, exception.getErrorCode());
     }
@@ -163,7 +163,7 @@ class ExpressionParserTest {
     @Test
     void parseToTree_complexNestedExpression() {
         ExpressionNode node = ExpressionParser.parseToTree(
-            "((value > 0 && value < 50) || (value > 100 && value < 150)) && value != 75"
+                "((value > 0 && value < 50) || (value > 100 && value < 150)) && value != 75"
         );
         assertNotNull(node);
     }
@@ -171,7 +171,7 @@ class ExpressionParserTest {
     @Test
     void parseToTree_multipleLogicalOperators() {
         ExpressionNode node = ExpressionParser.parseToTree(
-            "value < 0 || value > 100 && value < 200 ^ value == 150"
+                "value < 0 || value > 100 && value < 200 ^ value == 150"
         );
         assertNotNull(node);
     }

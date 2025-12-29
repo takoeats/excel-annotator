@@ -10,7 +10,7 @@ import io.github.takoeats.excelannotator.internal.metadata.style.ConditionalStyl
 import io.github.takoeats.excelannotator.internal.metadata.validator.MergeHeaderValidator;
 import io.github.takoeats.excelannotator.masking.Masking;
 import io.github.takoeats.excelannotator.style.CustomExcelCellStyle;
-import io.github.takoeats.excelannotator.style.rule.StyleRule;
+import io.github.takoeats.excelannotator.style.internal.rule.StyleRule;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 

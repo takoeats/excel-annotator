@@ -4,11 +4,12 @@ import io.github.takoeats.excelannotator.annotation.ExcelColumn;
 import io.github.takoeats.excelannotator.annotation.ExcelSheet;
 import io.github.takoeats.excelannotator.teststyle.DateOnlyStyle;
 import io.github.takoeats.excelannotator.teststyle.PurpleHeaderStyle;
-import java.time.LocalDate;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.time.LocalDate;
 
 @Getter
 @Builder
@@ -30,8 +31,8 @@ public class CustomerDTO {
     private String phone;
 
     @ExcelColumn(header = "가입일", order = 5, width = 120,
-        headerStyle = PurpleHeaderStyle.class,
-        columnStyle = DateOnlyStyle.class)
+            headerStyle = PurpleHeaderStyle.class,
+            columnStyle = DateOnlyStyle.class)
     private LocalDate joinDate;
 
     @ExcelColumn(header = "VIP 여부", order = 6, width = 100, headerStyle = PurpleHeaderStyle.class)

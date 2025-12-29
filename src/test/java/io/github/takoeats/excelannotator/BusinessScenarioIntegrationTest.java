@@ -1,27 +1,21 @@
 package io.github.takoeats.excelannotator;
 
-import static io.github.takoeats.excelannotator.util.ExcelAssertions.assertExcelFileValid;
-import static io.github.takoeats.excelannotator.util.ExcelAssertions.assertRowCount;
-import static io.github.takoeats.excelannotator.util.ExcelAssertions.assertSheetCount;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-
-import io.github.takoeats.excelannotator.testdto.CustomerDTO;
-import io.github.takoeats.excelannotator.testdto.DepartmentDTO;
-import io.github.takoeats.excelannotator.testdto.EmployeeDTO;
-import io.github.takoeats.excelannotator.testdto.FinancialDTO;
-import io.github.takoeats.excelannotator.testdto.OrderDTO;
-import io.github.takoeats.excelannotator.testdto.SalesReportDTO;
+import io.github.takoeats.excelannotator.testdto.*;
 import io.github.takoeats.excelannotator.util.ExcelTestHelper;
 import io.github.takoeats.excelannotator.util.TestDataFactory;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.junit.jupiter.api.Test;
+
 import java.io.ByteArrayOutputStream;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.junit.jupiter.api.Test;
+
+import static io.github.takoeats.excelannotator.util.ExcelAssertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 class BusinessScenarioIntegrationTest {
 
@@ -102,8 +96,8 @@ class BusinessScenarioIntegrationTest {
     void customerList_largeDataset_usingStream() throws Exception {
         int customerCount = 100000;
         Stream<CustomerDTO> customerStream = Stream.iterate(1, n -> n + 1)
-            .limit(customerCount)
-            .map(TestDataFactory::createCustomer);
+                .limit(customerCount)
+                .map(TestDataFactory::createCustomer);
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ExcelExporter.excelFromStream(baos, "customers.xlsx", customerStream);

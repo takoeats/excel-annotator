@@ -1,12 +1,5 @@
 package io.github.takoeats.excelannotator.internal.writer.workbook;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.mock;
-
 import io.github.takoeats.excelannotator.annotation.ExcelColumn;
 import io.github.takoeats.excelannotator.annotation.ExcelSheet;
 import io.github.takoeats.excelannotator.exception.ErrorCode;
@@ -17,246 +10,251 @@ import io.github.takoeats.excelannotator.internal.writer.RowWriter;
 import io.github.takoeats.excelannotator.internal.writer.SheetWriteContext;
 import io.github.takoeats.excelannotator.internal.writer.SheetWriteRequest;
 import io.github.takoeats.excelannotator.internal.writer.SheetWriter;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.mock;
+
 class SXSSFWorkbookBuilderTest {
 
-  private SXSSFWorkbookBuilder builder;
+    private SXSSFWorkbookBuilder builder;
 
-  @BeforeEach
-  void setUp() {
-    SheetWriter sheetWriter = new SheetWriter(new RowWriter());
-    builder = new SXSSFWorkbookBuilder(sheetWriter);
-  }
-
-  @Test
-  void createWorkbookAndWrite_withSingleSheet_createsWorkbook() throws Exception {
-    List<TestDTO> data = Arrays.asList(
-        new TestDTO("Alice", 30),
-        new TestDTO("Bob", 25)
-    );
-
-    ExcelMetadata<TestDTO> metadata = ExcelMetadataFactory.extractExcelMetadata(TestDTO.class);
-    SheetWriteRequest<TestDTO> request = SheetWriteRequest.<TestDTO>builder()
-        .dataIterator(data.iterator())
-        .metadata(metadata)
-        .build();
-
-    SheetWriteContext<TestDTO> context = SheetWriteContext.forRowBasedSheets(
-        Collections.singletonList(request)
-    );
-
-    try (SXSSFWorkbook wb = builder.createWorkbookAndWrite(context)) {
-      assertNotNull(wb);
-      assertEquals(1, wb.getNumberOfSheets());
-      assertEquals("Test Sheet", wb.getSheetAt(0).getSheetName());
-    }
-  }
-
-  @Test
-  void createWorkbookAndWrite_withMultipleSheets_createsAllSheets() throws Exception {
-    List<TestDTO> data1 = Arrays.asList(new TestDTO("Alice", 30));
-    List<AnotherDTO> data2 = Arrays.asList(new AnotherDTO("X"));
-
-    ExcelMetadata<TestDTO> metadata1 = ExcelMetadataFactory.extractExcelMetadata(TestDTO.class);
-    ExcelMetadata<AnotherDTO> metadata2 = ExcelMetadataFactory.extractExcelMetadata(
-        AnotherDTO.class);
-
-    SheetWriteRequest<TestDTO> request1 = SheetWriteRequest.<TestDTO>builder()
-        .dataIterator(data1.iterator())
-        .metadata(metadata1)
-        .build();
-
-    SheetWriteRequest<AnotherDTO> request2 = SheetWriteRequest.<AnotherDTO>builder()
-        .dataIterator(data2.iterator())
-        .metadata(metadata2)
-        .build();
-
-    SheetWriteContext<?> context = SheetWriteContext.forRowBasedSheets(
-        Arrays.asList(request1, request2)
-    );
-
-    try (SXSSFWorkbook wb = builder.createWorkbookAndWrite(context)) {
-      assertNotNull(wb);
-      assertEquals(2, wb.getNumberOfSheets());
-    }
-  }
-
-  @Test
-  void createWorkbookAndWrite_withColumnBasedSplit_adjustsBufferSize() throws Exception {
-    List<MultiSheetDTO> data = Arrays.asList(
-        new MultiSheetDTO("A1", "B1"),
-        new MultiSheetDTO("A2", "B2")
-    );
-
-    List<ExcelMetadata<MultiSheetDTO>> metadataList = new ArrayList<>(
-        ExcelMetadataFactory.extractMultiSheetMetadata(MultiSheetDTO.class).values()
-    );
-
-    SheetWriteContext<MultiSheetDTO> context = SheetWriteContext.forColumnBasedSheets(
-        data.iterator(),
-        metadataList
-    );
-
-    try (SXSSFWorkbook wb = builder.createWorkbookAndWrite(context)) {
-      assertNotNull(wb);
-      assertEquals(2, wb.getNumberOfSheets());
-    }
-  }
-
-  @Test
-  void createWorkbookAndWrite_withLargeDataset_handlesCorrectly() throws Exception {
-    List<TestDTO> largeData = new ArrayList<>();
-    for (int i = 0; i < 10000; i++) {
-      largeData.add(new TestDTO("Person" + i, 20 + (i % 50)));
+    @BeforeEach
+    void setUp() {
+        SheetWriter sheetWriter = new SheetWriter(new RowWriter());
+        builder = new SXSSFWorkbookBuilder(sheetWriter);
     }
 
-    ExcelMetadata<TestDTO> metadata = ExcelMetadataFactory.extractExcelMetadata(TestDTO.class);
-    SheetWriteRequest<TestDTO> request = SheetWriteRequest.<TestDTO>builder()
-        .dataIterator(largeData.iterator())
-        .metadata(metadata)
-        .build();
+    @Test
+    void createWorkbookAndWrite_withSingleSheet_createsWorkbook() throws Exception {
+        List<TestDTO> data = Arrays.asList(
+                new TestDTO("Alice", 30),
+                new TestDTO("Bob", 25)
+        );
 
-    SheetWriteContext<TestDTO> context = SheetWriteContext.forRowBasedSheets(
-        Collections.singletonList(request)
-    );
+        ExcelMetadata<TestDTO> metadata = ExcelMetadataFactory.extractExcelMetadata(TestDTO.class);
+        SheetWriteRequest<TestDTO> request = SheetWriteRequest.<TestDTO>builder()
+                .dataIterator(data.iterator())
+                .metadata(metadata)
+                .build();
 
-    try (SXSSFWorkbook wb = builder.createWorkbookAndWrite(context)) {
-      assertNotNull(wb);
-      assertEquals(1, wb.getNumberOfSheets());
-      Sheet sheet = wb.getSheetAt(0);
-      assertEquals(10001, sheet.getPhysicalNumberOfRows());
+        SheetWriteContext<TestDTO> context = SheetWriteContext.forRowBasedSheets(
+                Collections.singletonList(request)
+        );
+
+        try (SXSSFWorkbook wb = builder.createWorkbookAndWrite(context)) {
+            assertNotNull(wb);
+            assertEquals(1, wb.getNumberOfSheets());
+            assertEquals("Test Sheet", wb.getSheetAt(0).getSheetName());
+        }
     }
-  }
 
-  @Test
-  void createWorkbookAndWrite_withNullIterator_throwsException() {
-    assertThrows(IllegalStateException.class, () -> {
-      ExcelMetadata<TestDTO> metadata = ExcelMetadataFactory.extractExcelMetadata(TestDTO.class);
+    @Test
+    void createWorkbookAndWrite_withMultipleSheets_createsAllSheets() throws Exception {
+        List<TestDTO> data1 = Arrays.asList(new TestDTO("Alice", 30));
+        List<AnotherDTO> data2 = Arrays.asList(new AnotherDTO("X"));
 
-      SheetWriteRequest.<TestDTO>builder()
-          .dataIterator(null)
-          .metadata(metadata)
-          .build();
-    });
-  }
+        ExcelMetadata<TestDTO> metadata1 = ExcelMetadataFactory.extractExcelMetadata(TestDTO.class);
+        ExcelMetadata<AnotherDTO> metadata2 = ExcelMetadataFactory.extractExcelMetadata(
+                AnotherDTO.class);
 
-  @Test
-  void createWorkbookAndWrite_whenExcelExporterExceptionThrown_rethrowsException() {
-    SheetWriter mockWriter = mock(SheetWriter.class);
-    doThrow(new ExcelExporterException(ErrorCode.EMPTY_DATA, "Test exception"))
-        .when(mockWriter).write(any(SXSSFWorkbook.class), any(SheetWriteContext.class));
+        SheetWriteRequest<TestDTO> request1 = SheetWriteRequest.<TestDTO>builder()
+                .dataIterator(data1.iterator())
+                .metadata(metadata1)
+                .build();
 
-    SXSSFWorkbookBuilder faultyBuilder = new SXSSFWorkbookBuilder(mockWriter);
+        SheetWriteRequest<AnotherDTO> request2 = SheetWriteRequest.<AnotherDTO>builder()
+                .dataIterator(data2.iterator())
+                .metadata(metadata2)
+                .build();
 
-    List<TestDTO> data = Collections.singletonList(new TestDTO("Test", 25));
-    ExcelMetadata<TestDTO> metadata = ExcelMetadataFactory.extractExcelMetadata(TestDTO.class);
-    SheetWriteRequest<TestDTO> request = SheetWriteRequest.<TestDTO>builder()
-        .dataIterator(data.iterator())
-        .metadata(metadata)
-        .build();
+        SheetWriteContext<?> context = SheetWriteContext.forRowBasedSheets(
+                Arrays.asList(request1, request2)
+        );
 
-    SheetWriteContext<TestDTO> context = SheetWriteContext.forRowBasedSheets(
-        Collections.singletonList(request)
-    );
-
-    ExcelExporterException exception = assertThrows(ExcelExporterException.class,
-        () -> faultyBuilder.createWorkbookAndWrite(context));
-
-    assertEquals(ErrorCode.EMPTY_DATA, exception.getErrorCode());
-  }
-
-  @Test
-  void createWorkbookAndWrite_whenOtherExceptionThrown_wrapsInWorkbookCreationFailed() {
-    SheetWriter mockWriter = mock(SheetWriter.class);
-    doThrow(new RuntimeException("Unexpected error"))
-        .when(mockWriter).write(any(SXSSFWorkbook.class), any(SheetWriteContext.class));
-
-    SXSSFWorkbookBuilder faultyBuilder = new SXSSFWorkbookBuilder(mockWriter);
-
-    List<TestDTO> data = Collections.singletonList(new TestDTO("Test", 25));
-    ExcelMetadata<TestDTO> metadata = ExcelMetadataFactory.extractExcelMetadata(TestDTO.class);
-    SheetWriteRequest<TestDTO> request = SheetWriteRequest.<TestDTO>builder()
-        .dataIterator(data.iterator())
-        .metadata(metadata)
-        .build();
-
-    SheetWriteContext<TestDTO> context = SheetWriteContext.forRowBasedSheets(
-        Collections.singletonList(request)
-    );
-
-    ExcelExporterException exception = assertThrows(ExcelExporterException.class,
-        () -> faultyBuilder.createWorkbookAndWrite(context));
-
-    assertEquals(ErrorCode.WORKBOOK_CREATION_FAILED, exception.getErrorCode());
-  }
-
-  @Test
-  void createWorkbookAndWrite_withNoException_returnsWorkbookSuccessfully() throws Exception {
-    List<TestDTO> data = Collections.singletonList(new TestDTO("Success", 30));
-
-    ExcelMetadata<TestDTO> metadata = ExcelMetadataFactory.extractExcelMetadata(TestDTO.class);
-    SheetWriteRequest<TestDTO> request = SheetWriteRequest.<TestDTO>builder()
-        .dataIterator(data.iterator())
-        .metadata(metadata)
-        .build();
-
-    SheetWriteContext<TestDTO> context = SheetWriteContext.forRowBasedSheets(
-        Collections.singletonList(request)
-    );
-
-    try (SXSSFWorkbook wb = builder.createWorkbookAndWrite(context)) {
-      assertNotNull(wb);
-      assertEquals(1, wb.getNumberOfSheets());
-      Sheet sheet = wb.getSheetAt(0);
-      assertEquals(2, sheet.getPhysicalNumberOfRows());
+        try (SXSSFWorkbook wb = builder.createWorkbookAndWrite(context)) {
+            assertNotNull(wb);
+            assertEquals(2, wb.getNumberOfSheets());
+        }
     }
-  }
 
-  @Data
-  @NoArgsConstructor
-  @AllArgsConstructor
-  @ExcelSheet("Test Sheet")
-  public static class TestDTO {
+    @Test
+    void createWorkbookAndWrite_withColumnBasedSplit_adjustsBufferSize() throws Exception {
+        List<MultiSheetDTO> data = Arrays.asList(
+                new MultiSheetDTO("A1", "B1"),
+                new MultiSheetDTO("A2", "B2")
+        );
 
-    @ExcelColumn(header = "Name", order = 1)
-    private String name;
+        List<ExcelMetadata<MultiSheetDTO>> metadataList = new ArrayList<>(
+                ExcelMetadataFactory.extractMultiSheetMetadata(MultiSheetDTO.class).values()
+        );
 
-    @ExcelColumn(header = "Age", order = 2)
-    private Integer age;
-  }
+        SheetWriteContext<MultiSheetDTO> context = SheetWriteContext.forColumnBasedSheets(
+                data.iterator(),
+                metadataList
+        );
 
-  @Data
-  @NoArgsConstructor
-  @AllArgsConstructor
-  @ExcelSheet("Another Sheet")
-  public static class AnotherDTO {
+        try (SXSSFWorkbook wb = builder.createWorkbookAndWrite(context)) {
+            assertNotNull(wb);
+            assertEquals(2, wb.getNumberOfSheets());
+        }
+    }
 
-    @ExcelColumn(header = "Data", order = 1)
-    private String data;
-  }
+    @Test
+    void createWorkbookAndWrite_withLargeDataset_handlesCorrectly() throws Exception {
+        List<TestDTO> largeData = new ArrayList<>();
+        for (int i = 0; i < 10000; i++) {
+            largeData.add(new TestDTO("Person" + i, 20 + (i % 50)));
+        }
 
-  @Data
-  @NoArgsConstructor
-  @AllArgsConstructor
-  @ExcelSheet("Multi")
-  public static class MultiSheetDTO {
+        ExcelMetadata<TestDTO> metadata = ExcelMetadataFactory.extractExcelMetadata(TestDTO.class);
+        SheetWriteRequest<TestDTO> request = SheetWriteRequest.<TestDTO>builder()
+                .dataIterator(largeData.iterator())
+                .metadata(metadata)
+                .build();
 
-    @ExcelColumn(header = "Column A", order = 1, sheetName = "Sheet A")
-    private String colA;
+        SheetWriteContext<TestDTO> context = SheetWriteContext.forRowBasedSheets(
+                Collections.singletonList(request)
+        );
 
-    @ExcelColumn(header = "Column B", order = 2, sheetName = "Sheet B")
-    private String colB;
-  }
+        try (SXSSFWorkbook wb = builder.createWorkbookAndWrite(context)) {
+            assertNotNull(wb);
+            assertEquals(1, wb.getNumberOfSheets());
+            Sheet sheet = wb.getSheetAt(0);
+            assertEquals(10001, sheet.getPhysicalNumberOfRows());
+        }
+    }
+
+    @Test
+    void createWorkbookAndWrite_withNullIterator_throwsException() {
+        assertThrows(IllegalStateException.class, () -> {
+            ExcelMetadata<TestDTO> metadata = ExcelMetadataFactory.extractExcelMetadata(TestDTO.class);
+
+            SheetWriteRequest.<TestDTO>builder()
+                    .dataIterator(null)
+                    .metadata(metadata)
+                    .build();
+        });
+    }
+
+    @Test
+    void createWorkbookAndWrite_whenExcelExporterExceptionThrown_rethrowsException() {
+        SheetWriter mockWriter = mock(SheetWriter.class);
+        doThrow(new ExcelExporterException(ErrorCode.EMPTY_DATA, "Test exception"))
+                .when(mockWriter).write(any(SXSSFWorkbook.class), any(SheetWriteContext.class));
+
+        SXSSFWorkbookBuilder faultyBuilder = new SXSSFWorkbookBuilder(mockWriter);
+
+        List<TestDTO> data = Collections.singletonList(new TestDTO("Test", 25));
+        ExcelMetadata<TestDTO> metadata = ExcelMetadataFactory.extractExcelMetadata(TestDTO.class);
+        SheetWriteRequest<TestDTO> request = SheetWriteRequest.<TestDTO>builder()
+                .dataIterator(data.iterator())
+                .metadata(metadata)
+                .build();
+
+        SheetWriteContext<TestDTO> context = SheetWriteContext.forRowBasedSheets(
+                Collections.singletonList(request)
+        );
+
+        ExcelExporterException exception = assertThrows(ExcelExporterException.class,
+                () -> faultyBuilder.createWorkbookAndWrite(context));
+
+        assertEquals(ErrorCode.EMPTY_DATA, exception.getErrorCode());
+    }
+
+    @Test
+    void createWorkbookAndWrite_whenOtherExceptionThrown_wrapsInWorkbookCreationFailed() {
+        SheetWriter mockWriter = mock(SheetWriter.class);
+        doThrow(new RuntimeException("Unexpected error"))
+                .when(mockWriter).write(any(SXSSFWorkbook.class), any(SheetWriteContext.class));
+
+        SXSSFWorkbookBuilder faultyBuilder = new SXSSFWorkbookBuilder(mockWriter);
+
+        List<TestDTO> data = Collections.singletonList(new TestDTO("Test", 25));
+        ExcelMetadata<TestDTO> metadata = ExcelMetadataFactory.extractExcelMetadata(TestDTO.class);
+        SheetWriteRequest<TestDTO> request = SheetWriteRequest.<TestDTO>builder()
+                .dataIterator(data.iterator())
+                .metadata(metadata)
+                .build();
+
+        SheetWriteContext<TestDTO> context = SheetWriteContext.forRowBasedSheets(
+                Collections.singletonList(request)
+        );
+
+        ExcelExporterException exception = assertThrows(ExcelExporterException.class,
+                () -> faultyBuilder.createWorkbookAndWrite(context));
+
+        assertEquals(ErrorCode.WORKBOOK_CREATION_FAILED, exception.getErrorCode());
+    }
+
+    @Test
+    void createWorkbookAndWrite_withNoException_returnsWorkbookSuccessfully() throws Exception {
+        List<TestDTO> data = Collections.singletonList(new TestDTO("Success", 30));
+
+        ExcelMetadata<TestDTO> metadata = ExcelMetadataFactory.extractExcelMetadata(TestDTO.class);
+        SheetWriteRequest<TestDTO> request = SheetWriteRequest.<TestDTO>builder()
+                .dataIterator(data.iterator())
+                .metadata(metadata)
+                .build();
+
+        SheetWriteContext<TestDTO> context = SheetWriteContext.forRowBasedSheets(
+                Collections.singletonList(request)
+        );
+
+        try (SXSSFWorkbook wb = builder.createWorkbookAndWrite(context)) {
+            assertNotNull(wb);
+            assertEquals(1, wb.getNumberOfSheets());
+            Sheet sheet = wb.getSheetAt(0);
+            assertEquals(2, sheet.getPhysicalNumberOfRows());
+        }
+    }
+
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @ExcelSheet("Test Sheet")
+    public static class TestDTO {
+
+        @ExcelColumn(header = "Name", order = 1)
+        private String name;
+
+        @ExcelColumn(header = "Age", order = 2)
+        private Integer age;
+    }
+
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @ExcelSheet("Another Sheet")
+    public static class AnotherDTO {
+
+        @ExcelColumn(header = "Data", order = 1)
+        private String data;
+    }
+
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @ExcelSheet("Multi")
+    public static class MultiSheetDTO {
+
+        @ExcelColumn(header = "Column A", order = 1, sheetName = "Sheet A")
+        private String colA;
+
+        @ExcelColumn(header = "Column B", order = 2, sheetName = "Sheet B")
+        private String colB;
+    }
 }

@@ -1,7 +1,7 @@
-package io.github.takoeats.excelannotator.style.rule;
+package io.github.takoeats.excelannotator.style.internal.rule;
 
 import io.github.takoeats.excelannotator.exception.ExcelExporterException;
-import io.github.takoeats.excelannotator.style.rule.node.ExpressionNode;
+import io.github.takoeats.excelannotator.style.internal.rule.node.ExpressionNode;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -115,7 +115,7 @@ class ExpressionConditionTest {
     @Test
     void test_nestedParentheses_evaluatesCorrectly() {
         ExpressionCondition condition = new ExpressionCondition(
-            "(value > 0 && value < 50) || (value > 100 && value < 150)"
+                "(value > 0 && value < 50) || (value > 100 && value < 150)"
         );
         CellContext context = CellContext.acquire();
 
@@ -179,13 +179,13 @@ class ExpressionConditionTest {
 
     @ParameterizedTest
     @ValueSource(strings = {
-        "value is_negative",
-        "value is_positive",
-        "value is_zero",
-        "value is_null",
-        "value is_not_null",
-        "value is_empty",
-        "value is_not_empty"
+            "value is_negative",
+            "value is_positive",
+            "value is_zero",
+            "value is_null",
+            "value is_not_null",
+            "value is_empty",
+            "value is_not_empty"
     })
     void test_specialConditions_evaluatesCorrectly(String expression) {
         ExpressionCondition condition = new ExpressionCondition(expression);
@@ -232,7 +232,7 @@ class ExpressionConditionTest {
     @Test
     void test_complexExpression_evaluatesCorrectly() {
         ExpressionCondition condition = new ExpressionCondition(
-            "((value > 0 && value < 50) || (value > 100 && value < 150)) && !(value == 25)"
+                "((value > 0 && value < 50) || (value > 100 && value < 150)) && !(value == 25)"
         );
         CellContext context = CellContext.acquire();
 

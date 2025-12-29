@@ -17,7 +17,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class ColumnWidthCalculatorDetailTest {
 
@@ -46,9 +47,9 @@ class ColumnWidthCalculatorDetailTest {
     @Test
     void fixedWidth_appliesCorrectly() throws Exception {
         WidthTestDTO data = WidthTestDTO.builder()
-            .fixedWidth200("test")
-            .fixedWidth50("abc")
-            .build();
+                .fixedWidth200("test")
+                .fixedWidth50("abc")
+                .build();
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ExcelExporter.excelFromList(baos, "fixed_width.xlsx", Collections.singletonList(data));
@@ -66,8 +67,8 @@ class ColumnWidthCalculatorDetailTest {
     @Test
     void autoWidth_calculatesBasedOnContent() throws Exception {
         WidthTestDTO data = WidthTestDTO.builder()
-            .autoWidth("Short")
-            .build();
+                .autoWidth("Short")
+                .build();
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ExcelExporter.excelFromList(baos, "auto_width.xlsx", Collections.singletonList(data));
@@ -84,8 +85,8 @@ class ColumnWidthCalculatorDetailTest {
     @Test
     void defaultWidth_100_appliesCorrectly() throws Exception {
         WidthTestDTO data = WidthTestDTO.builder()
-            .defaultWidth("default")
-            .build();
+                .defaultWidth("default")
+                .build();
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ExcelExporter.excelFromList(baos, "default_width.xlsx", Collections.singletonList(data));
@@ -96,16 +97,16 @@ class ColumnWidthCalculatorDetailTest {
         int defaultWidthValue = sheet.getColumnWidth(3);
 
         assertTrue(defaultWidthValue == 100 * 32 || defaultWidthValue > 0,
-            "Default width should be set (either fixed 100*32 or auto-calculated)");
+                "Default width should be set (either fixed 100*32 or auto-calculated)");
     }
 
     @Test
     void largeDataset_autoWidth_usesSampling() throws Exception {
         List<WidthTestDTO> largeDataset = IntStream.range(0, 15000)
-            .mapToObj(i -> WidthTestDTO.builder()
-                .autoWidth("Content-" + i)
-                .build())
-            .collect(Collectors.toList());
+                .mapToObj(i -> WidthTestDTO.builder()
+                        .autoWidth("Content-" + i)
+                        .build())
+                .collect(Collectors.toList());
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
@@ -122,26 +123,26 @@ class ColumnWidthCalculatorDetailTest {
         assertTrue(autoWidthValue > 0, "Auto width should be calculated via sampling");
 
         assertTrue(elapsedTime < 5000,
-            "Sampling should complete within 5 seconds, actual: " + elapsedTime + "ms");
+                "Sampling should complete within 5 seconds, actual: " + elapsedTime + "ms");
     }
 
     @Test
     void veryLongContent_autoWidth_handlesGracefully() throws Exception {
         String veryLongText =
-            "아주아주긴텍스트아주아주긴텍스트아주아주긴텍스트아주아주긴텍스트아주아주긴텍스트아주아주긴텍스트" +
-            "아주아주긴텍스트아주아주긴텍스트아주아주긴텍스트아주아주긴텍스트아주아주긴텍스트아주아주긴텍스트" +
-            "아주아주긴텍스트아주아주긴텍스트아주아주긴텍스트아주아주긴텍스트아주아주긴텍스트아주아주긴텍스트" +
-            "아주아주긴텍스트아주아주긴텍스트아주아주긴텍스트아주아주긴텍스트아주아주긴텍스트아주아주긴텍스트" +
-            "아주아주긴텍스트아주아주긴텍스트아주아주긴텍스트아주아주긴텍스트아주아주긴텍스트아주아주긴텍스트" +
-            "아주아주긴텍스트아주아주긴텍스트아주아주긴텍스트아주아주긴텍스트아주아주긴텍스트아주아주긴텍스트" +
-            "아주아주긴텍스트아주아주긴텍스트아주아주긴텍스트아주아주긴텍스트아주아주긴텍스트아주아주긴텍스트" +
-            "아주아주긴텍스트아주아주긴텍스트아주아주긴텍스트아주아주긴텍스트아주아주긴텍스트아주아주긴텍스트" +
-            "아주아주긴텍스트아주아주긴텍스트아주아주긴텍스트아주아주긴텍스트아주아주긴텍스트아주아주긴텍스트" +
-            "아주아주긴텍스트아주아주긴텍스트아주아주긴텍스트아주아주긴텍스트아주아주긴텍스트아주아주긴텍스트";
+                "아주아주긴텍스트아주아주긴텍스트아주아주긴텍스트아주아주긴텍스트아주아주긴텍스트아주아주긴텍스트" +
+                        "아주아주긴텍스트아주아주긴텍스트아주아주긴텍스트아주아주긴텍스트아주아주긴텍스트아주아주긴텍스트" +
+                        "아주아주긴텍스트아주아주긴텍스트아주아주긴텍스트아주아주긴텍스트아주아주긴텍스트아주아주긴텍스트" +
+                        "아주아주긴텍스트아주아주긴텍스트아주아주긴텍스트아주아주긴텍스트아주아주긴텍스트아주아주긴텍스트" +
+                        "아주아주긴텍스트아주아주긴텍스트아주아주긴텍스트아주아주긴텍스트아주아주긴텍스트아주아주긴텍스트" +
+                        "아주아주긴텍스트아주아주긴텍스트아주아주긴텍스트아주아주긴텍스트아주아주긴텍스트아주아주긴텍스트" +
+                        "아주아주긴텍스트아주아주긴텍스트아주아주긴텍스트아주아주긴텍스트아주아주긴텍스트아주아주긴텍스트" +
+                        "아주아주긴텍스트아주아주긴텍스트아주아주긴텍스트아주아주긴텍스트아주아주긴텍스트아주아주긴텍스트" +
+                        "아주아주긴텍스트아주아주긴텍스트아주아주긴텍스트아주아주긴텍스트아주아주긴텍스트아주아주긴텍스트" +
+                        "아주아주긴텍스트아주아주긴텍스트아주아주긴텍스트아주아주긴텍스트아주아주긴텍스트아주아주긴텍스트";
 
         WidthTestDTO data = WidthTestDTO.builder()
-            .veryLongContentAuto(veryLongText)
-            .build();
+                .veryLongContentAuto(veryLongText)
+                .build();
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ExcelExporter.excelFromList(baos, "very_long_auto.xlsx", Collections.singletonList(data));
@@ -153,18 +154,18 @@ class ColumnWidthCalculatorDetailTest {
 
         assertTrue(veryLongWidth > 0, "Very long content should have calculated width");
         assertTrue(veryLongWidth < 65536,
-            "Width should not exceed Excel's maximum column width");
+                "Width should not exceed Excel's maximum column width");
     }
 
     @Test
     void mixedWidthSettings_allApplyCorrectly() throws Exception {
         WidthTestDTO data = WidthTestDTO.builder()
-            .fixedWidth200("fixed200")
-            .fixedWidth50("f50")
-            .autoWidth("auto content")
-            .defaultWidth("default")
-            .veryLongContentAuto("Very long text for auto calculation")
-            .build();
+                .fixedWidth200("fixed200")
+                .fixedWidth50("f50")
+                .autoWidth("auto content")
+                .defaultWidth("default")
+                .veryLongContentAuto("Very long text for auto calculation")
+                .build();
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ExcelExporter.excelFromList(baos, "mixed_width.xlsx", Collections.singletonList(data));
@@ -188,8 +189,8 @@ class ColumnWidthCalculatorDetailTest {
     @Test
     void emptyContent_autoWidth_usesMinimumWidth() throws Exception {
         WidthTestDTO data = WidthTestDTO.builder()
-            .autoWidth("")
-            .build();
+                .autoWidth("")
+                .build();
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ExcelExporter.excelFromList(baos, "empty_auto_width.xlsx", Collections.singletonList(data));
@@ -200,6 +201,6 @@ class ColumnWidthCalculatorDetailTest {
         int autoWidthValue = sheet.getColumnWidth(2);
 
         assertTrue(autoWidthValue >= 256,
-            "Empty content should use at least minimum width (256), actual: " + autoWidthValue);
+                "Empty content should use at least minimum width (256), actual: " + autoWidthValue);
     }
 }

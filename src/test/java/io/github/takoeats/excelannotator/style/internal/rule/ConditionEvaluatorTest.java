@@ -1,4 +1,4 @@
-package io.github.takoeats.excelannotator.style.rule;
+package io.github.takoeats.excelannotator.style.internal.rule;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -346,7 +346,7 @@ class ConditionEvaluatorTest {
     @Test
     void getConditionInstance_noDefaultConstructor_throwsException() {
         assertThrows(Exception.class, () ->
-            ConditionEvaluator.getConditionInstance(NoDefaultConstructorCondition.class)
+                ConditionEvaluator.getConditionInstance(NoDefaultConstructorCondition.class)
         );
     }
 

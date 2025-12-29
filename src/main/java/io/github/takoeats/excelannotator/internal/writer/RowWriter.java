@@ -5,7 +5,7 @@ import io.github.takoeats.excelannotator.internal.metadata.ExcelMetadata;
 import io.github.takoeats.excelannotator.internal.metadata.HeaderMetadata;
 import io.github.takoeats.excelannotator.internal.metadata.SheetMetadata;
 import io.github.takoeats.excelannotator.internal.writer.builder.MergedHeaderBuilder;
-import io.github.takoeats.excelannotator.style.rule.CellContext;
+import io.github.takoeats.excelannotator.style.internal.rule.CellContext;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 

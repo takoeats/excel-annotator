@@ -1,11 +1,11 @@
-package io.github.takoeats.excelannotator.style.rule;
+package io.github.takoeats.excelannotator.style.internal.rule;
 
 import io.github.takoeats.excelannotator.exception.ErrorCode;
 import io.github.takoeats.excelannotator.exception.ExcelExporterException;
-import io.github.takoeats.excelannotator.style.rule.node.BinaryOpNode;
-import io.github.takoeats.excelannotator.style.rule.node.ExpressionNode;
-import io.github.takoeats.excelannotator.style.rule.node.LeafNode;
-import io.github.takoeats.excelannotator.style.rule.node.UnaryOpNode;
+import io.github.takoeats.excelannotator.style.internal.rule.node.BinaryOpNode;
+import io.github.takoeats.excelannotator.style.internal.rule.node.ExpressionNode;
+import io.github.takoeats.excelannotator.style.internal.rule.node.LeafNode;
+import io.github.takoeats.excelannotator.style.internal.rule.node.UnaryOpNode;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
