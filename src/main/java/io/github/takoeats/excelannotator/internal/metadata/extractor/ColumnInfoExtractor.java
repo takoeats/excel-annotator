@@ -29,42 +29,59 @@ public final class ColumnInfoExtractor {
         }
 
         SheetInfo sheetInfo = SheetInfoExtractor.extract(clazz);
-
-        List<ColumnInfo> columnInfos = new ArrayList<>();
-
         Field[] fields = clazz.getDeclaredFields();
 
-        if (sheetInfo.isAutoColumn()) {
-            int autoOrder = 1;
-            for (Field field : fields) {
-                if (shouldSkipField(field)) {
-                    continue;
-                }
-                ColumnInfo columnInfo = processFieldWithAutoColumn(field, sheetInfo, autoOrder);
-                if (columnInfo != null) {
-                    columnInfos.add(columnInfo);
-                    autoOrder++;
-                }
+        List<ColumnInfo> columnInfos = extractColumns(fields, sheetInfo);
+        validateAndSort(columnInfos, clazz);
+
+        return columnInfos;
+    }
+
+    private static List<ColumnInfo> extractColumns(Field[] fields, SheetInfo sheetInfo) {
+        return sheetInfo.isAutoColumn()
+                ? extractColumnsWithAutoMode(fields, sheetInfo)
+                : extractColumnsWithManualMode(fields, sheetInfo);
+    }
+
+    private static List<ColumnInfo> extractColumnsWithAutoMode(Field[] fields, SheetInfo sheetInfo) {
+        List<ColumnInfo> columnInfos = new ArrayList<>();
+        int autoOrder = 1;
+
+        for (Field field : fields) {
+            if (shouldSkipField(field)) {
+                continue;
             }
-        } else {
-            for (Field field : fields) {
-                ColumnInfo columnInfo = processField(field, sheetInfo);
-                if (columnInfo != null) {
-                    columnInfos.add(columnInfo);
-                }
+            ColumnInfo columnInfo = processFieldWithAutoColumn(field, sheetInfo, autoOrder);
+            if (columnInfo != null) {
+                columnInfos.add(columnInfo);
+                autoOrder++;
             }
         }
 
+        return columnInfos;
+    }
+
+    private static List<ColumnInfo> extractColumnsWithManualMode(Field[] fields, SheetInfo sheetInfo) {
+        List<ColumnInfo> columnInfos = new ArrayList<>();
+
+        for (Field field : fields) {
+            ColumnInfo columnInfo = processField(field, sheetInfo);
+            if (columnInfo != null) {
+                columnInfos.add(columnInfo);
+            }
+        }
+
+        return columnInfos;
+    }
+
+    private static void validateAndSort(List<ColumnInfo> columnInfos, Class<?> clazz) {
         if (columnInfos.isEmpty()) {
             throw new ExcelExporterException(ErrorCode.NO_EXCEL_COLUMNS,
                     String.format("클래스 '%s'에 @ExcelColumn 어노테이션이 적용된 필드가 없습니다.", clazz.getName()));
         }
 
         columnInfos.sort(Comparator.comparingInt(ColumnInfo::getOrder));
-
         MergeHeaderValidator.validateOrderContinuity(columnInfos);
-
-        return columnInfos;
     }
 
     private static ColumnInfo processField(Field field, SheetInfo sheetInfo) {
