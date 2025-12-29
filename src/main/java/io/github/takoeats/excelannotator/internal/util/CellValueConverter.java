@@ -1,6 +1,8 @@
 package io.github.takoeats.excelannotator.internal.util;
 
 import io.github.takoeats.excelannotator.internal.util.strategy.*;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import org.apache.poi.ss.usermodel.Cell;
 
 import java.math.BigDecimal;
@@ -8,6 +10,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Pattern;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class CellValueConverter {
 
     private static final Pattern NUMERIC_PATTERN = Pattern.compile("[-+]?\\d+(\\.\\d+)?");
@@ -23,9 +26,6 @@ public final class CellValueConverter {
             new BooleanValueStrategy(),
             new DefaultValueStrategy()
     );
-
-    private CellValueConverter() {
-    }
 
     public static void setCellValue(Cell cell, String value) {
         if (value == null) {
