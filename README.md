@@ -1426,12 +1426,70 @@ public ResponseEntity<?> downloadCustomers(HttpServletResponse response) {
 implementation 'io.github.takoeats:excel-annotator:2.3.1'
 ```
 
+### Shaded JAR (Dependency Conflict Resolution)
+
+**What is a Shaded JAR?**
+
+A shaded JAR bundles all dependencies (Apache POI, Commons Collections, etc.) **inside the library** and relocates them to a different package namespace. This prevents version conflicts when your project uses different versions of the same libraries.
+
+**Why Use Shaded JAR?**
+
+If your project already uses Apache POI or related libraries, you may encounter:
+
+```
+java.lang.NoSuchMethodError: org.apache.poi.ss.usermodel.Workbook.createSheet()
+ClassNotFoundException: org.apache.xmlbeans.XmlObject
+```
+
+The shaded JAR solves this by isolating excel-annotator's dependencies:
+
+- `org.apache.poi` → `io.github.takoeats.shaded.poi`
+- `org.apache.commons.collections4` → `io.github.takoeats.shaded.commons.collections4`
+- `org.apache.commons.compress` → `io.github.takoeats.shaded.commons.compress`
+- `org.apache.xmlbeans` → `io.github.takoeats.shaded.xmlbeans`
+
+**How to Use Shaded JAR**
+
+Add the `shaded` classifier to your dependency:
+
+**Maven:**
+```xml
+<dependency>
+    <groupId>io.github.takoeats</groupId>
+    <artifactId>excel-annotator</artifactId>
+    <version>2.3.2</version>
+    <classifier>shaded</classifier>
+</dependency>
+```
+
+**Gradle:**
+```gradle
+implementation 'io.github.takoeats:excel-annotator:2.3.2:shaded'
+```
+
+**When to Use Each JAR**
+
+| Scenario                           | Recommended JAR | Reason |
+|------------------------------------|----------------|--------|
+| No Apache POI in project           | **Regular JAR** | Smaller file size, shared dependencies |
+| 5.4.0 POI ooxml in project         | **Regular JAR** | Smaller file size, shared dependencies |
+| Project uses different POI version | **Shaded JAR** | Prevents version conflicts |
+| Dependency conflicts occur         | **Shaded JAR** | Complete isolation |
+| Corporate proxy/repository issues  | **Shaded JAR** | Single self-contained artifact |
+
+**Important Notes:**
+
+- ✅ **API remains identical** - No code changes needed when switching between regular and shaded JAR
+- ✅ **Shaded JAR is larger** (~15MB vs ~500KB) due to bundled dependencies
+- ✅ **Both JARs are published** to Maven Central for every release
+
+---
+
 ### Dependencies
 
 | Library       | Version            | Description             |
 |---------------|--------------------|-------------------------|
 | Apache POI    | 5.4.0              | Excel file manipulation |
-| Commons Lang3 | 3.18.0             | String utilities        |
 | SLF4J API     | 2.0.17             | Logging API             |
 | Servlet API   | 3.1.0 (provided)   | HttpServletResponse     |
 | Lombok        | 1.18.30 (provided) | Boilerplate reduction   |

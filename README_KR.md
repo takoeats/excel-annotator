@@ -1545,12 +1545,70 @@ public ResponseEntity<?> downloadCustomers(HttpServletResponse response) {
 implementation 'io.github.takoeats:excel-annotator:2.3.1'
 ```
 
+### Shaded JAR (의존성 충돌 해결)
+
+**Shaded JAR이란?**
+
+Shaded JAR은 모든 의존성(Apache POI, Commons Collections 등)을 **라이브러리 내부에 포함**하고 다른 패키지 네임스페이스로 재배치합니다. 이를 통해 프로젝트에서 동일한 라이브러리의 다른 버전을 사용할 때 발생하는 버전 충돌을 방지합니다.
+
+**Shaded JAR를 사용해야 하는 이유**
+
+프로젝트에서 이미 Apache POI 또는 관련 라이브러리를 사용 중이라면 다음과 같은 오류가 발생할 수 있습니다:
+
+```
+java.lang.NoSuchMethodError: org.apache.poi.ss.usermodel.Workbook.createSheet()
+ClassNotFoundException: org.apache.xmlbeans.XmlObject
+```
+
+Shaded JAR은 excel-annotator의 의존성을 격리하여 이 문제를 해결합니다:
+
+- `org.apache.poi` → `io.github.takoeats.shaded.poi`
+- `org.apache.commons.collections4` → `io.github.takoeats.shaded.commons.collections4`
+- `org.apache.commons.compress` → `io.github.takoeats.shaded.commons.compress`
+- `org.apache.xmlbeans` → `io.github.takoeats.shaded.xmlbeans`
+
+**Shaded JAR 사용 방법**
+
+의존성에 `shaded` classifier를 추가하세요:
+
+**Maven:**
+```xml
+<dependency>
+    <groupId>io.github.takoeats</groupId>
+    <artifactId>excel-annotator</artifactId>
+    <version>2.3.2</version>
+    <classifier>shaded</classifier>
+</dependency>
+```
+
+**Gradle:**
+```gradle
+implementation 'io.github.takoeats:excel-annotator:2.3.2:shaded'
+```
+
+**각 JAR 선택 가이드**
+
+| 상황 | 권장 JAR | 이유 |
+|------|---------|------|
+| 프로젝트에 Apache POI 없음 | **일반 JAR** | 작은 파일 크기, 의존성 공유 |
+| 프로젝트에 Apache POI 5.4.0 ooxml 사용 | **일반 JAR** | 작은 파일 크기, 의존성 공유 |
+| 프로젝트에서 다른 POI 버전 사용 | **Shaded JAR** | 버전 충돌 방지 |
+| 의존성 충돌 발생 | **Shaded JAR** | 완전한 격리 |
+| 기업 프록시/저장소 문제 | **Shaded JAR** | 단일 자체 포함 아티팩트 |
+
+**중요 사항:**
+
+- ✅ **API는 동일합니다** - 일반 JAR과 Shaded JAR 간 전환 시 코드 변경 불필요
+- ✅ **Shaded JAR가 더 큽니다** (~15MB vs ~500KB) - 의존성이 포함되어 있기 때문
+- ✅ **두 JAR 모두 배포됩니다** - 모든 릴리스마다 Maven Central에 게시
+
+---
+
 ### 필요 의존성
 
 | 라이브러리         | 버전                 | 설명                  |
 |---------------|--------------------|---------------------|
 | Apache POI    | 5.4.0              | Excel 파일 조작         |
-| Commons Lang3 | 3.18.0             | 문자열 유틸리티            |
 | SLF4J API     | 2.0.17             | 로깅 API              |
 | Servlet API   | 3.1.0 (provided)   | HttpServletResponse |
 | Lombok        | 1.18.30 (provided) | 보일러플레이트 제거          |
