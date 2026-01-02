@@ -19,7 +19,7 @@ import java.util.stream.Stream;
 /**
  * Excel 파일 작성을 위한 Facade 클래스
  * <p>다양한 Writer 클래스들을 조합하여 Excel 파일을 생성합니다.</p>
- * <p>모든 입력 타입(List, Stream, Map)을 Iterator로 변환하여 Single/Multi Sheet Writer에 위임합니다.</p>
+ * <p>모든 입력 타입(List, Stream, Map)을 Iterator로 변환하여 Sheet Writer에 위임합니다.</p>
  *
  * <h3>지원 기능</h3>
  * <ul>

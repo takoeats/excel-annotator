@@ -119,9 +119,8 @@ public final class SheetWriter {
                 SheetContext sheetContext = sheetContexts.get(baseSheetName);
 
                 int headerRows = metadata.hasHeader() ? metadata.getHeaderRowCount() : 0;
-                int maxDataRowsPerSheet = MAX_DATA_ROWS_PER_SHEET;
 
-                if (sheetContext.currentRowInSheet >= maxDataRowsPerSheet) {
+                if (sheetContext.currentRowInSheet >= MAX_DATA_ROWS_PER_SHEET) {
                     createNewSheetForContext(sheetContext, baseSheetName, metadata, styleCacheManager);
                 }
 
@@ -185,14 +184,13 @@ public final class SheetWriter {
 
         String baseSheetName = metadata.getSheetName();
         int headerRows = metadata.hasHeader() ? metadata.getHeaderRowCount() : 0;
-        int maxDataRowsPerSheet = MAX_DATA_ROWS_PER_SHEET;
 
         int sheetIndex = 0;
         SXSSFSheet currentSheet = null;
         int currentRowInSheet = 0;
 
         while (dataIterator.hasNext()) {
-            if (currentSheet == null || currentRowInSheet >= maxDataRowsPerSheet) {
+            if (currentSheet == null || currentRowInSheet >= MAX_DATA_ROWS_PER_SHEET) {
                 String sanitizedName = buildSheetName(baseSheetName, sheetIndex);
                 currentSheet = createConfiguredSheet(wb, sanitizedName, metadata, styleCacheManager);
                 currentRowInSheet = 0;
