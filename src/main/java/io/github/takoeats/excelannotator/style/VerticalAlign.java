@@ -20,19 +20,21 @@ public enum VerticalAlign {
     }
 
     /**
-     * POI VerticalAlignment로 변환
+     * Internal use only - converts to POI type for internal implementation.
+     * This method is package-private to prevent exposure in shaded JAR environment.
      */
-    public VerticalAlignment toPoi() {
+    VerticalAlignment toPoi() {
         return poiAlignment;
     }
 
     /**
-     * POI VerticalAlignment을 VerticalAlign으로 변환
+     * Internal use only - converts from POI type (used by deprecated methods).
+     * This method is package-private to prevent exposure in shaded JAR environment.
      *
      * @param poiAlignment POI VerticalAlignment
      * @return VerticalAlign
      */
-    public static VerticalAlign fromPoi(VerticalAlignment poiAlignment) {
+    static VerticalAlign fromPoi(VerticalAlignment poiAlignment) {
         if (poiAlignment == null) {
             return TOP;
         }

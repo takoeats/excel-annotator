@@ -29,19 +29,21 @@ public enum BorderType {
     }
 
     /**
-     * POI BorderStyle로 변환
+     * Internal use only - converts to POI type for internal implementation.
+     * This method is package-private to prevent exposure in shaded JAR environment.
      */
-    public BorderStyle toPoi() {
+    BorderStyle toPoi() {
         return poiStyle;
     }
 
     /**
-     * POI BorderStyle을 BorderType으로 변환
+     * Internal use only - converts from POI type (used by deprecated methods).
+     * This method is package-private to prevent exposure in shaded JAR environment.
      *
      * @param poiStyle POI BorderStyle
      * @return BorderType
      */
-    public static BorderType fromPoi(BorderStyle poiStyle) {
+    static BorderType fromPoi(BorderStyle poiStyle) {
         if (poiStyle == null) {
             return NONE;
         }

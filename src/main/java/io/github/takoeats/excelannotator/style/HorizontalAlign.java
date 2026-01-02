@@ -23,19 +23,21 @@ public enum HorizontalAlign {
     }
 
     /**
-     * POI HorizontalAlignment로 변환
+     * Internal use only - converts to POI type for internal implementation.
+     * This method is package-private to prevent exposure in shaded JAR environment.
      */
-    public HorizontalAlignment toPoi() {
+    HorizontalAlignment toPoi() {
         return poiAlignment;
     }
 
     /**
-     * POI HorizontalAlignment을 HorizontalAlign으로 변환
+     * Internal use only - converts from POI type (used by deprecated methods).
+     * This method is package-private to prevent exposure in shaded JAR environment.
      *
      * @param poiAlignment POI HorizontalAlignment
      * @return HorizontalAlign
      */
-    public static HorizontalAlign fromPoi(HorizontalAlignment poiAlignment) {
+    static HorizontalAlign fromPoi(HorizontalAlignment poiAlignment) {
         if (poiAlignment == null) {
             return GENERAL;
         }
