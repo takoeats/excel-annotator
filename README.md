@@ -1523,6 +1523,25 @@ public class FinancialSummaryDTO {
         }
     )
     private Double changeRate;
+    
+    @ExcelColumn(
+            header = "Completion Status",
+            order = 4,
+            columnStyle = BooleanStyle.class,
+            conditionalStyles = {
+                    @ConditionalStyle(
+                            when = "Conditions.IS_NEGATIVE",  // Below -10%
+                            style = CriticalAlertStyle.class,
+                            priority = 20
+                    ),
+                    @ConditionalStyle(
+                            when = Conditions.IS_POSITIVE,   // Above +20%
+                            style = SignatureStyle.class,
+                            priority = 10
+                    )
+            }
+    )
+    private boolean isCompleted;
 }
 ```
 

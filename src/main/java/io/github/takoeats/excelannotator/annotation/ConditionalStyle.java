@@ -28,7 +28,7 @@ import java.lang.annotation.Target;
  *             priority = 10
  *         ),
  *         @ConditionalStyle(
- *             when = "value is_positive",
+ *             when = Conditions.IS_POSITIVE,
  *             style = PositiveBlueStyle.class,
  *             priority = 5
  *         )
@@ -44,14 +44,25 @@ import java.lang.annotation.Target;
  *     }
  * )
  * private String status;
+ *
+ * @ExcelColumn(
+ *     header = "비고",
+ *     conditionalStyles = {
+ *         @ConditionalStyle(when = Conditions.IS_EMPTY, style = WarningStyle.class),
+ *         @ConditionalStyle(when = Conditions.IS_NOT_NULL, style = HighlightStyle.class)
+ *     }
+ * )
+ * private String note;
  * }</pre>
  *
  * <h3>지원하는 표현식</h3>
  * <ul>
  *     <li>숫자 비교: {@code value < 100}, {@code value >= 0}, {@code value == 50}, {@code value between 10 and 100}</li>
  *     <li>문자열: {@code value equals '완료'}, {@code value contains '진행'}, {@code value starts_with '주문'}</li>
- *     <li>특수 조건: {@code value is_negative}, {@code value is_positive}, {@code value is_null}, {@code value is_empty}</li>
+ *     <li>특수 조건: {@link io.github.takoeats.excelannotator.style.Conditions Conditions} 클래스의 상수 사용 (타입 안전)</li>
  * </ul>
+ *
+ * @see io.github.takoeats.excelannotator.style.Conditions
  */
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
@@ -81,18 +92,19 @@ public @interface ConditionalStyle {
      *     <li>{@code value ends_with '완료'} - '완료'로 끝남</li>
      * </ul>
      *
-     * <h4>특수 조건</h4>
+     * <h4>특수 조건 (타입 안전 사용 권장)</h4>
      * <ul>
-     *     <li>{@code value is_negative} - 음수</li>
-     *     <li>{@code value is_positive} - 양수</li>
-     *     <li>{@code value is_zero} - 0</li>
-     *     <li>{@code value is_null} - null</li>
-     *     <li>{@code value is_not_null} - null이 아님</li>
-     *     <li>{@code value is_empty} - 빈 문자열 또는 null</li>
-     *     <li>{@code value is_not_empty} - 값이 있음</li>
+     *     <li>{@link io.github.takoeats.excelannotator.style.Conditions#IS_NEGATIVE Conditions.IS_NEGATIVE} - 음수</li>
+     *     <li>{@link io.github.takoeats.excelannotator.style.Conditions#IS_POSITIVE Conditions.IS_POSITIVE} - 양수</li>
+     *     <li>{@link io.github.takoeats.excelannotator.style.Conditions#IS_ZERO Conditions.IS_ZERO} - 0</li>
+     *     <li>{@link io.github.takoeats.excelannotator.style.Conditions#IS_NULL Conditions.IS_NULL} - null</li>
+     *     <li>{@link io.github.takoeats.excelannotator.style.Conditions#IS_NOT_NULL Conditions.IS_NOT_NULL} - null이 아님</li>
+     *     <li>{@link io.github.takoeats.excelannotator.style.Conditions#IS_EMPTY Conditions.IS_EMPTY} - 빈 문자열 또는 null</li>
+     *     <li>{@link io.github.takoeats.excelannotator.style.Conditions#IS_NOT_EMPTY Conditions.IS_NOT_EMPTY} - 값이 있음</li>
      * </ul>
      *
      * @return 조건 표현식
+     * @see io.github.takoeats.excelannotator.style.Conditions
      */
     String when();
 

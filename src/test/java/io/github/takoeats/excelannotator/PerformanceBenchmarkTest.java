@@ -13,7 +13,8 @@ import java.io.ByteArrayOutputStream;
 import java.util.List;
 import java.util.stream.Stream;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Tag("performance")
 class PerformanceBenchmarkTest {
@@ -34,7 +35,7 @@ class PerformanceBenchmarkTest {
         long elapsedTime = System.currentTimeMillis() - startTime;
 
         assertTrue(elapsedTime < 5000,
-            "List API should complete 100K rows within 5 seconds, actual: " + elapsedTime + "ms");
+                "List API should complete 100K rows within 5 seconds, actual: " + elapsedTime + "ms");
 
         Workbook wb = ExcelTestHelper.workbookFromBytes(baos.toByteArray());
         ExcelAssertions.assertExcelFileValid(baos.toByteArray());
@@ -53,7 +54,7 @@ class PerformanceBenchmarkTest {
         long elapsedTime = System.currentTimeMillis() - startTime;
 
         assertTrue(elapsedTime < 60000,
-            "Stream API should complete 1M rows within 60 seconds, actual: " + elapsedTime + "ms");
+                "Stream API should complete 1M rows within 60 seconds, actual: " + elapsedTime + "ms");
 
         assertTrue(baos.size() > 0, "Excel file should be generated");
         System.out.println("1M rows Excel file size: " + (baos.size() / (1024 * 1024)) + " MB");
@@ -82,7 +83,7 @@ class PerformanceBenchmarkTest {
         System.out.println("Memory increase: " + memoryIncreaseMB + " MB for 100K rows");
 
         assertTrue(memoryIncreaseMB < 500,
-            "Memory increase should be less than 500MB, actual: " + memoryIncreaseMB + "MB");
+                "Memory increase should be less than 500MB, actual: " + memoryIncreaseMB + "MB");
     }
 
     @Test
@@ -105,7 +106,7 @@ class PerformanceBenchmarkTest {
         System.out.println("List API memory increase: " + memoryIncreaseMB + " MB for 100K rows");
 
         assertTrue(memoryIncreaseMB > 0,
-            "Memory should increase for List API");
+                "Memory should increase for List API");
     }
 
     @Test
@@ -169,7 +170,7 @@ class PerformanceBenchmarkTest {
 
         assertDoesNotThrow(() -> {
             ExcelExporter.excelFromStream(baos, "1_5m_auto_split.xlsx",
-                customerStream);
+                    customerStream);
         });
 
         long elapsedTime = System.currentTimeMillis() - startTime;
@@ -197,6 +198,6 @@ class PerformanceBenchmarkTest {
         System.out.println("Total time: " + elapsedTime + "ms for " + testSize + " rows");
 
         assertTrue(rowsPerSecond > 5000,
-            "Throughput should be at least 5000 rows/second, actual: " + String.format("%.2f", rowsPerSecond));
+                "Throughput should be at least 5000 rows/second, actual: " + String.format("%.2f", rowsPerSecond));
     }
 }

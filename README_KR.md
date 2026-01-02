@@ -490,6 +490,25 @@ public class FinanceDTO {
         }
 )
 private BigDecimal amount;
+
+@ExcelColumn(
+        header = "완료 상태",
+        order = 4,
+        columnStyle = BooleanStyle.class,
+        conditionalStyles = {
+                @ConditionalStyle(
+                        when = Conditions.IS_NEGATIVE,
+                        style = CriticalAlertStyle.class,
+                        priority = 20
+                ),
+                @ConditionalStyle(
+                        when = Conditions.IS_POSITIVE,
+                        style = SignatureStyle.class,
+                        priority = 10
+                )
+        }
+)
+private boolean isCompleted;
 ```
 
 #### 문자열 조건
