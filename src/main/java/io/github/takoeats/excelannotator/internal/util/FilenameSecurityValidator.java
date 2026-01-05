@@ -1,7 +1,5 @@
 package io.github.takoeats.excelannotator.internal.util;
 
-import lombok.extern.slf4j.Slf4j;
-
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
@@ -22,7 +20,6 @@ import java.util.regex.Pattern;
  * <b>처리 원칙:</b> 화이트리스트 기반 - 안전한 문자만 명시적으로 허용
  * </p>
  */
-@Slf4j
 public final class FilenameSecurityValidator {
 
     private static final String DEFAULT_SAFE_FILENAME = "download.xlsx";
@@ -68,12 +65,10 @@ public final class FilenameSecurityValidator {
         String trimmed = filename.trim();
 
         if (containsDangerousPattern(trimmed)) {
-            log.warn("Security: Dangerous pattern detected in filename: {}", filename);
             return DEFAULT_SAFE_FILENAME;
         }
 
         if (isReservedOrSpecialName(trimmed)) {
-            log.warn("Security: Reserved or special filename detected: {}", filename);
             return DEFAULT_SAFE_FILENAME;
         }
 
@@ -88,7 +83,6 @@ public final class FilenameSecurityValidator {
         normalized = normalized.trim();
 
         if (normalized.isEmpty() || !isSafeFilename(normalized) || !isMeaningfulFilename(normalized)) {
-            log.warn("Security: Filename became empty or unsafe after sanitization: {}", filename);
             return DEFAULT_SAFE_FILENAME;
         }
 

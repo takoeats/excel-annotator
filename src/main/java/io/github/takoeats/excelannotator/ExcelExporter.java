@@ -11,7 +11,6 @@ import io.github.takoeats.excelannotator.internal.writer.CsvWriter;
 import io.github.takoeats.excelannotator.internal.writer.ExcelWriter;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 
 import javax.servlet.http.HttpServletResponse;
@@ -30,7 +29,6 @@ import java.util.stream.Stream;
  * Excel 다운로드 Static Utility 클래스
  * <p>Apache POI 기반 어노테이션 방식 Excel 생성 및 다운로드</p>
  */
-@Slf4j
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class ExcelExporter {
 

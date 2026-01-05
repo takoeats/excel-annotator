@@ -4,7 +4,6 @@ import io.github.takoeats.excelannotator.internal.metadata.extractor.ColumnInfoE
 import io.github.takoeats.excelannotator.internal.metadata.extractor.SheetInfoExtractor;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -12,14 +11,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
-@Slf4j
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class MetadataAssembler {
 
 
     public static <T> ExcelMetadata<T> assemble(Class<T> clazz) {
         if (clazz == null) {
-            log.warn("Class parameter is null, returning empty metadata");
             return createEmptyMetadata();
         }
 

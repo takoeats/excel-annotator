@@ -2,12 +2,10 @@ package io.github.takoeats.excelannotator.internal.metadata;
 
 import io.github.takoeats.excelannotator.internal.metadata.extractor.ColumnInfoExtractor;
 import io.github.takoeats.excelannotator.internal.metadata.extractor.SheetInfoExtractor;
-import lombok.extern.slf4j.Slf4j;
 
 import java.util.*;
 import java.util.function.Function;
 
-@Slf4j
 public final class MultiSheetMetadataBuilder {
 
     public MultiSheetMetadataBuilder() {
@@ -16,7 +14,6 @@ public final class MultiSheetMetadataBuilder {
 
     public <T> Map<String, ExcelMetadata<T>> build(Class<T> clazz) {
         if (clazz == null) {
-            log.warn("Class parameter is null, returning empty metadata map");
             return Collections.emptyMap();
         }
 

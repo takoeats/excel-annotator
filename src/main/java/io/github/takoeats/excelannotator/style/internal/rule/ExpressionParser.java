@@ -10,7 +10,6 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
 import java.util.Objects;
 import java.util.regex.Matcher;
@@ -29,7 +28,6 @@ import java.util.regex.Pattern;
  *     <li>괄호: {@code (value > 0 && value < 100) || value == 0}</li>
  * </ul>
  */
-@Slf4j
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class ExpressionParser {
 

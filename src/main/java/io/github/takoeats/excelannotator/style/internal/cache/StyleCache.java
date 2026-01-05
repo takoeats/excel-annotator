@@ -7,7 +7,6 @@ import io.github.takoeats.excelannotator.style.internal.wrapper.CellStyleWrapper
 import io.github.takoeats.excelannotator.style.internal.wrapper.WorkbookWrapper;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Workbook;
 
@@ -20,7 +19,6 @@ import java.util.concurrent.ConcurrentHashMap;
  * 스타일 캐싱 시스템 (SXSSF 호환)
  * <p>커스텀 스타일 객체만 캐싱, POI CellStyle은 매번 생성</p>
  */
-@Slf4j
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public final class StyleCache {
 

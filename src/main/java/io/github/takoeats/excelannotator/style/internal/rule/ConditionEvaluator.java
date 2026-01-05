@@ -4,7 +4,6 @@ import io.github.takoeats.excelannotator.exception.ErrorCode;
 import io.github.takoeats.excelannotator.exception.ExcelExporterException;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
 import java.lang.reflect.Constructor;
 import java.util.Map;
@@ -14,7 +13,6 @@ import java.util.concurrent.ConcurrentHashMap;
  * 조건 평가 유틸리티 클래스
  * <p>StyleCondition 인스턴스를 캐싱하고 생성합니다.</p>
  */
-@Slf4j
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class ConditionEvaluator {
 
