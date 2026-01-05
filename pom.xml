@@ -6,7 +6,7 @@
 
     <groupId>io.github.takoeats</groupId>
     <artifactId>excel-annotator-parent</artifactId>
-    <version>2.3.3</version>
+    <version>2.3.4</version>
     <packaging>pom</packaging>
 
     <name>Excel Annotator Parent</name>
@@ -36,7 +36,7 @@
         <connection>scm:git:git://github.com/takoeats/excel-annotator.git</connection>
         <developerConnection>scm:git:ssh://git@github.com/takoeats/excel-annotator.git</developerConnection>
         <url>https://github.com/takoeats/excel-annotator</url>
-        <tag>2.3.3</tag>
+        <tag>2.3.4</tag>
     </scm>
 
     <modules>
