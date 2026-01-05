@@ -171,4 +171,5 @@ settings-local.xml
 /.project
 /CLAUDE.md
 /DEPLOYMENT.md
-/dependency-reduced-pom.xml
+dependency-reduced-pom.xml
+**/dependency-reduced-pom.xml
